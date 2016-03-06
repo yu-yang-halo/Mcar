@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">汽车美容</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="hitem0">洗车美容</string>
+    <string name="hitem1">换油保养</string>
+    <string name="hitem2">钣金喷漆</string>
+    <string name="hitem3">手机探店</string>
+    <string name="hitem4">车险直销</string>
+    <string name="hitem5">产品超市</string>
+
+    <string name="litem0">领取优惠券和红包</string>
+    <string name="litem1">热门推荐</string>
+
+    <string name="protitle0">门店兑换码</string>
+    <string name="projoin0">已有20012人参加</string>
+    <string name="protitle1">油行天下</string>
+    <string name="projoin1">已有10023人参加</string>
+
+    <string name="individual0">我的订单</string>
+    <string name="individual1">我的预约</string>
+    <string name="individual2">我的服务卡</string>
+    <string name="individual3">优惠券</string>
+</resources>
