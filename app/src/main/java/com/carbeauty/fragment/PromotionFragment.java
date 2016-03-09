@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.service.WSConnector;
+
 /**
  * Created by Administrator on 2016/3/6.
  */
