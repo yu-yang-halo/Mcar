@@ -3,7 +3,7 @@ package cn.service.bean;
 public class CarInfo {
 
 	private int id;
-	private int type;
+	private int type;//
 	private String number;
 	private int userId;
 

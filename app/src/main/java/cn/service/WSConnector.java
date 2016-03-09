@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketImpl;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -76,7 +77,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	private static String IP1 = "liuzhi1212.gicp.net";
+	private static String IP1 = "192.168.2.181";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -414,7 +415,7 @@ public class WSConnector {
 	}
 	
 	
-	public UserInfo getUserInfoById(int userId) throws WSException{
+	public UserInfo getUserInfoById() throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "getUserInfoById?senderId="
 				+ this.userMap.get("userId") + "&secToken="
@@ -930,7 +931,7 @@ public class WSConnector {
 		return null;
 	}
 	
-	public boolean createCar(CarInfo carInfo) throws WSException{
+	public boolean createCar(CarInfo carInfo) throws WSException, UnsupportedEncodingException {
 		if(carInfo==null){
 			return false;
 		}
@@ -938,7 +939,7 @@ public class WSConnector {
 		service = WSConnector.wsUrl + "createCar?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&userId="+this.userMap.get("userId")
-				+"&type="+carInfo.getType()+"&number="+carInfo.getNumber();
+				+"&type="+carInfo.getType()+"&number="+URLEncoder.encode(carInfo.getNumber(), "UTF-8");
 		Logger.getLogger(this.getClass()).info(
 				"[createCar]  ws query = " + service);
 
@@ -980,12 +981,12 @@ public class WSConnector {
 		}
 		return false;
 	}
-	public boolean updCar(CarInfo carInfo) throws WSException{
+	public boolean updCar(CarInfo carInfo) throws WSException, UnsupportedEncodingException {
 		String service = "";
 		service = WSConnector.wsUrl + "updCar?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&userId="+this.userMap.get("userId")
-				+"&id="+carInfo.getId()+"&number="+carInfo.getNumber();
+				+"&id="+carInfo.getId()+"&number="+URLEncoder.encode(carInfo.getNumber(), "UTF-8");
 		if(carInfo.getType()>=0){
 			service+="&type="+carInfo.getType();
 		}
@@ -1007,7 +1008,7 @@ public class WSConnector {
 		}
 		return false;
 	}	
-	private CarInfo parseXmlToCarInfo(Element element){
+	private CarInfo parseXmlToCarInfo(Element element) throws UnsupportedEncodingException {
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
 		Element numberNode = (Element) element.getElementsByTagName(
@@ -1030,10 +1031,13 @@ public class WSConnector {
 		if (numberNode != null && numberNode.getFirstChild() != null) {
 			number = numberNode.getFirstChild().getNodeValue();
 		}
-	    CarInfo carInfo=new CarInfo(id, type, number, userId);
+		//
+
+
+		CarInfo carInfo=new CarInfo(id, type, URLDecoder.decode(number,"UTF-8"), userId);
 		return carInfo;
 	}
-	public List<CarInfo> getCarByUserId() throws WSException{
+	public List<CarInfo> getCarByUserId() throws WSException, UnsupportedEncodingException {
 		String service = "";
 		service = WSConnector.wsUrl + "getCarByUserId?senderId="
 				+ this.userMap.get("userId") + "&secToken="

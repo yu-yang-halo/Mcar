@@ -3,6 +3,7 @@ package com.carbeauty.userlogic;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentCacheUtils;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -56,9 +57,9 @@ public class LoginActivity extends Activity {
 				String username=usernameEdit.getText().toString();
 				String password=passwordEdit.getText().toString();
 				if(Util.isEmpty(username)||Util.isEmpty(password)){
-					Toast.makeText(getApplicationContext(), "用户名和密码不能为空",Toast.LENGTH_SHORT).show();
+					Toast.makeText(LoginActivity.this, "用户名和密码不能为空",Toast.LENGTH_SHORT).show();
 				}else{
-					new LoginTask(getApplicationContext(), username, password).execute();
+					new LoginTask(LoginActivity.this, username, password).execute();
 				}
 			}
 		});
@@ -95,7 +96,7 @@ public class LoginActivity extends Activity {
 		String loginName;
 		String password;
 		Context ctx;
-		
+		KProgressHUD progressHUD;
 		LoginTask(Context ctx, String loginName, String password){
 			this.loginName=loginName;
 			this.password=password;
@@ -104,15 +105,29 @@ public class LoginActivity extends Activity {
 		@Override
 		protected String doInBackground(String... params) {
 
-//			try {
-//				WSConnector.getInstance().appUserLogin(loginName, MD5Generator.reverseMD5Value(password), -1, "android", false);
-//			} catch (WSException e) {
-//				return e.getErrorMsg();
-//			}
+			try {
+				WSConnector.getInstance().appUserLogin(loginName, MD5Generator.reverseMD5Value(password), -1, "android", false);
+			} catch (WSException e) {
+				return e.getErrorMsg();
+			}
 			return null;
 		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			progressHUD=KProgressHUD.create(ctx)
+					.setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+					.setLabel("登录中...")
+					.setAnimationSpeed(2)
+					.setDimAmount(0.5f)
+					.show();
+		}
+
 		@Override
 		protected void onPostExecute(String result) {
+			progressHUD.dismiss();
 			if(result==null){
 				ContentCacheUtils.cacheUsernamePass(ctx, loginName, password);
 				Intent intent=new Intent();
