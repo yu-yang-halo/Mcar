@@ -38,5 +38,6 @@ dependencies {
     compile 'com.kaopiz:kprogresshud:1.0.5'
     compile 'com.bigkoo:convenientbanner:2.0.5'
     compile files('libs/BaiduLBS_Android.jar')
+    compile 'com.baoyz.pullrefreshlayout:library:1.2.0'
 
 }

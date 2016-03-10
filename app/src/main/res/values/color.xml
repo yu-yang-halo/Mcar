@@ -8,4 +8,10 @@
     <color name="button_focus_color">#A056bc94</color>
     <color name="item_for_color">#00ffffff</color>
     <color name="item_back_color">#60888888</color>
+    <color name="one_color">#ff00ff</color>
+    <array name="scheme_colors">
+        <item>#9fff0000</item>
+        <item>#9f00ff00</item>
+        <item>#9f0000ff</item>
+    </array>
 </resources>

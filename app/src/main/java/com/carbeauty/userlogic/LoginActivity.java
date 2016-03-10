@@ -120,8 +120,8 @@ public class LoginActivity extends Activity {
 			progressHUD=KProgressHUD.create(ctx)
 					.setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
 					.setLabel("登录中...")
-					.setAnimationSpeed(2)
-					.setDimAmount(0.5f)
+					.setAnimationSpeed(1)
+					.setDimAmount(0.3f)
 					.show();
 		}
 

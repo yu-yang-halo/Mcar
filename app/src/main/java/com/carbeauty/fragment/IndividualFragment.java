@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
 import com.carbeauty.manager.CarManagerActivity;
 
@@ -35,6 +36,8 @@ public class IndividualFragment extends Fragment {
     TextView accountName;
     TextView plateNumber;
     Button btn_clk;
+    PullRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +55,14 @@ public class IndividualFragment extends Fragment {
             }
         });
         initListView();
+
+        swipeRefreshLayout= (PullRefreshLayout) v.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new LoadUserInfoTask().execute();
+            }
+        });
 
 
         return v;
@@ -89,6 +100,12 @@ public class IndividualFragment extends Fragment {
         List<CarInfo> carInfos;
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        @Override
         protected String doInBackground(String... params) {
             try {
 
@@ -108,6 +125,7 @@ public class IndividualFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            swipeRefreshLayout.setRefreshing(false);
             if(userInfo!=null){
                 accountName.setText(userInfo.getLoginName());
             }

@@ -2,9 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:refreshColors="@array/scheme_colors">
 
     <ListView
         android:layout_width="match_parent"
@@ -12,4 +15,5 @@
         android:id="@+id/promlistView"
         android:background="@color/white"
         android:layout_gravity="center_horizontal" />
+    </com.baoyz.widget.PullRefreshLayout>
 </LinearLayout>

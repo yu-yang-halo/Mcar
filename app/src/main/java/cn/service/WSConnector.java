@@ -1915,7 +1915,7 @@ public class WSConnector {
 		}
 		return false;
     }
-    private BannerInfoType parseXmlToBannerInfoType(Element element){
+    private PromotionInfoType parseXmlToBannerInfoType(Element element){
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
 		Element imgNameNode = (Element) element.getElementsByTagName(
@@ -1933,8 +1933,8 @@ public class WSConnector {
 		if (srcNode != null && srcNode.getFirstChild() != null) {
 			src = srcNode.getFirstChild().getNodeValue();
 		}
-	   BannerInfoType bannerInfoType=new BannerInfoType(id, imgName, src);
-		return bannerInfoType;
+		PromotionInfoType promotionInfoType=new PromotionInfoType(id, imgName, src);
+		return promotionInfoType;
 	}
     public List<BannerInfoType> getBannerList(int maxNum) throws WSException{
     	String service = "";
@@ -2136,7 +2136,7 @@ public class WSConnector {
 				List<PromotionInfoType> promotionInfoTypes=new ArrayList<PromotionInfoType>();
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element element = (Element) (nodeList.item(i));
-					PromotionInfoType promotionInfoType =(PromotionInfoType) parseXmlToBannerInfoType(element);
+					PromotionInfoType promotionInfoType = parseXmlToBannerInfoType(element);
 					Logger.getLogger(this.getClass()).info(
 							"[PromotionInfoType]  promotionInfoType = "
 									+ promotionInfoType.toString());

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
 import com.carbeauty.adapter.ShopInfoAdapter;
 
@@ -28,6 +29,7 @@ import cn.service.bean.ShopInfo;
 public class ShopFragment extends Fragment {
     ListView shoplistView;
     TextView textView;
+    PullRefreshLayout swipeRefreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +37,14 @@ public class ShopFragment extends Fragment {
         shoplistView= (ListView) v.findViewById(R.id.shoplistView);
         textView= (TextView) v.findViewById(R.id.textView);
         textView.setVisibility(View.GONE);
+        swipeRefreshLayout= (PullRefreshLayout) v.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new ShopInfosTask().execute();
+            }
+        });
+
 
         return v;
     }
@@ -42,12 +52,19 @@ public class ShopFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         new ShopInfosTask().execute();
+
     }
 
     class ShopInfosTask extends AsyncTask<String,String,String>{
         List<ShopInfo> shopInfos;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -63,6 +80,7 @@ public class ShopFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
+            swipeRefreshLayout.setRefreshing(false);
             if(s==null){
                 textView.setVisibility(View.GONE);
                 ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity());

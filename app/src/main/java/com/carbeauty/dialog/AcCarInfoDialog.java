@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.carbeauty.R;
 
@@ -30,9 +31,14 @@ public class AcCarInfoDialog extends Activity {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getIntent().putExtra("name",editText.getText().toString());
-                setResult(1,getIntent());
-                finish();
+                if(editText.getText().toString().trim().equals("")){
+                    Toast.makeText(AcCarInfoDialog.this, "车牌号不能为空", Toast.LENGTH_SHORT).show();
+                }else{
+                    getIntent().putExtra("name",editText.getText().toString());
+                    setResult(1,getIntent());
+                    finish();
+                }
+
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
