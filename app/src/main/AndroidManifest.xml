@@ -52,7 +52,17 @@
             >
 
         </activity>
+        <activity android:name=".dialog.IpConfigDialog"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            >
+
+        </activity>
         <activity android:name=".web.WebBroswerActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".order.WashOilActivity"
             android:screenOrientation="portrait">
 
         </activity>

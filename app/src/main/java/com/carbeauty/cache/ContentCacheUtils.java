@@ -7,6 +7,8 @@ public class ContentCacheUtils {
    private static final String preference_key="cn.carbeauty.key";
    private static final String KEY_USERNAME="key_user_name";
    private static final String KEY_PASSWORD="key_password";
+
+
    public static void cacheUsernamePass(Context ctx,String username,String password){
 	   SharedPreferences sharedPref = ctx.getSharedPreferences(preference_key, Context.MODE_PRIVATE);
        SharedPreferences.Editor editor = sharedPref.edit();

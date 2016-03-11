@@ -1,5 +1,6 @@
 package com.carbeauty.fragment;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
 import com.carbeauty.adapter.ShopInfoAdapter;
+import com.carbeauty.cache.ContentBox;
 
 import org.w3c.dom.Text;
 
@@ -22,6 +24,7 @@ import java.util.List;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.ShopInfo;
+import cn.service.bean.UserInfo;
 
 /**
  * Created by Administrator on 2016/3/6.
@@ -58,7 +61,7 @@ public class ShopFragment extends Fragment {
 
     class ShopInfosTask extends AsyncTask<String,String,String>{
         List<ShopInfo> shopInfos;
-
+        UserInfo userInfo;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -69,6 +72,7 @@ public class ShopFragment extends Fragment {
         protected String doInBackground(String... params) {
             try {
                 shopInfos=WSConnector.getInstance().getShopList();
+                userInfo=WSConnector.getInstance().getUserInfoById();
                 System.err.println(shopInfos);
 
 
@@ -84,7 +88,10 @@ public class ShopFragment extends Fragment {
             if(s==null){
                 textView.setVisibility(View.GONE);
                 ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity());
+                shopInfoAdapter.setSelectShopId(userInfo.getShopId());
+
                 shoplistView.setAdapter(shopInfoAdapter);
+                ContentBox.loadInt(getActivity(),"shopId",userInfo.getShopId());
 
             }else {
                 textView.setVisibility(View.VISIBLE);

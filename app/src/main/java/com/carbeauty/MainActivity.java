@@ -101,6 +101,9 @@ public class MainActivity extends FragmentActivity {
 		});
 
 	}
+	public void setSelectPos(int position){
+		mTabLayout_1.setCurrentTab(position);
+	}
 	private boolean initCustomActionBar() {
 		mActionbar = getActionBar();
 		if (mActionbar == null) {

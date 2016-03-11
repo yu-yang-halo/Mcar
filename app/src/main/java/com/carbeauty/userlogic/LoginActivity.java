@@ -3,6 +3,8 @@ package com.carbeauty.userlogic;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentCacheUtils;
+import com.carbeauty.dialog.AcCarInfoDialog;
+import com.carbeauty.dialog.IpConfigDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import android.app.ActionBar;
@@ -11,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -61,6 +64,17 @@ public class LoginActivity extends Activity {
 				}else{
 					new LoginTask(LoginActivity.this, username, password).execute();
 				}
+			}
+		});
+
+
+		Button ipconfigBtn= (Button) findViewById(R.id.ipconfig);
+		ipconfigBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(LoginActivity.this, IpConfigDialog.class);
+				startActivity(intent);
+
 			}
 		});
 		

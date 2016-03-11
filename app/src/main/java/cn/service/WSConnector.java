@@ -77,7 +77,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	private static String IP1 = "192.168.2.181";
+	private static String IP1 = "192.168.2.178";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -104,7 +104,7 @@ public class WSConnector {
 			boolean isHttps) {
 		instance.IP1 = ip;
 		instance.portStr = port;
-		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr + "/elws/services/elwsapi/";
+		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr +  "/car/services/carwsapi/";
 		return instance;
 	}
 
@@ -2072,12 +2072,12 @@ public class WSConnector {
 		OrderStateType orderStateType=new OrderStateType(orderTime, isFull);
 		return orderStateType;
     }
-    public List<OrderStateType> getDayOrderStateList(int searchType,int shopId,String searchTime) throws WSException{
+    public List<OrderStateType> getDayOrderStateList(int searchType,int shopId,String searchTime) throws WSException, UnsupportedEncodingException {
     	String service = "";
 		service = WSConnector.wsUrl + "getDayOrderStateList?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&shopId="
-				+ shopId+"&searchType="+searchType+"&searchTime="+searchTime;
+				+ shopId+"&searchType="+searchType+"&searchTime="+URLEncoder.encode(searchTime,"UTF-8");
 		Logger.getLogger(this.getClass()).info(
 				"[getDayOrderStateList]  ws query = " + service);
 

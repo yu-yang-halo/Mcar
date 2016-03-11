@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,7 +27,10 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.carbeauty.MainActivity;
 import com.carbeauty.R;
+import com.carbeauty.cache.ContentBox;
+import com.carbeauty.order.WashOilActivity;
 import com.carbeauty.web.WebBroswerActivity;
 
 import java.lang.reflect.Field;
@@ -43,6 +47,12 @@ public class HomeFragment extends Fragment {
     private ConvenientBanner banner;
     private GridView gridView;
     private ListView listView;
+    private MainActivity mainActivity;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+         mainActivity= (MainActivity) context;
+    }
 
     private int[] icon = { R.drawable.homepage_gridview_8, R.drawable.homepage_gridview_6,
             R.drawable.homepage_gridview_7, R.drawable.homepage_gridview_3,
@@ -108,6 +118,27 @@ public class HomeFragment extends Fragment {
         SimpleAdapter sim_adapter = new SimpleAdapter(getActivity(),
                 data_list, R.layout.item, from, to);
         gridView.setAdapter(sim_adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int shopId=ContentBox.getValueInt(getActivity(),"shopId",-1);
+                if(shopId<=0){
+                    mainActivity.setSelectPos(1);
+                    Toast.makeText(getActivity(),"请先选择店铺",Toast.LENGTH_SHORT).show();
+                }else{
+
+                    Intent intent=new Intent(getActivity(), WashOilActivity.class);
+                    if(position==0){
+                        intent.putExtra(WashOilActivity.AC_TYPE,WashOilActivity.AC_TYPE_WASH);
+                    }else if(position==1){
+                        intent.putExtra(WashOilActivity.AC_TYPE,WashOilActivity.AC_TYPE_OIL);
+                    }
+                    intent.putExtra("Title",iconName[position]);
+                    startActivity(intent);
+                }
+
+            }
+        });
     }
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();

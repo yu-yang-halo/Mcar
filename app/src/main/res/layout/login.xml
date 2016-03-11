@@ -52,4 +52,13 @@
         android:text="登录"
         android:textColor="@color/white" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IP配置"
+        android:id="@+id/ipconfig"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
