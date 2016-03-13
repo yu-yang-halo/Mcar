@@ -3,6 +3,17 @@ package cn.service.bean;
 public class OrderStateType {
 	private String orderTime;
 	private boolean  isFull;
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	private boolean  checked;
+
 	public String getOrderTime() {
 		return orderTime;
 	}

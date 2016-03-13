@@ -1,16 +1,16 @@
 package cn.service.bean;
 
 public class MetalplateInfo extends OilInfo {
-    private int number;
+    private String number;
 	public MetalplateInfo(int id, String name, String desc, float price,
-			int shopId,int number) {
+			int shopId,String number) {
 		super(id, name, desc, price, shopId);
 		this.number=number;
 	}
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 	@Override

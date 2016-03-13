@@ -30,6 +30,7 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.order.MetalplateActivity;
 import com.carbeauty.order.WashOilActivity;
 import com.carbeauty.web.WebBroswerActivity;
 
@@ -121,24 +122,33 @@ public class HomeFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int shopId=ContentBox.getValueInt(getActivity(),"shopId",-1);
-                if(shopId<=0){
+                int shopId = ContentBox.getValueInt(getActivity(), "shopId", -1);
+                if (shopId <= 0) {
                     mainActivity.setSelectPos(1);
-                    Toast.makeText(getActivity(),"请先选择店铺",Toast.LENGTH_SHORT).show();
-                }else{
-
-                    Intent intent=new Intent(getActivity(), WashOilActivity.class);
-                    if(position==0){
-                        intent.putExtra(WashOilActivity.AC_TYPE,WashOilActivity.AC_TYPE_WASH);
-                    }else if(position==1){
-                        intent.putExtra(WashOilActivity.AC_TYPE,WashOilActivity.AC_TYPE_OIL);
+                    Toast.makeText(getActivity(), "请先选择店铺", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (position == 0 || position == 1) {
+                        Intent intent = new Intent(getActivity(), WashOilActivity.class);
+                        if (position == 0) {
+                            intent.putExtra(WashOilActivity.AC_TYPE, WashOilActivity.AC_TYPE_WASH);
+                        } else if (position == 1) {
+                            intent.putExtra(WashOilActivity.AC_TYPE, WashOilActivity.AC_TYPE_OIL);
+                        }
+                        intent.putExtra("Title", iconName[position]);
+                        startActivity(intent);
+                    } else {
+                        toMetalplate(position);
                     }
-                    intent.putExtra("Title",iconName[position]);
-                    startActivity(intent);
+
                 }
 
             }
         });
+    }
+    private void toMetalplate(int position){
+        Intent intent=new Intent(getActivity(), MetalplateActivity.class);
+        intent.putExtra("Title", iconName[position]);
+        startActivity(intent);
     }
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();

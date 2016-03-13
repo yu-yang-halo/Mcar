@@ -1,52 +1,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
-    <LinearLayout
+    <com.bigkoo.convenientbanner.ConvenientBanner
+        android:id="@+id/convenientBanner"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#ededed"
-        android:padding="9dp"
-        android:id="@+id/linearLayout">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="请选择预约时间"
-            android:layout_weight="2"/>
-
-    </LinearLayout>
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:id="@+id/gridView2"
-        android:layout_below="@+id/linearLayout"
+        android:layout_height="match_parent"
+        app:canLoop="true"
+        android:background="#f77770"
+        android:layout_above="@+id/relativeLayout"
         android:layout_alignParentLeft="true"
-        android:numColumns="6"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true" />
 
-    </GridView>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView2"
-        android:layout_below="@+id/gridView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/linearLayout2">
-
-    </ListView>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="59dp"
-        android:background="#fafafa"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout2">
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout">
+
 
         <Button
             android:layout_width="40dp"
@@ -84,5 +56,7 @@
             android:textColor="@color/white_ios"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
+
+
 
 </RelativeLayout>

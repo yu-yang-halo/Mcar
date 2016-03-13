@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
+import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.manager.CarManagerActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -131,6 +132,7 @@ public class IndividualFragment extends Fragment {
             }
 
             if(carInfos!=null&&carInfos.size()>0){
+                IDataHandler.getInstance().setCarInfos(carInfos);
                 if(carInfos.size()>1){
                     plateNumber.setText(carInfos.get(0).getNumber()+" 更多");
                 }else{

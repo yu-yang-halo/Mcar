@@ -19,9 +19,9 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
+        android:text="iiiii"
         android:id="@+id/accountName"
         android:textSize="25sp"
         android:layout_above="@+id/plateNumber"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
+        android:text="uuuuu"
         android:id="@+id/plateNumber"
         android:layout_alignBottom="@+id/imageView"
         android:layout_marginTop="10dp"
@@ -51,5 +51,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/button_itembgcolor"
+        android:visibility="visible"
         android:id="@+id/btn_clk" />
 </RelativeLayout>

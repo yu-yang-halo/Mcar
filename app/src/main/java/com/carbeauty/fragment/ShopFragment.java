@@ -91,7 +91,7 @@ public class ShopFragment extends Fragment {
                 shopInfoAdapter.setSelectShopId(userInfo.getShopId());
 
                 shoplistView.setAdapter(shopInfoAdapter);
-                ContentBox.loadInt(getActivity(),"shopId",userInfo.getShopId());
+                ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
 
             }else {
                 textView.setVisibility(View.VISIBLE);

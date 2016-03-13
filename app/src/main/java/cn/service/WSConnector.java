@@ -77,7 +77,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	private static String IP1 = "192.168.2.178";
+	private static String IP1 = "liuzhi1212.gicp.net";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -572,6 +572,42 @@ public class WSConnector {
 		return null;
 		
 	}
+	private  DecorationInfo  parseXmlToDecorationInfo(Element element){
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element nameNode = (Element) element.getElementsByTagName("name")
+				.item(0);
+		Element descNode = (Element) element.getElementsByTagName("desc").item(
+				0);
+		Element priceNode = (Element) element.getElementsByTagName(
+				"price").item(0);
+		Element shopIdNode = (Element) element.getElementsByTagName("shopId")
+				.item(0);
+		int shopId =-1;
+		int id=-1;
+
+		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
+			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
+		}
+		if (idNode != null && idNode.getFirstChild() != null) {
+			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+		float price = 0 ;
+		if (priceNode != null && priceNode.getFirstChild() != null) {
+			price = Float.parseFloat(priceNode.getFirstChild().getNodeValue());
+		}
+		String name = "";
+		String desc = "";
+		if (nameNode != null && nameNode.getFirstChild() != null) {
+			name = nameNode.getFirstChild().getNodeValue();
+		}
+		if (descNode != null && descNode.getFirstChild() != null) {
+			desc = descNode.getFirstChild().getNodeValue();
+		}
+
+		DecorationInfo decorationInfo=new DecorationInfo(id, name, desc, price, shopId);
+		return decorationInfo;
+	}
 	private  OilInfo  parseXmlToOilInfo(Element element){
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
@@ -658,11 +694,9 @@ public class WSConnector {
 				.item(0);
 		int shopId =-1;
 		int id=-1;
-		int number=-1;
+
 		
-		if (numberNode != null && numberNode.getFirstChild() != null) {
-			number = Integer.parseInt(numberNode.getFirstChild().getNodeValue());
-		}
+
 		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
 			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
 		}
@@ -675,6 +709,10 @@ public class WSConnector {
 		}
 		String name = "";
 		String desc = "";
+		String number="";
+		if (numberNode != null && numberNode.getFirstChild() != null) {
+			number = numberNode.getFirstChild().getNodeValue();
+		}
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
@@ -744,7 +782,7 @@ public class WSConnector {
 				List<DecorationInfo> decorationInfos=new ArrayList<DecorationInfo>();
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element element = (Element) (nodeList.item(i));
-					DecorationInfo decorationInfo = (DecorationInfo) parseXmlToOilInfo(element);
+					DecorationInfo decorationInfo = parseXmlToDecorationInfo(element);
 					Logger.getLogger(this.getClass()).info(
 							"[DecorationInfo]  decorationInfo = "
 									+ decorationInfo.toString());
@@ -1158,7 +1196,7 @@ public class WSConnector {
 		}
 		return null;
 	}
-	public boolean createOilOrder(OilOrderInfo oilOrderInfo) throws WSException{
+	public OilOrderInfo createOilOrder(OilOrderInfo oilOrderInfo) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "createOilOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
@@ -1182,14 +1220,25 @@ public class WSConnector {
 		}
 		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
 				.getElementsByTagName("errorCode").item(0) : null;
+		Element idNode = root.getElementsByTagName("id") != null ? (Element) root
+				.getElementsByTagName("id").item(0) : null;
+		Element createTimeNode = root.getElementsByTagName("createTime") != null ? (Element) root
+				.getElementsByTagName("createTime").item(0) : null;
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
+
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
-				return true;
+				int id = Integer.parseInt(idNode.getFirstChild()
+						.getNodeValue());
+				String createTime = createTimeNode.getFirstChild()
+						.getNodeValue();
+				oilOrderInfo.setId(id);
+				oilOrderInfo.setCreateTime(createTime);
+				return oilOrderInfo;
 			}
 		}
-		return false;
+		return null;
 		
 	}
 	public boolean delOilOrder(int id) throws WSException{
@@ -1682,7 +1731,7 @@ public class WSConnector {
 		}
 		return false;
 	}
-    public boolean createDecoOrder(DecoOrderInfo decoOrderInfo) throws WSException{
+    public DecoOrderInfo createDecoOrder(DecoOrderInfo decoOrderInfo) throws WSException{
     	String service = "";
 		service = WSConnector.wsUrl + "createDecoOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
@@ -1706,14 +1755,24 @@ public class WSConnector {
 		}
 		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
 				.getElementsByTagName("errorCode").item(0) : null;
+		Element idNode = root.getElementsByTagName("id") != null ? (Element) root
+				.getElementsByTagName("id").item(0) : null;
+		Element createTimeNode = root.getElementsByTagName("createTime") != null ? (Element) root
+				.getElementsByTagName("createTime").item(0) : null;
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
-				return true;
+				int id = Integer.parseInt(idNode.getFirstChild()
+						.getNodeValue());
+				String createTime = createTimeNode.getFirstChild()
+						.getNodeValue();
+				decoOrderInfo.setId(id);
+				decoOrderInfo.setCreateTime(createTime);
+				return decoOrderInfo;
 			}
 		}
-		return false;
+		return null;
     }
     public boolean delDecoOrder(int id) throws WSException{
 		String service = "";

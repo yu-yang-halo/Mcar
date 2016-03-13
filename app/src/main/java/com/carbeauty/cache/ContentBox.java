@@ -8,6 +8,8 @@ public class ContentBox{
 	private static final String SharePreference_name="car_android";
 	private static SharedPreferences sp;
 	private static Editor editor;
+	public static final String KEY_CAR_ID="key_carId";
+	public static final String KEY_SHOP_ID="key_shopId";
 
 
 

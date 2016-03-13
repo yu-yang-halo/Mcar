@@ -18,15 +18,16 @@
 
     <Button
         android:id="@+id/rightBtn"
-        android:layout_width="60dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:background="@drawable/button_loc_bgcolor"
+        android:gravity="left|center_vertical"
+        android:text="皖A PS826"
+        android:paddingLeft="3dp"
         android:textColor="@color/black"
-        android:background="@null"
-        android:text="注册"
-        android:visibility="gone"
-        android:layout_alignParentTop="true" />
+        android:textSize="15sp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/leftBtn"
