@@ -1,16 +1,121 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6600ff"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <ImageView
+        android:layout_width="260dp"
+        android:layout_height="80dp"
+        android:id="@+id/imageView6"
+        android:src="@mipmap/car1"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="14dp"
+        android:layout_height="126dp"
+        android:background="@mipmap/skbottom0"
+        android:id="@+id/button11"
+        android:layout_marginLeft="97dp"
+        android:layout_marginStart="97dp"
+        android:layout_marginBottom="38dp"
+        android:layout_alignBottom="@+id/imageView6"
+        android:layout_alignLeft="@+id/imageView6"
+        android:layout_alignStart="@+id/imageView6" />
+
+    <Button
+        android:layout_width="14dp"
+        android:layout_height="126dp"
+        android:background="@mipmap/skbottom0"
+        android:id="@+id/button12"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp"
+        android:layout_alignTop="@+id/button11"
+        android:layout_toRightOf="@+id/button11"
+        android:layout_toEndOf="@+id/button11" />
+
+    <Button
+        android:layout_width="14dp"
+        android:layout_height="126dp"
+        android:background="@mipmap/sktop0"
+        android:id="@+id/button13"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp"
+        android:layout_below="@+id/button12"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/imageView6"
+        android:layout_alignStart="@+id/imageView6" />
+
+    <Button
+        android:layout_width="14dp"
+        android:layout_height="86dp"
+        android:background="@mipmap/sktop0"
+        android:id="@+id/button14"
+        android:layout_below="@+id/button12"
+        android:layout_toRightOf="@+id/textView30"
+        android:layout_toEndOf="@+id/textView30" />
+
+    <Button
+        android:layout_width="14dp"
+        android:layout_height="126dp"
+        android:background="@mipmap/sktop0"
+        android:id="@+id/button15"
+        android:layout_marginRight="19dp"
+        android:layout_marginEnd="19dp"
+        android:layout_above="@+id/textView32"
+        android:layout_alignRight="@+id/textView29"
+        android:layout_alignEnd="@+id/textView29" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="OK"
-        android:id="@+id/textView15"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="F2-右后车门"
+        android:id="@+id/textView28"
+        android:layout_alignTop="@+id/button11"
+        android:layout_alignLeft="@+id/imageView6"
+        android:layout_alignStart="@+id/imageView6" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="E2-右前车门"
+        android:id="@+id/textView29"
+        android:layout_alignTop="@+id/button12"
+        android:layout_toRightOf="@+id/button12"
+        android:layout_toEndOf="@+id/button12" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="D2-右后翼子板"
+        android:id="@+id/textView30"
+        android:layout_alignBottom="@+id/button13"
+        android:layout_toRightOf="@+id/button13"
+        android:layout_toEndOf="@+id/button13" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="J2-右裙边"
+        android:id="@+id/textView31"
+        android:layout_alignBaseline="@+id/button13"
+        android:layout_alignBottom="@+id/button13"
+        android:layout_toLeftOf="@+id/button14"
+        android:layout_toStartOf="@+id/button14" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="C2-右前翼子板"
+        android:id="@+id/textView32"
+        android:layout_below="@+id/textView30"
+        android:layout_toRightOf="@+id/button14"
+        android:layout_toEndOf="@+id/button14" />
+
 </RelativeLayout>

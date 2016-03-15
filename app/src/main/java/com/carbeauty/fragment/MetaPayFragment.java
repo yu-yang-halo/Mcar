@@ -77,6 +77,8 @@ public class MetaPayFragment extends Fragment {
         ss.add(2);
         ss.add(3);
         ss.add(4);
+        ss.add(5);
+        ss.add(6);
         convenientBanner.setPages(
                 new CBViewHolderCreator<LocalMetaHolderView>() {
                     @Override
@@ -110,13 +112,21 @@ public class MetaPayFragment extends Fragment {
 
                  linearLayout.addView(item1,param);
              }else  if (data==3){
-                View item2=LayoutInflater.from(context).inflate(R.layout.fr_meta_item0,null);
+                View item2=LayoutInflater.from(context).inflate(R.layout.fr_meta_item2,null);
 
                 linearLayout.addView(item2,param);
             }else  if (data==4){
-                View item3=LayoutInflater.from(context).inflate(R.layout.fr_meta_item1,null);
+                View item3=LayoutInflater.from(context).inflate(R.layout.fr_meta_item3,null);
 
                 linearLayout.addView(item3,param);
+            }else  if (data==5){
+                View item4=LayoutInflater.from(context).inflate(R.layout.fr_meta_item4,null);
+
+                linearLayout.addView(item4,param);
+            }else  if (data==6){
+                View item5=LayoutInflater.from(context).inflate(R.layout.fr_meta_item5,null);
+
+                linearLayout.addView(item5,param);
             }
         }
     }
