@@ -38,9 +38,8 @@ import cn.service.bean.OrderStateType;
  * Created by Administrator on 2016/3/10.
  */
 public class WashOilActivity extends Activity {
-    public final static String AC_TYPE="activity_task_type";
-    public final static int AC_TYPE_WASH=1000;
-    public final static int AC_TYPE_OIL=1001;
+
+
     private int ac_type_value=0;
 
     private ActionBar mActionbar;
@@ -60,7 +59,7 @@ public class WashOilActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_washoil);
-        ac_type_value=getIntent().getIntExtra(AC_TYPE,AC_TYPE_WASH);
+        ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,Constants.AC_TYPE_WASH);
         initCustomActionBar();
 
         shopId= ContentBox.getValueInt(this,ContentBox.KEY_SHOP_ID, 0);
@@ -78,24 +77,24 @@ public class WashOilActivity extends Activity {
              String selTime=ContentBox.getValueString(WashOilActivity.this, "selTime",null);
                 if(selTime==null){
                     Toast.makeText(WashOilActivity.this,"请选择预定时间",Toast.LENGTH_SHORT).show();
-                }else if(ac_type_value==AC_TYPE_WASH){
+                }else if(ac_type_value==Constants.AC_TYPE_WASH){
                     if(decorationAdapter.getDecoCollections().size()==0){
                         Toast.makeText(WashOilActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }else{
                         //commit
                         Intent intent=new Intent(WashOilActivity.this,OrderReokActivity.class);
                         intent.putExtra("Title",getIntent().getStringExtra("Title"));
-                        intent.putExtra(AC_TYPE,ac_type_value);
+                        intent.putExtra(Constants.AC_TYPE,ac_type_value);
                         IDataHandler.getInstance().setDecorationInfoSet(decorationAdapter.getDecoCollections());
                         startActivity(intent);
                     }
-                }else if(ac_type_value==AC_TYPE_OIL){
+                }else if(ac_type_value==Constants.AC_TYPE_OIL){
                     if(oilInfoAdapter.getOilCollections().size()==0){
                         Toast.makeText(WashOilActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }else{
                         //commit
                         Intent intent=new Intent(WashOilActivity.this,OrderReokActivity.class);
-                        intent.putExtra(AC_TYPE, ac_type_value);
+                        intent.putExtra(Constants.AC_TYPE, ac_type_value);
                         intent.putExtra("Title",getIntent().getStringExtra("Title"));
                         IDataHandler.getInstance().setOilInfoSet(oilInfoAdapter.getOilCollections());
                         startActivity(intent);
@@ -129,7 +128,7 @@ public class WashOilActivity extends Activity {
         float total=0;
         int data=0;
 
-        if(ac_type_value==AC_TYPE_WASH){
+        if(ac_type_value==Constants.AC_TYPE_WASH){
             if(decorationAdapter==null){
                 return;
             }
@@ -139,7 +138,7 @@ public class WashOilActivity extends Activity {
                 data++;
             }
             decorationAdapter.notifyDataSetChanged();
-        }else if(ac_type_value==AC_TYPE_OIL){
+        }else if(ac_type_value==Constants.AC_TYPE_OIL){
             if(oilInfoAdapter==null){
                 return;
             }
@@ -215,9 +214,9 @@ public class WashOilActivity extends Activity {
             String time=sdf.format(date);
             try {
                 orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, time);
-                if(ac_type_value==AC_TYPE_OIL){
+                if(ac_type_value==Constants.AC_TYPE_OIL){
                     oilInfos=WSConnector.getInstance().getOilList(shopId);
-                }else  if(ac_type_value==AC_TYPE_WASH){
+                }else  if(ac_type_value==Constants.AC_TYPE_WASH){
                     decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
                 }
 
@@ -233,9 +232,9 @@ public class WashOilActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             initGridView(orderStateTypes);
-            if(ac_type_value==AC_TYPE_WASH){
+            if(ac_type_value==Constants.AC_TYPE_WASH){
                 initDecorationListView(decorationInfos);
-            }else  if(ac_type_value==AC_TYPE_OIL){
+            }else  if(ac_type_value==Constants.AC_TYPE_OIL){
                 initOilInfoListView(oilInfos);
             }
 

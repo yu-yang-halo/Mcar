@@ -16,8 +16,8 @@
         android:layout_width="14dp"
         android:layout_height="156dp"
         android:text=""
-        android:id="@+id/button16"
-        android:background="@mipmap/skbottom0"
+        android:id="@+id/btnbb"
+        android:background="@drawable/skbottomcolor"
         android:layout_alignBottom="@+id/imageView6"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="110dp" />
@@ -26,11 +26,11 @@
         android:layout_width="14dp"
         android:layout_height="126dp"
         android:text=""
-        android:id="@+id/button17"
-        android:background="@mipmap/sktop0"
+        android:id="@+id/btnb2"
+        android:background="@drawable/sktopcolor"
         android:layout_marginLeft="31dp"
         android:layout_marginStart="31dp"
-        android:layout_alignTop="@+id/button18"
+        android:layout_alignTop="@+id/btnb1"
         android:layout_alignLeft="@+id/imageView6"
         android:layout_alignStart="@+id/imageView6" />
 
@@ -38,8 +38,8 @@
         android:layout_width="14dp"
         android:layout_height="86dp"
         android:text=""
-        android:id="@+id/button18"
-        android:background="@mipmap/sktop0"
+        android:id="@+id/btnb1"
+        android:background="@drawable/sktopcolor"
         android:layout_marginRight="31dp"
         android:layout_marginEnd="31dp"
         android:layout_alignTop="@+id/imageView6"
@@ -53,9 +53,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="B-后保险杠全喷"
         android:id="@+id/textView36"
-        android:layout_alignTop="@+id/button16"
-        android:layout_toRightOf="@+id/button16"
-        android:layout_toEndOf="@+id/button16" />
+        android:layout_alignTop="@+id/btnbb"
+        android:layout_toRightOf="@+id/btnbb"
+        android:layout_toEndOf="@+id/btnbb" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,9 +63,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="B2-左后保险杠"
         android:id="@+id/textView37"
-        android:layout_below="@+id/button17"
-        android:layout_alignLeft="@+id/button17"
-        android:layout_alignStart="@+id/button17" />
+        android:layout_below="@+id/btnb2"
+        android:layout_alignLeft="@+id/btnb2"
+        android:layout_alignStart="@+id/btnb2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,9 +73,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="B1-右后保险杠"
         android:id="@+id/textView38"
-        android:layout_alignBaseline="@+id/button17"
-        android:layout_alignBottom="@+id/button17"
-        android:layout_toRightOf="@+id/button17"
-        android:layout_toEndOf="@+id/button17" />
+        android:layout_alignBaseline="@+id/btnb2"
+        android:layout_alignBottom="@+id/btnb2"
+        android:layout_toRightOf="@+id/btnb2"
+        android:layout_toEndOf="@+id/btnb2" />
 
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.carbeauty.R;
 import com.carbeauty.adapter.DecorationDelAdapter;
+import com.carbeauty.adapter.MetalInfoDelAdapter;
 import com.carbeauty.adapter.MyHandlerCallback;
 import com.carbeauty.adapter.OilInfoDelAdapter;
 import com.carbeauty.cache.ContentBox;
@@ -20,11 +21,13 @@ import com.carbeauty.dialog.AcCarSelectDialog;
 
 import java.util.List;
 
+import cn.service.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.CarInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DecorationInfo;
+import cn.service.bean.MetalplateInfo;
 import cn.service.bean.OilInfo;
 
 /**
@@ -36,9 +39,12 @@ public class OrderReokActivity extends Activity {
     TextView tvTitle;
     List<DecorationInfo> decorationInfoSet;
     List<OilInfo> oilInfoSet;
+    List<MetalplateInfo> metalplateInfoSet;
+
     ListView selItemListView;
     DecorationDelAdapter decorationDelAdapter;
     OilInfoDelAdapter oilInfoDelAdapter;
+    MetalInfoDelAdapter metalInfoDelAdapter;
 
     TextView promoTxt;
     TextView totalPriceTxt;
@@ -53,10 +59,10 @@ public class OrderReokActivity extends Activity {
         initCustomActionBar();
         initView();
 
-        ac_type_value=getIntent().getIntExtra(WashOilActivity.AC_TYPE,
-                WashOilActivity.AC_TYPE_WASH);
+        ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,
+                Constants.AC_TYPE_WASH);
         selItemListView= (ListView) findViewById(R.id.listView3);
-        if(ac_type_value==WashOilActivity.AC_TYPE_WASH){
+        if(ac_type_value==Constants.AC_TYPE_WASH){
             decorationInfoSet= IDataHandler.getInstance().getDecorationInfoSet();
 
             decorationDelAdapter=new DecorationDelAdapter(decorationInfoSet,this);
@@ -70,7 +76,7 @@ public class OrderReokActivity extends Activity {
                 }
             });
             selItemListView.setAdapter(decorationDelAdapter);
-        }else if(ac_type_value==WashOilActivity.AC_TYPE_OIL){
+        }else if(ac_type_value==Constants.AC_TYPE_OIL){
             oilInfoSet=IDataHandler.getInstance().getOilInfoSet();
 
             oilInfoDelAdapter=new OilInfoDelAdapter(oilInfoSet,this);
@@ -84,6 +90,18 @@ public class OrderReokActivity extends Activity {
                 }
             });
             selItemListView.setAdapter(oilInfoDelAdapter);
+        }else if(ac_type_value==Constants.AC_TYPE_META){
+            metalplateInfoSet=IDataHandler.getInstance().getMetalplateInfoSet();
+
+            metalInfoDelAdapter=new MetalInfoDelAdapter(metalplateInfoSet,this);
+            metalInfoDelAdapter.setMyHandlerCallback(new MyHandlerCallback() {
+                @Override
+                public void clickAfter() {
+
+                }
+            });
+
+            selItemListView.setAdapter(metalInfoDelAdapter);
         }
 
 
@@ -95,13 +113,13 @@ public class OrderReokActivity extends Activity {
     private void initData(){
 
         float totalPrice=0;
-        if(ac_type_value==WashOilActivity.AC_TYPE_OIL){
+        if(ac_type_value==Constants.AC_TYPE_OIL){
 
             for (OilInfo oilInfo:oilInfoSet){
                 totalPrice+=oilInfo.getPrice();
             }
 
-        }else if(ac_type_value==WashOilActivity.AC_TYPE_WASH){
+        }else if(ac_type_value==Constants.AC_TYPE_WASH){
             for (DecorationInfo decorationInfo:decorationInfoSet){
                 totalPrice+=decorationInfo.getPrice();
             }
@@ -151,7 +169,7 @@ public class OrderReokActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            if(ac_type_value==WashOilActivity.AC_TYPE_WASH){
+            if(ac_type_value==Constants.AC_TYPE_WASH){
                 DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,0, 0, 0,0,
                 0, shopId,0,0, 0,
                 null,null,null,
@@ -161,7 +179,7 @@ public class OrderReokActivity extends Activity {
                 } catch (WSException e) {
                     e.printStackTrace();
                 }
-            }else  if(ac_type_value==WashOilActivity.AC_TYPE_OIL){
+            }else  if(ac_type_value==Constants.AC_TYPE_OIL){
 
             }
             return null;

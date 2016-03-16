@@ -15,8 +15,8 @@
     <Button
         android:layout_width="14dp"
         android:layout_height="126dp"
-        android:id="@+id/button19"
-        android:background="@mipmap/skbottom0"
+        android:id="@+id/btnii"
+        android:background="@drawable/skbottomcolor"
         android:layout_marginLeft="100dp"
         android:layout_marginStart="100dp"
         android:layout_marginBottom="38dp"
@@ -27,8 +27,8 @@
     <Button
         android:layout_width="14dp"
         android:layout_height="126dp"
-        android:id="@+id/button20"
-        android:background="@mipmap/sktop0"
+        android:id="@+id/btnhh"
+        android:background="@drawable/sktopcolor"
         android:layout_marginTop="59dp"
         android:layout_marginLeft="36dp"
         android:layout_marginStart="36dp"
@@ -39,9 +39,9 @@
     <Button
         android:layout_width="14dp"
         android:layout_height="126dp"
-        android:id="@+id/button21"
-        android:background="@mipmap/sktop0"
-        android:layout_alignTop="@+id/button20"
+        android:id="@+id/btngg"
+        android:background="@drawable/sktopcolor"
+        android:layout_alignTop="@+id/btnhh"
         android:layout_alignRight="@+id/imageView6"
         android:layout_alignEnd="@+id/imageView6"
         android:layout_marginRight="50dp"
@@ -53,9 +53,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="I-车顶"
         android:id="@+id/textView39"
-        android:layout_alignTop="@+id/button19"
-        android:layout_toRightOf="@+id/button20"
-        android:layout_toEndOf="@+id/button20" />
+        android:layout_alignTop="@+id/btnii"
+        android:layout_toRightOf="@+id/btnhh"
+        android:layout_toEndOf="@+id/btnhh" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,9 +63,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="H-后车盖"
         android:id="@+id/textView40"
-        android:layout_alignBottom="@+id/button20"
-        android:layout_toRightOf="@+id/button20"
-        android:layout_toEndOf="@+id/button20" />
+        android:layout_alignBottom="@+id/btnhh"
+        android:layout_toRightOf="@+id/btnhh"
+        android:layout_toEndOf="@+id/btnhh" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,8 +74,8 @@
         android:text="G-前车盖"
         android:id="@+id/textView41"
         android:layout_alignTop="@+id/textView40"
-        android:layout_alignLeft="@+id/button21"
-        android:layout_alignStart="@+id/button21"
+        android:layout_alignLeft="@+id/btngg"
+        android:layout_alignStart="@+id/btngg"
         android:layout_marginLeft="18dp"
         android:layout_marginStart="18dp" />
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
+import cn.service.bean.MetalplateInfo;
 import cn.service.bean.OilInfo;
 
 /**
@@ -15,6 +16,8 @@ public class IDataHandler {
     private List<DecorationInfo> decorationInfoSet;
     private List<OilInfo> oilInfoSet;
     private List<CarInfo> carInfos;
+    private List<MetalplateInfo> metalplateInfoSet;
+
 
     public static IDataHandler getInstance(){
         if(instance==null){
@@ -43,7 +46,16 @@ public class IDataHandler {
         return carInfos;
     }
 
+    public List<MetalplateInfo> getMetalplateInfoSet() {
+        return metalplateInfoSet;
+    }
+
+    public void setMetalplateInfoSet(List<MetalplateInfo> metalplateInfoSet) {
+        this.metalplateInfoSet = metalplateInfoSet;
+    }
+
     public void setCarInfos(List<CarInfo> carInfos) {
         this.carInfos = carInfos;
     }
+
 }

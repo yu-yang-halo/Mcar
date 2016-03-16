@@ -16,8 +16,8 @@
         android:layout_width="14dp"
         android:layout_height="156dp"
         android:text=""
-        android:id="@+id/button16"
-        android:background="@mipmap/skbottom0"
+        android:id="@+id/btnaa"
+        android:background="@drawable/skbottomcolor"
         android:layout_marginBottom="70dp"
         android:layout_alignBottom="@+id/imageView6"
         android:layout_alignLeft="@+id/imageView6"
@@ -29,8 +29,8 @@
         android:layout_width="14dp"
         android:layout_height="126dp"
         android:text=""
-        android:id="@+id/button22"
-        android:background="@mipmap/sktop0"
+        android:id="@+id/btna1"
+        android:background="@drawable/sktopcolor"
         android:layout_marginTop="117dp"
         android:layout_alignTop="@+id/imageView6"
         android:layout_alignLeft="@+id/imageView6"
@@ -42,8 +42,8 @@
         android:layout_width="14dp"
         android:layout_height="86dp"
         android:text=""
-        android:id="@+id/button23"
-        android:background="@mipmap/sktop0"
+        android:id="@+id/btna2"
+        android:background="@drawable/sktopcolor"
         android:layout_above="@+id/textView34"
         android:layout_alignRight="@+id/textView34"
         android:layout_alignEnd="@+id/textView34" />
@@ -54,9 +54,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="A-前保险杠全喷"
         android:id="@+id/textView33"
-        android:layout_alignTop="@+id/button16"
-        android:layout_toRightOf="@+id/button16"
-        android:layout_toEndOf="@+id/button16" />
+        android:layout_alignTop="@+id/btnaa"
+        android:layout_toRightOf="@+id/btnaa"
+        android:layout_toEndOf="@+id/btnaa" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,9 +64,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="A1-右前保险杠"
         android:id="@+id/textView34"
-        android:layout_alignBottom="@+id/button22"
-        android:layout_toRightOf="@+id/button22"
-        android:layout_toEndOf="@+id/button22" />
+        android:layout_alignBottom="@+id/btna1"
+        android:layout_toRightOf="@+id/btna1"
+        android:layout_toEndOf="@+id/btna1" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="A2-左前保险杠"
         android:id="@+id/textView35"
-        android:layout_alignBottom="@+id/button23"
+        android:layout_alignBottom="@+id/btna2"
         android:layout_toRightOf="@+id/textView34"
         android:layout_toEndOf="@+id/textView34" />
 

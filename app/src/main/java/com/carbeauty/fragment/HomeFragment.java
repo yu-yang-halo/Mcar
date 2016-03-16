@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.service.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.BannerInfoType;
@@ -130,9 +131,9 @@ public class HomeFragment extends Fragment {
                     if (position == 0 || position == 1) {
                         Intent intent = new Intent(getActivity(), WashOilActivity.class);
                         if (position == 0) {
-                            intent.putExtra(WashOilActivity.AC_TYPE, WashOilActivity.AC_TYPE_WASH);
+                            intent.putExtra(Constants.AC_TYPE, Constants.AC_TYPE_WASH);
                         } else if (position == 1) {
-                            intent.putExtra(WashOilActivity.AC_TYPE, WashOilActivity.AC_TYPE_OIL);
+                            intent.putExtra(Constants.AC_TYPE, Constants.AC_TYPE_OIL);
                         }
                         intent.putExtra("Title", iconName[position]);
                         startActivity(intent);
