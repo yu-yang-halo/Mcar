@@ -26,7 +26,7 @@ public class OrderTimeAdapter extends BaseAdapter {
     public OrderTimeAdapter(List<OrderStateType> orderStateTypes, Context ctx){
         this.orderStateTypes=orderStateTypes;
         this.ctx=ctx;
-        ContentBox.loadString(ctx, "selTime", null);
+        ContentBox.loadString(ctx, ContentBox.KEY_ORDER_TIME, null);
     }
 
     public void setOrderStateTypes(List<OrderStateType> orderStateTypes) {
@@ -67,7 +67,7 @@ public class OrderTimeAdapter extends BaseAdapter {
         }else {
             timeBtn.setEnabled(true);
         }
-        String mSelecterTime=ContentBox.getValueString(ctx,"selTime",null);
+        String mSelecterTime=ContentBox.getValueString(ctx,ContentBox.KEY_ORDER_TIME,null);
         if(mSelecterTime!=null&&mSelecterTime.equals(orderStateTypes.get(position).getOrderTime())){
             timeBtn.setSelected(true);
         }else{
@@ -79,9 +79,9 @@ public class OrderTimeAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if(v.isSelected()){
-                    ContentBox.loadString(ctx, "selTime", null);
+                    ContentBox.loadString(ctx, ContentBox.KEY_ORDER_TIME, null);
                 }else{
-                    ContentBox.loadString(ctx, "selTime",v.getTag().toString());
+                    ContentBox.loadString(ctx, ContentBox.KEY_ORDER_TIME,v.getTag().toString());
                 }
                 notifyDataSetChanged();
             }

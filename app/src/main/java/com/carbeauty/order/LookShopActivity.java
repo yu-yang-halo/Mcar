@@ -11,13 +11,11 @@ import android.widget.TextView;
 import com.carbeauty.R;
 import com.carbeauty.TabEntity;
 import com.carbeauty.ViewFindUtils;
-import com.carbeauty.fragment.HomeFragment;
-import com.carbeauty.fragment.IndividualFragment;
 import com.carbeauty.fragment.MetaFreeFragment;
 import com.carbeauty.fragment.MetaPayFragment;
-import com.carbeauty.fragment.ShopFragment;
+import com.carbeauty.fragment.ShopMapFragment;
+import com.carbeauty.fragment.ShopVideoFragment;
 import com.flyco.tablayout.CommonTabLayout;
-import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 
@@ -26,8 +24,8 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2016/3/13.
  */
-public class MetalplateActivity extends FragmentActivity {
-    private final String[] mTitles = {"自费钣金","保险钣金"};
+public class LookShopActivity extends FragmentActivity {
+    private final String[] mTitles = {"门店全景","施工直播"};
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     View mDecorView;
@@ -41,10 +39,10 @@ public class MetalplateActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ac_metalplate);
+        setContentView(R.layout.ac_lookshop);
         initCustomActionBar();
-        mFragments.add(new MetaPayFragment());
-        mFragments.add(new MetaFreeFragment());
+        mFragments.add(new ShopMapFragment());
+        mFragments.add(new ShopVideoFragment());
 
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i],mIconSelectIds[i],mIconUnselectIds[i]));
@@ -54,6 +52,7 @@ public class MetalplateActivity extends FragmentActivity {
         /** with nothing */
         mTabLayout_1 = ViewFindUtils.find(mDecorView, R.id.tl_2);
         mTabLayout_1.setTabData(mTabEntities, this, R.id.currentPageFragment, mFragments);
+        //显示未读红点
         mTabLayout_1.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {

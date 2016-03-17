@@ -70,7 +70,7 @@ public class CarManagerActivity extends Activity{
         }
         mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         mActionbar.setDisplayShowCustomEnabled(true);
-        mActionbar.setCustomView(R.layout.header_home1);
+        mActionbar.setCustomView(R.layout.header_home2);
         tvTitle = (TextView) mActionbar.getCustomView().findViewById(R.id.tv_tbb_title);
         tvTitle.setText("我的车牌");
 

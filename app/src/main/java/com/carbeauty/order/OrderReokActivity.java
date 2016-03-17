@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carbeauty.R;
 import com.carbeauty.adapter.DecorationDelAdapter;
@@ -50,12 +53,16 @@ public class OrderReokActivity extends Activity {
     TextView totalPriceTxt;
     Button  createOrderBtn;
     int shopId;
+    int carId;
     Button rightBtn;
+    float totalPrice=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_orderreok);
         shopId= ContentBox.getValueInt(this,ContentBox.KEY_SHOP_ID, 0);
+        carId=ContentBox.getValueInt(this,ContentBox.KEY_CAR_ID,0);
+
         initCustomActionBar();
         initView();
 
@@ -69,10 +76,11 @@ public class OrderReokActivity extends Activity {
             decorationDelAdapter.setMyHandlerCallback(new MyHandlerCallback() {
                 @Override
                 public void clickAfter() {
-
+                    decorationInfoSet=decorationDelAdapter.getDecorationInfos();
                     //IDataHandler.getInstance().getDecorationInfoSet();
                     initData();
                     decorationDelAdapter.notifyDataSetChanged();
+                    setListViewHeight();
                 }
             });
             selItemListView.setAdapter(decorationDelAdapter);
@@ -87,6 +95,7 @@ public class OrderReokActivity extends Activity {
                     //IDataHandler.getInstance().getDecorationInfoSet();
                     initData();
                     oilInfoDelAdapter.notifyDataSetChanged();
+                    setListViewHeight();
                 }
             });
             selItemListView.setAdapter(oilInfoDelAdapter);
@@ -97,22 +106,46 @@ public class OrderReokActivity extends Activity {
             metalInfoDelAdapter.setMyHandlerCallback(new MyHandlerCallback() {
                 @Override
                 public void clickAfter() {
-
+                    metalplateInfoSet=metalInfoDelAdapter.getMetalplateInfos();
+                    //IDataHandler.getInstance().getDecorationInfoSet();
+                    initData();
+                    metalInfoDelAdapter.notifyDataSetChanged();
+                    setListViewHeight();
                 }
             });
 
             selItemListView.setAdapter(metalInfoDelAdapter);
         }
 
-
+        setListViewHeight();
 
 
         initData();
 
     }
+    private void setListViewHeight(){
+        ListAdapter listAdapter = selItemListView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, selItemListView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = selItemListView.getLayoutParams();
+        params.height = totalHeight+(selItemListView.getDividerHeight()*(listAdapter.getCount()-1)) ;
+
+        ((ViewGroup.MarginLayoutParams)params).setMargins(10, 10, 10, 10);
+        selItemListView.setLayoutParams(params);
+
+    }
     private void initData(){
 
-        float totalPrice=0;
+        totalPrice=0;
         if(ac_type_value==Constants.AC_TYPE_OIL){
 
             for (OilInfo oilInfo:oilInfoSet){
@@ -122,6 +155,10 @@ public class OrderReokActivity extends Activity {
         }else if(ac_type_value==Constants.AC_TYPE_WASH){
             for (DecorationInfo decorationInfo:decorationInfoSet){
                 totalPrice+=decorationInfo.getPrice();
+            }
+        }else if(ac_type_value==Constants.AC_TYPE_META){
+            for (MetalplateInfo metalplateInfo:metalplateInfoSet){
+                 totalPrice+=metalplateInfo.getPrice();
             }
         }
         totalPriceTxt.setText(totalPrice+"元");
@@ -160,6 +197,11 @@ public class OrderReokActivity extends Activity {
         createOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(ac_type_value==Constants.AC_TYPE_WASH){
+                    if(decorationInfoSet!=null&&decorationInfoSet.size()>0){
+                        new OrderCommitTask().execute();
+                    }
+                }
 
             }
         });
@@ -170,19 +212,36 @@ public class OrderReokActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
             if(ac_type_value==Constants.AC_TYPE_WASH){
-                DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,0, 0, 0,0,
-                0, shopId,0,0, 0,
-                null,null,null,
-                        null);
+
+                DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                        Constants.STATE_ORDER_UNFINISHED,
+                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,"2016-03-17+17+30+00",null);
+
                 try {
-                    WSConnector.getInstance().createDecoOrder(decoOrderInfo);
+                    decoOrderInfo=WSConnector.getInstance().createDecoOrder(decoOrderInfo);
+
+                    for (DecorationInfo decorationInfo :decorationInfoSet){
+
+                        WSConnector.getInstance().createDecoOrderNumber(decorationInfo.getId(),decoOrderInfo.getId());
+
+                    }
+
                 } catch (WSException e) {
-                    e.printStackTrace();
+                    return e.getErrorMsg();
                 }
             }else  if(ac_type_value==Constants.AC_TYPE_OIL){
 
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s==null){
+                Toast.makeText(OrderReokActivity.this,"订单提交成功",Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(OrderReokActivity.this,s,Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

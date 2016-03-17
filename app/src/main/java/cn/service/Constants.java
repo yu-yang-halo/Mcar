@@ -12,4 +12,19 @@ public class Constants {
     public final static int AC_TYPE_WASH=1000;
     public final static int AC_TYPE_OIL=1001;
     public final static int AC_TYPE_META=1002;
+
+    public final static int PAY_STATE_UNFINISHED=0;//支付状态未完成
+    public final static int PAY_STATE_FINISHED=1;//支付状态已完成
+
+
+    public final static int TYPE_PAY_ONLINE=0;//在线支付
+    public final static int TYPE_PAY_TOSHOP=1;//到店支付
+    public final static int STATE_ORDER_UNFINISHED=0;//订单状态未完成
+    public final static int STATE_ORDER_FINISHED=1;//已经完成
+    public final static int STATE_ORDER_WAIT=2;//等待客服确认
+
+
+    public final static int SEARCH_SHOP=1;//搜索类型 按店搜索
+    public final static int SEARCH_USER=2;//搜索类型 按用户搜索
+
 }

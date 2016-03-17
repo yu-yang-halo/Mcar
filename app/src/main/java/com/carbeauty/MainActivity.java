@@ -78,17 +78,8 @@ public class MainActivity extends FragmentActivity {
 		mTabLayout_1.setOnTabSelectListener(new OnTabSelectListener() {
 			@Override
 			public void onTabSelect(int position) {
-				mTabLayout_1.setCurrentTab(position);
-				tvTitle.setText(mTitles2[position]);
-				if(position==0){
-					logoImageView.setVisibility(View.VISIBLE);
-					tvTitle.setVisibility(View.GONE);
-					leftBtn.setVisibility(View.VISIBLE);
-				}else{
-					logoImageView.setVisibility(View.GONE);
-					tvTitle.setVisibility(View.VISIBLE);
-					leftBtn.setVisibility(View.GONE);
-				}
+				setSelectPos(position);
+
 
 
 			}
@@ -103,6 +94,16 @@ public class MainActivity extends FragmentActivity {
 	}
 	public void setSelectPos(int position){
 		mTabLayout_1.setCurrentTab(position);
+		tvTitle.setText(mTitles2[position]);
+		if(position==0){
+			logoImageView.setVisibility(View.VISIBLE);
+			tvTitle.setVisibility(View.GONE);
+			leftBtn.setVisibility(View.VISIBLE);
+		}else{
+			logoImageView.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
+			leftBtn.setVisibility(View.GONE);
+		}
 	}
 	private boolean initCustomActionBar() {
 		mActionbar = getActionBar();

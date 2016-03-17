@@ -74,7 +74,7 @@ public class WashOilActivity extends Activity {
         bOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             String selTime=ContentBox.getValueString(WashOilActivity.this, "selTime",null);
+             String selTime=ContentBox.getValueString(WashOilActivity.this, ContentBox.KEY_ORDER_TIME,null);
                 if(selTime==null){
                     Toast.makeText(WashOilActivity.this,"请选择预定时间",Toast.LENGTH_SHORT).show();
                 }else if(ac_type_value==Constants.AC_TYPE_WASH){

@@ -66,7 +66,7 @@ public enum ErrorCode {
 	TASK_NOT_EXIST(1042, "The scheduled task 不存在，请设置!"),//The scheduled task does not exist
 	OBJECT_ALREADY_EXIST(1043, "设备已经注册，不能再注册。"),
 	
-	DEVICE_NOT_ASSIGN_CLASS(1051,"The device has not been assigned a class"),
+	DEVICE_NOT_ASSIGN_CLASS(1051,"The car has already exist"),
 	
 	REQ_TIME_OUT(1100, "网络慢。请稍后再试！"),
 	INTERNAL_CONN_ERROR(1101, "e联WS接口服务器连接错误"),
@@ -79,6 +79,7 @@ public enum ErrorCode {
 	VEDIO_LOAD_FAIL(2003,"视频加载错误"),
 	DEVICE_LOCKED(2004,"设备已锁定，请按设备解锁"),
 	UNKNOWERRORCODE(10000,"未解析的errcode"),
+
 	NET_WORK_TIME_OUT(10001,"服务请求超时，请检查网络状态");
 	
 	

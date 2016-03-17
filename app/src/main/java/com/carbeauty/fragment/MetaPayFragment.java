@@ -76,7 +76,7 @@ public class MetaPayFragment extends Fragment {
     private Map<Integer,Integer> dataMap  =new HashMap<Integer,Integer>();
     List<MetalplateInfo> metalplateInfos;
 
-    List<MetalplateInfo> selmetalplateInfos=new ArrayList<MetalplateInfo>();
+    List<MetalplateInfo> selmetalplateInfos;
 
     @Nullable
     @Override
@@ -91,6 +91,10 @@ public class MetaPayFragment extends Fragment {
         itemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(selmetalplateInfos==null||selmetalplateInfos.size()==0){
+                    Toast.makeText(getActivity(),"请选择项目",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent=new Intent(getActivity(),OrderReokActivity.class);
                 intent.putExtra("Title",getActivity().getIntent().getStringExtra("Title"));
                 intent.putExtra(Constants.AC_TYPE, Constants.AC_TYPE_META);
@@ -102,10 +106,19 @@ public class MetaPayFragment extends Fragment {
 
         shopId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID,-1);
         myClickListenser=new MyClickListenser();
-        initMapData();
-        new GetMetalplateInfoTask().execute();
+
 
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        initMapData();
+        caculateTotalPrice();
+        new GetMetalplateInfoTask().execute();
+
     }
 
     private void initMapData(){
@@ -141,20 +154,21 @@ public class MetaPayFragment extends Fragment {
 
 
     private void caculateTotalPrice(){
+        selmetalplateInfos=new ArrayList<MetalplateInfo>();
         float selectMapPrice=0;
         float dataMapPrice=0;
         int ci=0;
         int cj=0;
         for(Map.Entry<Integer,Boolean> entry: selectMap.entrySet()) {
              if(entry.getValue()==true){
-                 selectMapPrice+=findPrice(entry.getKey());
+                 selectMapPrice+=findPrice(entry.getKey(),1);
                  ci++;
              }
         }
 
         for(Map.Entry<Integer,Integer> entry: dataMap.entrySet()) {
              if(entry.getValue()>0){
-                 dataMapPrice+=findPrice(entry.getKey())*entry.getValue();
+                 dataMapPrice+=findPrice(entry.getKey(),entry.getValue())*entry.getValue();
                  cj++;
              }
         }
@@ -165,20 +179,81 @@ public class MetaPayFragment extends Fragment {
 
     }
 
-    private float findPrice(int resid){
+    private float findPrice(int resid,int count){
         String numberName="";
         switch(resid){
+            case R.id.btne1:
+                numberName="E1";
+                break;
+            case R.id.btnf1:
+                numberName="F1";
+                break;
+            case R.id.btnc1:
+                numberName="C1";
+                break;
+            case R.id.btnd1:
+                numberName="D1";
+                break;
+            case R.id.btnj1:
+                numberName="J1";
+                break;
+            case R.id.btne2:
+                numberName="E2";
+                break;
+            case R.id.btnf2:
+                numberName="F2";
+                break;
+            case R.id.btnc2:
+                numberName="C2";
+                break;
+            case R.id.btnd2:
+                numberName="D2";
+                break;
+            case R.id.btnj2:
+                numberName="J2";
+                break;
+            case R.id.btnaa:
+                numberName="A";
+                break;
+            case R.id.btna1:
+                numberName="A1";
+                break;
+            case R.id.btna2:
+                numberName="A2";
+                break;
+            case R.id.btnbb:
+                numberName="B";
+                break;
             case R.id.btnb2:
                 numberName="B2";
                 break;
             case R.id.btnb1:
                 numberName="B1";
                 break;
+            case R.id.btnhh:
+                numberName="H";
+                break;
+            case R.id.btnii:
+                numberName="I";
+                break;
+            case R.id.btngg:
+                numberName="G";
+                break;
+            case R.id.layoutk1:
+                numberName="K1";
+                break;
+            case R.id.layoutk2:
+                numberName="K2";
+                break;
+            case R.id.layoutqq:
+                numberName="Q";
+                break;
         }
 
         float price=0;
         for (MetalplateInfo metalplateInfo :metalplateInfos){
             if(metalplateInfo.getNumber().equals(numberName)){
+                metalplateInfo.setCount(count);
                 selmetalplateInfos.add(metalplateInfo);
                 price=metalplateInfo.getPrice();
                 break;
@@ -194,13 +269,44 @@ public class MetaPayFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-              if(v.isSelected()){
-                  v.setSelected(false);
-                  selectMap.put(v.getId(),false);
+
+              if(v.getId()==R.id.layoutk1){
+                  int num = dataMap.get(v.getId());
+                  num++;
+                  if (num > 1) {
+                      num = 0;
+                  }
+                  textk1.setText("" + num);
+                  dataMap.put(v.getId(), num);
+              }else if(v.getId()==R.id.layoutk2){
+                  int num=dataMap.get(v.getId());
+                  num++;
+                  if(num>1){
+                      num=0;
+                  }
+                  textk2.setText(""+num);
+                  dataMap.put(v.getId(), num);
+              }else if(v.getId()==R.id.layoutqq){
+                  int num=dataMap.get(v.getId());
+                  num++;
+                  if(num>4){
+                      num=0;
+                  }
+                  textQQ.setText(""+num);
+                  dataMap.put(v.getId(), num);
               }else{
-                  v.setSelected(true);
-                  selectMap.put(v.getId(), true);
+                  if(v.isSelected()){
+                      v.setSelected(false);
+                      selectMap.put(v.getId(),false);
+                  }else{
+                      v.setSelected(true);
+                      selectMap.put(v.getId(), true);
+                  }
               }
+
+
+
+
               caculateTotalPrice();
 
         }
@@ -377,48 +483,9 @@ public class MetaPayFragment extends Fragment {
                 textk2.setText(""+k2value);
                 textQQ.setText(""+qqvalue);
 
-                layoutk1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int num = dataMap.get(v.getId());
-                        num++;
-                        if (num > 2) {
-                            num = 0;
-                        }
-                        textk1.setText("" + num);
-                        dataMap.put(v.getId(), num);
-
-                        caculateTotalPrice();
-
-                    }
-                });
-                layoutk2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int num=dataMap.get(v.getId());
-                        num++;
-                        if(num>2){
-                            num=0;
-                        }
-                        textk2.setText(""+num);
-                        dataMap.put(v.getId(), num);
-                        caculateTotalPrice();
-                    }
-                });
-                layoutqq.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int num=dataMap.get(v.getId());
-                        num++;
-                        if(num>4){
-                            num=0;
-                        }
-                        textQQ.setText(""+num);
-                        dataMap.put(v.getId(), num);
-
-                        caculateTotalPrice();
-                    }
-                });
+                layoutk1.setOnClickListener(myClickListenser);
+                layoutk2.setOnClickListener(myClickListenser);
+                layoutqq.setOnClickListener(myClickListenser);
 
                 linearLayout.addView(item5,param);
             }

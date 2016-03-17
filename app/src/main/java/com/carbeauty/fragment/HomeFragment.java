@@ -30,6 +30,7 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.order.LookShopActivity;
 import com.carbeauty.order.MetalplateActivity;
 import com.carbeauty.order.WashOilActivity;
 import com.carbeauty.web.WebBroswerActivity;
@@ -123,7 +124,7 @@ public class HomeFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int shopId = ContentBox.getValueInt(getActivity(), "shopId", -1);
+                int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
                 if (shopId <= 0) {
                     mainActivity.setSelectPos(1);
                     Toast.makeText(getActivity(), "请先选择店铺", Toast.LENGTH_SHORT).show();
@@ -137,8 +138,10 @@ public class HomeFragment extends Fragment {
                         }
                         intent.putExtra("Title", iconName[position]);
                         startActivity(intent);
-                    } else {
+                    } else if (position == 2) {
                         toMetalplate(position);
+                    }else if(position==3){
+                        toLookShop(position);
                     }
 
                 }
@@ -151,6 +154,12 @@ public class HomeFragment extends Fragment {
         intent.putExtra("Title", iconName[position]);
         startActivity(intent);
     }
+    private void toLookShop(int position){
+        Intent intent=new Intent(getActivity(), LookShopActivity.class);
+        intent.putExtra("Title", iconName[position]);
+        startActivity(intent);
+    }
+
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         String[] msgs = new String[]{getString(R.string.litem0),getString(R.string.litem1)};

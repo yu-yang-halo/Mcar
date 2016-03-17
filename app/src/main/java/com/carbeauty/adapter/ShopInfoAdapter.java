@@ -137,7 +137,6 @@ public class ShopInfoAdapter extends BaseAdapter {
 
             progressHUD= KProgressHUD.create(ctx)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("")
                     .setAnimationSpeed(1)
                     .setDimAmount(0.3f)
                     .show();

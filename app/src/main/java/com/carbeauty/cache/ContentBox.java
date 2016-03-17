@@ -10,6 +10,7 @@ public class ContentBox{
 	private static Editor editor;
 	public static final String KEY_CAR_ID="key_carId";
 	public static final String KEY_SHOP_ID="key_shopId";
+    public static final String KEY_ORDER_TIME="key_order_time";
 
 
 

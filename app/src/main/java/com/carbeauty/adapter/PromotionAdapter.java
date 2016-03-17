@@ -56,7 +56,7 @@ public class PromotionAdapter extends BaseAdapter {
             convertView= LayoutInflater.from(ctx).inflate(R.layout.item1,null);
         }
         ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
-        imageView.setImageResource(R.drawable.active_01);
+        imageView.setBackgroundResource(R.drawable.active_01);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

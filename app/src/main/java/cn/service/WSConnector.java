@@ -1770,6 +1770,8 @@ public class WSConnector {
 				decoOrderInfo.setId(id);
 				decoOrderInfo.setCreateTime(createTime);
 				return decoOrderInfo;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;

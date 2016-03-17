@@ -64,8 +64,14 @@ public class MetalInfoDelAdapter extends BaseAdapter {
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(metalplateInfos.get(position).getName());
+        String countStr="";
+        if(metalplateInfos.get(position).getNumber().equals("K1")
+                ||metalplateInfos.get(position).getNumber().equals("K2")
+                ||metalplateInfos.get(position).getNumber().equals("Q")){
+            countStr=metalplateInfos.get(position).getCount()+"";
+        }
         itemPrice.setText(metalplateInfos.get(position).getPrice()+"元"
-                +" "+metalplateInfos.get(position).getNumber());
+                +" "+countStr);
 
         itemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
