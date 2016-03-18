@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.carbeauty.R;
+import com.photoselector.ui.PhotoSelectorActivity;
 
 /**
  * Created by Administrator on 2016/3/13.
@@ -31,14 +32,16 @@ public class MetaFreeFragment extends Fragment {
         btn0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent intent = new Intent(getActivity(),PhotoSelectorActivity.class);
+                intent.putExtra(PhotoSelectorActivity.KEY_MAX, 4);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivityForResult(intent,TAKE_PHOTO_WITH_DATA0);
             }
         });
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent intent = new Intent(getActivity(),PhotoSelectorActivity.class);
                 startActivityForResult(intent,TAKE_PHOTO_WITH_DATA1);
             }
         });
