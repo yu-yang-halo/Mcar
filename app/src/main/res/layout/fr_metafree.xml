@@ -56,6 +56,63 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
 
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:padding="5dp"
+                    android:layout_below="@+id/textView17"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:layout_toEndOf="@+id/textView17">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/upimage0"
+                            android:layout_weight="1"
+                            android:background="@drawable/ad"
+                            />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/upimage1"
+                            android:layout_weight="1"
+                            android:background="@drawable/ad"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/upimage2"
+                            android:background="@drawable/ad"
+                            />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/upimage3"
+                            android:background="@drawable/ad"
+                            />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
 
             </RelativeLayout>
 
@@ -90,6 +147,64 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
+
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:gravity="center_vertical"
+                    android:layout_below="@+id/textView18"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:layout_toEndOf="@+id/textView18">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/upimage00"
+                            android:layout_weight="1"
+                            android:background="@drawable/ad"
+                            />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/upimage11"
+                            android:layout_weight="1"
+                            android:background="@drawable/ad"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/upimage22"
+                            android:background="@drawable/ad"
+                            />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/upimage33"
+                            android:background="@drawable/ad"
+                            />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"

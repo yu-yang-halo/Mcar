@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carbeauty.R;
+import com.carbeauty.TimeUtils;
 import com.carbeauty.adapter.DecorationDelAdapter;
 import com.carbeauty.adapter.MetalInfoDelAdapter;
 import com.carbeauty.adapter.MyHandlerCallback;
@@ -208,6 +209,18 @@ public class OrderReokActivity extends Activity {
     }
 
     class OrderCommitTask extends AsyncTask<String,String,String>{
+        private String orderTime;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+           int incre=ContentBox.getValueInt(OrderReokActivity.this,ContentBox.KEY_WAHT_DAY,0);
+           String hhmm=ContentBox.getValueString(OrderReokActivity.this, ContentBox.KEY_ORDER_TIME, null);
+
+           orderTime=TimeUtils.createDateFormat(hhmm,incre);
+
+
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -215,7 +228,7 @@ public class OrderReokActivity extends Activity {
 
                 DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
                         Constants.STATE_ORDER_UNFINISHED,
-                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,"2016-03-17+17+30+00",null);
+                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,orderTime,null);
 
                 try {
                     decoOrderInfo=WSConnector.getInstance().createDecoOrder(decoOrderInfo);

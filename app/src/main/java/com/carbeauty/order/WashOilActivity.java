@@ -5,14 +5,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carbeauty.R;
+import com.carbeauty.TimeUtils;
 import com.carbeauty.adapter.DecorationAdapter;
 import com.carbeauty.adapter.MyHandlerCallback;
 import com.carbeauty.adapter.OilInfoAdapter;
@@ -33,6 +36,7 @@ import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.OilInfo;
 import cn.service.bean.OrderStateType;
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
  * Created by Administrator on 2016/3/10.
@@ -55,10 +59,29 @@ public class WashOilActivity extends Activity {
 
     DecorationAdapter decorationAdapter;
     OilInfoAdapter oilInfoAdapter;
+
+    SegmentedGroup timeSegmentGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_washoil);
+        timeSegmentGroup = (SegmentedGroup) findViewById(R.id.segmented2);
+        timeSegmentGroup.check(R.id.button21);
+        timeSegmentGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.button21) {
+                    ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
+                    new GetDataList(TimeUtils.getTime(0)).execute();
+                } else if (checkedId == R.id.button22) {
+                    ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 1);
+                    new GetDataList(TimeUtils.getTime(1)).execute();
+                }
+            }
+        });
+
+
         ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,Constants.AC_TYPE_WASH);
         initCustomActionBar();
 
@@ -74,7 +97,7 @@ public class WashOilActivity extends Activity {
         bOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             String selTime=ContentBox.getValueString(WashOilActivity.this, ContentBox.KEY_ORDER_TIME,null);
+                String selTime=ContentBox.getValueString(WashOilActivity.this, ContentBox.KEY_ORDER_TIME,null);
                 if(selTime==null){
                     Toast.makeText(WashOilActivity.this,"请选择预定时间",Toast.LENGTH_SHORT).show();
                 }else if(ac_type_value==Constants.AC_TYPE_WASH){
@@ -105,8 +128,8 @@ public class WashOilActivity extends Activity {
             }
         });
 
-
-        new GetDataList().execute();
+        ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
+        new GetDataList(null).execute();
 
     }
 
@@ -207,18 +230,28 @@ public class WashOilActivity extends Activity {
         List<OrderStateType> orderStateTypes;
         List<OilInfo> oilInfos;
         List<DecorationInfo> decorationInfos;
+        String time;
+        GetDataList(String time){
+            this.time=time;
+        }
         @Override
         protected String doInBackground(String... params) {
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd+HH+mm+ss");
-            Date date=new Date();
-            String time=sdf.format(date);
             try {
-                orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, time);
-                if(ac_type_value==Constants.AC_TYPE_OIL){
-                    oilInfos=WSConnector.getInstance().getOilList(shopId);
-                }else  if(ac_type_value==Constants.AC_TYPE_WASH){
-                    decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
+
+                if(time==null){
+                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, TimeUtils.getTime(0));
+                }else{
+                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, time);
                 }
+
+                if(time==null){
+                    if(ac_type_value==Constants.AC_TYPE_OIL){
+                        oilInfos=WSConnector.getInstance().getOilList(shopId);
+                    }else  if(ac_type_value==Constants.AC_TYPE_WASH){
+                        decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
+                    }
+                }
+
 
             } catch (WSException e) {
                 e.printStackTrace();
@@ -232,11 +265,14 @@ public class WashOilActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             initGridView(orderStateTypes);
-            if(ac_type_value==Constants.AC_TYPE_WASH){
-                initDecorationListView(decorationInfos);
-            }else  if(ac_type_value==Constants.AC_TYPE_OIL){
-                initOilInfoListView(oilInfos);
+            if(time==null){
+                if(ac_type_value==Constants.AC_TYPE_WASH){
+                    initDecorationListView(decorationInfos);
+                }else  if(ac_type_value==Constants.AC_TYPE_OIL){
+                    initOilInfoListView(oilInfos);
+                }
             }
+
 
         }
     }

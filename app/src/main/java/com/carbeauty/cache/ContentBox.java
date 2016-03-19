@@ -11,7 +11,7 @@ public class ContentBox{
 	public static final String KEY_CAR_ID="key_carId";
 	public static final String KEY_SHOP_ID="key_shopId";
     public static final String KEY_ORDER_TIME="key_order_time";
-
+	public static final String KEY_WAHT_DAY="key_what_day";
 
 
 	
