@@ -12,10 +12,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.baoyz.widget.PullRefreshLayout;
+import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.adapter.ShopInfoAdapter;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.cache.IDataHandler;
 
 import org.w3c.dom.Text;
 
@@ -29,10 +32,12 @@ import cn.service.bean.UserInfo;
 /**
  * Created by Administrator on 2016/3/6.
  */
-public class ShopFragment extends Fragment {
+public class ShopFragment extends Fragment implements LocationUpdateListenser {
     ListView shoplistView;
     TextView textView;
     PullRefreshLayout swipeRefreshLayout;
+    MainActivity mainActivity;
+    BDLocation bdLocation;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,11 +58,25 @@ public class ShopFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity= (MainActivity) context;
+        mainActivity.setLocationUpdateListenser(this);
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         new ShopInfosTask().execute();
-
     }
+
+    @Override
+    public void onGetLocation(BDLocation bdLocation) {
+        this.bdLocation=bdLocation;
+        new ShopInfosTask().execute();
+    }
+
 
     class ShopInfosTask extends AsyncTask<String,String,String>{
         List<ShopInfo> shopInfos;
@@ -74,7 +93,7 @@ public class ShopFragment extends Fragment {
                 shopInfos=WSConnector.getInstance().getShopList();
                 userInfo=WSConnector.getInstance().getUserInfoById();
                 System.err.println(shopInfos);
-
+                IDataHandler.getInstance().setShopInfos(shopInfos);
 
             } catch (WSException e) {
                return e.getErrorMsg();
@@ -87,7 +106,7 @@ public class ShopFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
             if(s==null){
                 textView.setVisibility(View.GONE);
-                ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity());
+                ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity(),bdLocation);
                 shopInfoAdapter.setSelectShopId(userInfo.getShopId());
 
                 shoplistView.setAdapter(shopInfoAdapter);
@@ -101,5 +120,5 @@ public class ShopFragment extends Fragment {
         }
     }
 
-
 }
+

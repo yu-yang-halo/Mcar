@@ -11,6 +11,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -32,9 +35,11 @@ public class ShopInfoAdapter extends BaseAdapter {
     List<ShopInfo> shopInfos;
     Context ctx;
     private int selectShopId=0;
-    public ShopInfoAdapter(List<ShopInfo> shopInfos,Context ctx){
+    BDLocation bdLocation;
+    public ShopInfoAdapter(List<ShopInfo> shopInfos,Context ctx,BDLocation bdLocation){
         this.shopInfos=shopInfos;
         this.ctx=ctx;
+        this.bdLocation=bdLocation;
     }
     public void setSelectShopId(int selectShopId){
         this.selectShopId=selectShopId;
@@ -73,6 +78,7 @@ public class ShopInfoAdapter extends BaseAdapter {
         TextView titleView= (TextView) convertView.findViewById(R.id.title);
         TextView descriptionView= (TextView) convertView.findViewById(R.id.description);
         CheckBox checkBox= (CheckBox) convertView.findViewById(R.id.checkBox);
+        TextView distanceText= (TextView) convertView.findViewById(R.id.distanceText);
 
         if(selectShopId==shopInfos.get(position).getShopId()){
             checkBox.setChecked(true);
@@ -82,6 +88,20 @@ public class ShopInfoAdapter extends BaseAdapter {
 
         titleView.setText(shopInfos.get(position).getName());
         descriptionView.setText(shopInfos.get(position).getDesc());
+
+        if(bdLocation!=null){
+            LatLng latLng0=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+            LatLng latLng1=new LatLng(shopInfos.get(position).getLatitude(),shopInfos.get(position).getLongitude());
+
+            double distance=DistanceUtil.getDistance(latLng0,latLng1);
+            distanceText.setText(""+(int)(distance/1000)+"公里");
+        }else{
+            distanceText.setText("");
+        }
+
+
+
+
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -133,6 +133,9 @@ public class OrderReokActivity extends Activity {
         int totalHeight = 0;
         for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, selItemListView);
+            if(listItem==null){
+                return;
+            }
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }

@@ -6,6 +6,7 @@ import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.MetalplateInfo;
 import cn.service.bean.OilInfo;
+import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/3/12.
@@ -17,7 +18,7 @@ public class IDataHandler {
     private List<OilInfo> oilInfoSet;
     private List<CarInfo> carInfos;
     private List<MetalplateInfo> metalplateInfoSet;
-
+    private List<ShopInfo> shopInfos;
 
     public static IDataHandler getInstance(){
         if(instance==null){
@@ -28,6 +29,14 @@ public class IDataHandler {
 
     public List<DecorationInfo> getDecorationInfoSet() {
         return decorationInfoSet;
+    }
+
+    public List<ShopInfo> getShopInfos() {
+        return shopInfos;
+    }
+
+    public void setShopInfos(List<ShopInfo> shopInfos) {
+        this.shopInfos = shopInfos;
     }
 
     public void setDecorationInfoSet(List<DecorationInfo> decorationInfoSet) {

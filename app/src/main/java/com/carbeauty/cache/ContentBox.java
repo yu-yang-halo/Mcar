@@ -12,7 +12,7 @@ public class ContentBox{
 	public static final String KEY_SHOP_ID="key_shopId";
     public static final String KEY_ORDER_TIME="key_order_time";
 	public static final String KEY_WAHT_DAY="key_what_day";
-
+	public static final String KEY_LONG_LAT="key_long_lat";
 
 	
 	public static void loadString(Context ctx, String key,String value) {

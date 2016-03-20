@@ -38,7 +38,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="150m"
-            android:id="@+id/textView4"
+            android:id="@+id/distanceText"
             android:gravity="right"
             android:textColor="@color/gray"
             android:layout_alignBottom="@+id/description"
@@ -52,8 +52,8 @@
             android:checked="true"
             android:enabled="false"
             android:layout_alignBottom="@+id/title"
-            android:layout_alignRight="@+id/textView4"
-            android:layout_alignEnd="@+id/textView4" />
+            android:layout_alignRight="@+id/distanceText"
+            android:layout_alignEnd="@+id/distanceText" />
 
     </RelativeLayout>
 </RelativeLayout>

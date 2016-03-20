@@ -17,8 +17,11 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
+import com.carbeauty.cache.ContentBox;
 import com.carbeauty.fragment.HomeFragment;
 import com.carbeauty.fragment.IndividualFragment;
+import com.carbeauty.fragment.LocationUpdateListenser;
 import com.carbeauty.fragment.PromotionFragment;
 import com.carbeauty.fragment.ShopFragment;
 import com.carbeauty.userlogic.RegisterActivity;
@@ -48,6 +51,8 @@ public class MainActivity extends FragmentActivity {
 	Button leftBtn;
 	public LocationClient mLocationClient = null;
 	public BDLocationListener myListener = new MyLocationListener();
+	LocationUpdateListenser locationUpdateListenser;
+	boolean ONLY_ONCE=true;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,11 +124,22 @@ public class MainActivity extends FragmentActivity {
 		Button registerBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
 		leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
 		registerBtn.setVisibility(View.GONE);
+
+		leftBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+//				Intent intent=new Intent(MainActivity.this,CityActivity.class);
+//				startActivity(intent);
+
+			}
+		});
+
 		return true;
 	}
 
 
 	private void initLocation(){
+		SDKInitializer.initialize(getApplicationContext());
 		LocationClientOption option = new LocationClientOption();
 		option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
 		);
@@ -146,12 +162,22 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 		mLocationClient.unRegisterLocationListener(myListener);
 	}
+    public void setLocationUpdateListenser(LocationUpdateListenser locationUpdateListenser){
+		this.locationUpdateListenser=locationUpdateListenser;
+	}
 
 	public class MyLocationListener implements BDLocationListener {
 
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			leftBtn.setText(location.getCity());
+			ContentBox.loadString(MainActivity.this, ContentBox.KEY_LONG_LAT,
+					location.getLongitude() + ":" + location.getLatitude());
+            if(ONLY_ONCE){
+				locationUpdateListenser.onGetLocation(location);
+			}
+			ONLY_ONCE=false;
+
 		}
 	}
 }
