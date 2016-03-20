@@ -11,6 +11,9 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
@@ -38,25 +41,29 @@ public class ShopMapFragment extends Fragment {
         View v= inflater.inflate(R.layout.fr_shoplook, null);
         bmapView= (MapView) v.findViewById(R.id.bmapView);
         mBaiduMap = bmapView.getMap();
-        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
-        if(lgtlatStr!=null){
-           double lgt=Double.parseDouble(lgtlatStr.split(":")[0]);
-           double lat=Double.parseDouble(lgtlatStr.split(":")[1]);
-            // 开启定位图层
-            mBaiduMap.setMyLocationEnabled(true);
-// 构造定位数据
-            MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(100)
-                            // 此处设置开发者获取到的方向信息，顺时针0-360
-                    .direction(100).latitude(lat)
-                    .longitude(lgt).build();
-// 设置定位数据
-            mBaiduMap.setMyLocationData(locData);
 
-        }
 
         initMapData();
+        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
+        if(lgtlatStr!=null){
+            double lgt=Double.parseDouble(lgtlatStr.split(":")[0]);
+            double lat=Double.parseDouble(lgtlatStr.split(":")[1]);
+            //设定中心点坐标
 
+            LatLng cenpt = new LatLng(lat,lgt);
+            //定义地图状态
+            MapStatus mMapStatus = new MapStatus.Builder()
+                    .target(cenpt)
+                    .zoom(18)
+                    .build();
+            //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+
+
+            MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+            //改变地图状态
+            mBaiduMap.setMapStatus(mMapStatusUpdate);
+
+        }
         return v;
 
     }
