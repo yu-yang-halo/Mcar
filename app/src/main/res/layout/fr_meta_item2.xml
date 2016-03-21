@@ -45,14 +45,14 @@
         android:id="@+id/btna2"
         android:background="@drawable/sktopcolor"
         android:layout_above="@+id/textView34"
-        android:layout_alignRight="@+id/textView34"
-        android:layout_alignEnd="@+id/textView34" />
+        android:layout_toRightOf="@+id/textView34"
+        android:layout_toEndOf="@+id/textView34" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="A-前保险杠全喷"
+        android:text="前保险杠全喷"
         android:id="@+id/textView33"
         android:layout_alignTop="@+id/btnaa"
         android:layout_toRightOf="@+id/btnaa"
@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="A1-右前保险杠"
+        android:text="右前保险杠"
         android:id="@+id/textView34"
         android:layout_alignBottom="@+id/btna1"
         android:layout_toRightOf="@+id/btna1"
@@ -72,10 +72,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="A2-左前保险杠"
+        android:text="左前保险杠"
         android:id="@+id/textView35"
-        android:layout_alignBottom="@+id/btna2"
-        android:layout_toRightOf="@+id/textView34"
-        android:layout_toEndOf="@+id/textView34" />
+        android:layout_below="@+id/btna2"
+        android:layout_toRightOf="@+id/btna2"
+        android:layout_toEndOf="@+id/btna2" />
 
 </RelativeLayout>

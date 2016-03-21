@@ -52,36 +52,36 @@
         android:layout_height="86dp"
         android:background="@drawable/sktopcolor"
         android:id="@+id/btnj2"
-        android:layout_below="@+id/btne2"
-        android:layout_toRightOf="@+id/textView30"
-        android:layout_toEndOf="@+id/textView30" />
+        android:layout_alignTop="@+id/btnc2"
+        android:layout_toRightOf="@+id/btne2"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_toEndOf="@+id/btne2" />
 
     <Button
         android:layout_width="14dp"
         android:layout_height="126dp"
         android:background="@drawable/sktopcolor"
         android:id="@+id/btnc2"
-        android:layout_marginRight="19dp"
-        android:layout_marginEnd="19dp"
         android:layout_above="@+id/textView32"
-        android:layout_alignRight="@+id/textView29"
-        android:layout_alignEnd="@+id/textView29" />
+        android:layout_toRightOf="@+id/textView29"
+        android:layout_toEndOf="@+id/textView29" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="F2-右后车门"
+        android:text="右后车门"
         android:id="@+id/textView28"
         android:layout_alignTop="@+id/btnf2"
-        android:layout_alignLeft="@+id/imageView6"
-        android:layout_alignStart="@+id/imageView6" />
+        android:layout_alignLeft="@+id/btnd2"
+        android:layout_alignStart="@+id/btnd2" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="E2-右前车门"
+        android:text="右前车门"
         android:id="@+id/textView29"
         android:layout_alignTop="@+id/btne2"
         android:layout_toRightOf="@+id/btne2"
@@ -91,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="D2-右后翼子板"
+        android:text="右后翼子板"
         android:id="@+id/textView30"
         android:layout_alignBottom="@+id/btnd2"
         android:layout_toRightOf="@+id/btnd2"
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="J2-右裙边"
+        android:text="右裙边"
         android:id="@+id/textView31"
         android:layout_alignBaseline="@+id/btnd2"
         android:layout_alignBottom="@+id/btnd2"
@@ -112,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="C2-右前翼子板"
+        android:text="右前翼子板"
         android:id="@+id/textView32"
         android:layout_below="@+id/textView30"
         android:layout_toRightOf="@+id/btnj2"

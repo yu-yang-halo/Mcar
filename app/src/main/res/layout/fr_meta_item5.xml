@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="K1-左前反光镜"
+            android:text="左前反光镜"
             android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/textView14" />
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Q-门把手"
+            android:text="门把手"
             android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/textView19" />
@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="K2-右前反光镜"
+            android:text="右前反光镜"
             android:textSize="12sp"
             android:gravity="center"
             android:id="@+id/textView21" />

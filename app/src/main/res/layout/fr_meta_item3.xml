@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="B-后保险杠全喷"
+        android:text="后保险杠全喷"
         android:id="@+id/textView36"
         android:layout_alignTop="@+id/btnbb"
         android:layout_toRightOf="@+id/btnbb"
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="B2-左后保险杠"
+        android:text="左后保险杠"
         android:id="@+id/textView37"
         android:layout_below="@+id/btnb2"
         android:layout_alignLeft="@+id/btnb2"
@@ -71,11 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="B1-右后保险杠"
+        android:text="右后保险杠"
         android:id="@+id/textView38"
-        android:layout_alignBaseline="@+id/btnb2"
-        android:layout_alignBottom="@+id/btnb2"
-        android:layout_toRightOf="@+id/btnb2"
-        android:layout_toEndOf="@+id/btnb2" />
+        android:layout_below="@+id/imageView6"
+        android:layout_toLeftOf="@+id/btnb1"
+        android:layout_toStartOf="@+id/btnb1" />
 
 </RelativeLayout>

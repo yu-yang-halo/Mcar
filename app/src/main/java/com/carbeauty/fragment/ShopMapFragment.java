@@ -6,15 +6,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
@@ -41,7 +44,8 @@ public class ShopMapFragment extends Fragment {
         View v= inflater.inflate(R.layout.fr_shoplook, null);
         bmapView= (MapView) v.findViewById(R.id.bmapView);
         mBaiduMap = bmapView.getMap();
-
+         //普通地图
+        mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
         initMapData();
         String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
@@ -54,7 +58,7 @@ public class ShopMapFragment extends Fragment {
             //定义地图状态
             MapStatus mMapStatus = new MapStatus.Builder()
                     .target(cenpt)
-                    .zoom(18)
+                    .zoom(10)
                     .build();
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
 
@@ -67,7 +71,7 @@ public class ShopMapFragment extends Fragment {
         return v;
 
     }
-    private void addPointToMap(double lgt,double lat){
+    private void addPointToMap(double lgt,double lat,String shopName){
         //定义Maker坐标点
         LatLng point = new LatLng(lat, lgt);
 //构建Marker图标
@@ -76,17 +80,36 @@ public class ShopMapFragment extends Fragment {
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
+                .title(shopName)
                 .icon(bitmap);
+
+
 //在地图上添加Marker，并显示
 
         mBaiduMap.addOverlay(option);
+
+        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                //创建InfoWindow展示的view
+                Button button = new Button(getActivity().getApplicationContext());
+                button.setBackgroundResource(R.drawable.ad);
+//创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
+                InfoWindow mInfoWindow = new InfoWindow(button, marker.getPosition(), -47);
+//显示InfoWindow
+                mBaiduMap.showInfoWindow(mInfoWindow);
+                return false;
+            }
+        });
+
     }
 
     private void initMapData(){
        List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
 
         for (ShopInfo shopInfo: shopInfos){
-            addPointToMap(shopInfo.getLongitude(),shopInfo.getLatitude());
+            addPointToMap(shopInfo.getLongitude(),shopInfo.getLatitude(),shopInfo.getName());
         }
 
     }
