@@ -31,16 +31,17 @@ import cn.service.WSException;
 import cn.service.bean.CarInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DecorationInfo;
+import cn.service.bean.MetaOrderInfo;
 import cn.service.bean.MetalplateInfo;
 import cn.service.bean.OilInfo;
+import cn.service.bean.OilOrderInfo;
 
 /**
  * Created by Administrator on 2016/3/12.
  */
-public class OrderReokActivity extends Activity {
+public class OrderReokActivity extends HeaderActivity {
     int ac_type_value;
-    ActionBar mActionbar;
-    TextView tvTitle;
+
     List<DecorationInfo> decorationInfoSet;
     List<OilInfo> oilInfoSet;
     List<MetalplateInfo> metalplateInfoSet;
@@ -55,7 +56,7 @@ public class OrderReokActivity extends Activity {
     Button  createOrderBtn;
     int shopId;
     int carId;
-    Button rightBtn;
+
     float totalPrice=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,7 @@ public class OrderReokActivity extends Activity {
         initData();
 
     }
+
     private void setListViewHeight(){
         ListAdapter listAdapter = selItemListView.getAdapter();
         if (listAdapter == null) {
@@ -168,31 +170,7 @@ public class OrderReokActivity extends Activity {
         totalPriceTxt.setText(totalPrice+"元");
         promoTxt.setText("");
 
-        List<CarInfo> carInfos=IDataHandler.getInstance().getCarInfos();
 
-        if(carInfos!=null&&carInfos.size()>0){
-            CarInfo selCar=null;
-            for (CarInfo carInfo:carInfos){
-                if(ContentBox.getValueInt(this,ContentBox.KEY_CAR_ID,-1)==carInfo.getId()){
-                    selCar=carInfo;
-                }
-            }
-            if(selCar==null){
-                selCar=carInfos.get(0);
-            }
-            rightBtn.setText(selCar.getNumber());
-            ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,selCar.getId());
-        }
-        if(carInfos.size()>1){
-            rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent=new Intent(OrderReokActivity.this, AcCarSelectDialog.class);
-                    startActivityForResult(intent,100);
-                }
-            });
-
-        }
     }
     private void initView(){
         promoTxt= (TextView) findViewById(R.id.textView11);
@@ -204,6 +182,20 @@ public class OrderReokActivity extends Activity {
                 if(ac_type_value==Constants.AC_TYPE_WASH){
                     if(decorationInfoSet!=null&&decorationInfoSet.size()>0){
                         new OrderCommitTask().execute();
+                    }else{
+                        Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
+                    }
+                }else  if(ac_type_value==Constants.AC_TYPE_OIL){
+                    if(oilInfoSet!=null&&oilInfoSet.size()>0){
+                        new OrderCommitTask().execute();
+                    }else{
+                        Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
+                    }
+                }else  if(ac_type_value==Constants.AC_TYPE_META){
+                    if(metalplateInfoSet!=null&&metalplateInfoSet.size()>0){
+                        new OrderCommitTask().execute();
+                    }else{
+                        Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -246,6 +238,43 @@ public class OrderReokActivity extends Activity {
                     return e.getErrorMsg();
                 }
             }else  if(ac_type_value==Constants.AC_TYPE_OIL){
+                OilOrderInfo oilOrderInfo=new OilOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                        Constants.STATE_ORDER_UNFINISHED,
+                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,orderTime,null);
+
+                try {
+                    oilOrderInfo=WSConnector.getInstance().createOilOrder(oilOrderInfo);
+
+                    for (OilInfo oilInfo :oilInfoSet){
+
+                        WSConnector.getInstance().createOilOrderNumber(oilOrderInfo.getId(),oilInfo.getId());
+
+                    }
+
+                } catch (WSException e) {
+                    return e.getErrorMsg();
+                }
+
+            }else if(ac_type_value==Constants.AC_TYPE_META){
+                MetaOrderInfo metaOrderInfo=new MetaOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                        Constants.STATE_ORDER_UNFINISHED,Constants.PAY_STATE_UNFINISHED,0,
+                carId,shopId,0,totalPrice, 0,null,null, null,
+                        null,
+                       null);
+
+                try {
+                    metaOrderInfo=WSConnector.getInstance().createMetaOrder(metaOrderInfo);
+
+                    for (MetalplateInfo metalplateInfo :metalplateInfoSet){
+
+                        WSConnector.getInstance().createMetaOrderNumber(metaOrderInfo.getId(),metalplateInfo.getId(),metalplateInfo.getCount());
+
+                    }
+
+                } catch (WSException e) {
+                    return e.getErrorMsg();
+                }
+
 
             }
             return null;
@@ -261,35 +290,7 @@ public class OrderReokActivity extends Activity {
         }
     }
 
-    private boolean initCustomActionBar() {
-        mActionbar = getActionBar();
-        if (mActionbar == null) {
-            return false;
-        }
-        mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mActionbar.setDisplayShowCustomEnabled(true);
-        mActionbar.setCustomView(R.layout.header_home1);
-        tvTitle = (TextView) mActionbar.getCustomView().findViewById(R.id.tv_tbb_title);
-        tvTitle.setText(getIntent().getStringExtra("Title"));
 
-        rightBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
-        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
-        leftBtn.setVisibility(View.VISIBLE);
-
-
-        leftBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-
-
-
-        return true;
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==100&&resultCode>0){

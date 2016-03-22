@@ -116,7 +116,7 @@ public class MetaPayFragment extends Fragment {
         super.onStart();
 
         initMapData();
-        caculateTotalPrice();
+
         new GetMetalplateInfoTask().execute();
 
     }
@@ -326,7 +326,10 @@ public class MetaPayFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
+            caculateTotalPrice();
+
             initConvenientBanner();
+
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
@@ -83,22 +84,30 @@ public class ShopMapFragment extends Fragment {
                 .title(shopName)
                 .icon(bitmap);
 
-
 //在地图上添加Marker，并显示
-
         mBaiduMap.addOverlay(option);
-
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
                 //创建InfoWindow展示的view
-                Button button = new Button(getActivity().getApplicationContext());
-                button.setBackgroundResource(R.drawable.ad);
+
+                View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
+
+
 //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
-                InfoWindow mInfoWindow = new InfoWindow(button, marker.getPosition(), -47);
+                InfoWindow mInfoWindow = new InfoWindow(dialogMap, marker.getPosition(), -97);
 //显示InfoWindow
                 mBaiduMap.showInfoWindow(mInfoWindow);
+                Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
+                TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
+                contentView.setText( marker.getTitle());
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mBaiduMap.hideInfoWindow();
+                    }
+                });
                 return false;
             }
         });
@@ -108,6 +117,9 @@ public class ShopMapFragment extends Fragment {
     private void initMapData(){
        List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
 
+        if(shopInfos==null){
+            return;
+        }
         for (ShopInfo shopInfo: shopInfos){
             addPointToMap(shopInfo.getLongitude(),shopInfo.getLatitude(),shopInfo.getName());
         }

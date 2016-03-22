@@ -77,7 +77,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	private static String IP1 = "liuzhi1212.gicp.net";
+	//private static String IP1 = "liuzhi1212.gicp.net";
+	private static String IP1 = "192.168.1.109";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -254,14 +255,15 @@ public class WSConnector {
 	 * ***********************************************************
 	 */
 
-	
+
+
 	/**
        *  功能描述: 用户登录 简单版本
 	   */
 
 	public boolean appUserLogin(String name, String password, int shopId,
 			String clientEnv, boolean logoutYN) throws WSException {
-		this.userMap.put("password",password);
+		this.userMap.put("password", password);
 		Element element = null;
 		String service = WSConnector.wsUrl + "appUserLogin?name=" + name
 				+ "&password=" + password + "&appId=" + shopId + "&clientEnv="
@@ -315,6 +317,8 @@ public class WSConnector {
 		}
 	}
 
+
+
 	/**
 	 *   功能描述: 注册用户
 	 */
@@ -358,6 +362,9 @@ public class WSConnector {
 		}
 		return userId;
 	}
+
+
+
     /*
      *  更新用户信息
      */
@@ -567,6 +574,8 @@ public class WSConnector {
 					shopInfos.add(shopInfo);
 				}
 				return shopInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -675,6 +684,8 @@ public class WSConnector {
 					oilInfos.add(oilInfo);
 				}
 				return oilInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -754,6 +765,8 @@ public class WSConnector {
 					metalplateInfos.add(metalplateInfo);
 				}
 				return metalplateInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -789,6 +802,8 @@ public class WSConnector {
 					decorationInfos.add(decorationInfo);
 				}
 				return decorationInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -907,6 +922,8 @@ public class WSConnector {
 					couponInfos.add(couponInfo);
 				}
 				return couponInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -964,6 +981,8 @@ public class WSConnector {
 					cityInfos.add(cityInfo);
 				}
 				return cityInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -992,6 +1011,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1015,6 +1036,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1042,6 +1065,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1107,6 +1132,8 @@ public class WSConnector {
 					carInfos.add(carInfo);
 				}
 				return carInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -1192,6 +1219,8 @@ public class WSConnector {
 					goodInfos.add(goodInfo);
 				}
 				return goodInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -1236,6 +1265,8 @@ public class WSConnector {
 				oilOrderInfo.setId(id);
 				oilOrderInfo.setCreateTime(createTime);
 				return oilOrderInfo;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -1260,6 +1291,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else {
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1412,6 +1445,8 @@ public class WSConnector {
 					oilOrderInfos.add(oilOrderInfo);
 				}
 				return oilOrderInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -1435,18 +1470,22 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
 	}
+
+
 	
-	public boolean createMetaOrder(MetaOrderInfo metaOrderInfo) throws WSException{
+	public MetaOrderInfo createMetaOrder(MetaOrderInfo metaOrderInfo) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "createMetaOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&type="+metaOrderInfo.getType()+"&state="+metaOrderInfo.getState()
 				+"&payState="+metaOrderInfo.getPayState()+"&userId="+this.userMap.get("userId")+"&carId="+metaOrderInfo.getCarId()
-				+"&shopId="+metaOrderInfo.getShopId()+"&stationId="+metaOrderInfo.getStationId()+"&orderTime="+metaOrderInfo.getOrderTime();
+				+"&shopId="+metaOrderInfo.getShopId()+"&stationId="+metaOrderInfo.getStationId()+"&orderTime=2016-11-11+11+11+11";
 	
 		if(metaOrderInfo.getPrice()>0){
 			service+="&price="+metaOrderInfo.getPrice();
@@ -1464,14 +1503,22 @@ public class WSConnector {
 		}
 		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
 				.getElementsByTagName("errorCode").item(0) : null;
+		Element idNode = root.getElementsByTagName("id") != null ? (Element) root
+				.getElementsByTagName("id").item(0) : null;
+
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
-				return true;
+				int id = Integer.parseInt(idNode.getFirstChild()
+						.getNodeValue());
+				metaOrderInfo.setId(id);
+				return metaOrderInfo;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
-		return false;
+		return null;
 		
 	}
 	public boolean delMetaOrder(int id) throws WSException{
@@ -1493,6 +1540,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1679,16 +1728,18 @@ public class WSConnector {
 					metaOrderInfos.add(metaOrderInfo);
 				}
 				return metaOrderInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
 	}
-	public boolean createMetaOrderNumber(int metaOrderId,int metaId) throws WSException{
+	public boolean createMetaOrderNumber(int metaOrderId,int metaId,int orderNum) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "createMetaOrderNumber?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&metaOrderId="+metaOrderId 
-				+"&metaId="+metaId;
+				+"&metaId="+metaId+"&orderNum="+orderNum;
 		Logger.getLogger(this.getClass()).info(
 				"[createMetaOrderNumber]  ws query = " + service);
 
@@ -1703,6 +1754,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1727,6 +1780,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1795,6 +1850,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -1948,6 +2005,8 @@ public class WSConnector {
 					decoOrderInfos.add(decoOrderInfo);
 				}
 				return decoOrderInfos;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -1972,6 +2031,8 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 				 return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return false;
@@ -2028,6 +2089,8 @@ public class WSConnector {
 					bannerInfoTypes.add(bannerInfoType);
 				}
 				return bannerInfoTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -2113,6 +2176,8 @@ public class WSConnector {
 					assessInfoTypes.add(assessInfoType);
 				}
 				return assessInfoTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -2165,6 +2230,8 @@ public class WSConnector {
 					orderStateTypes.add(orderStateType);
 				}
 				return orderStateTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;
@@ -2204,6 +2271,8 @@ public class WSConnector {
 					promotionInfoTypes.add(promotionInfoType);
 				}
 				return promotionInfoTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 		return null;

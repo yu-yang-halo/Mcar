@@ -30,6 +30,7 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.good.GoodActivity;
 import com.carbeauty.order.LookShopActivity;
 import com.carbeauty.order.MetalplateActivity;
 import com.carbeauty.order.WashOilActivity;
@@ -140,9 +141,12 @@ public class HomeFragment extends Fragment {
                         startActivity(intent);
                     } else if (position == 2) {
                         toMetalplate(position);
-                    }else if(position==3){
+                    } else if (position == 3) {
                         toLookShop(position);
+                    } else if (position == 5) {
+                        toGoods(position);
                     }
+
 
                 }
 
@@ -156,6 +160,11 @@ public class HomeFragment extends Fragment {
     }
     private void toLookShop(int position){
         Intent intent=new Intent(getActivity(), LookShopActivity.class);
+        intent.putExtra("Title", iconName[position]);
+        startActivity(intent);
+    }
+    private void toGoods(int position){
+        Intent intent=new Intent(getActivity(), GoodActivity.class);
         intent.putExtra("Title", iconName[position]);
         startActivity(intent);
     }

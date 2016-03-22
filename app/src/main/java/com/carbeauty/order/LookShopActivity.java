@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by Administrator on 2016/3/13.
  */
-public class LookShopActivity extends FragmentActivity {
+public class LookShopActivity extends HeaderActivity {
     private final String[] mTitles = {"门店全景","施工直播"};
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
@@ -34,8 +34,7 @@ public class LookShopActivity extends FragmentActivity {
             R.mipmap.home_btn_home, R.mipmap.home_btn_shop};
     private int[] mIconSelectIds = {
             R.mipmap.home_btn_home_sel, R.mipmap.home_btn_shop_sel};
-    ActionBar mActionbar;
-    TextView tvTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,34 +65,5 @@ public class LookShopActivity extends FragmentActivity {
 
             }
         });
-    }
-    private boolean initCustomActionBar() {
-        mActionbar = getActionBar();
-        if (mActionbar == null) {
-            return false;
-        }
-        mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mActionbar.setDisplayShowCustomEnabled(true);
-        mActionbar.setCustomView(R.layout.header_home1);
-        tvTitle = (TextView) mActionbar.getCustomView().findViewById(R.id.tv_tbb_title);
-        tvTitle.setText(getIntent().getStringExtra("Title"));
-
-        Button rightBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
-        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
-        leftBtn.setVisibility(View.VISIBLE);
-        rightBtn.setVisibility(View.GONE);
-
-        leftBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-
-
-
-        return true;
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#dddddd"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/layout_bg_selector"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/goodImageView"
+            android:background="@drawable/ad"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保养套餐"
+            android:gravity="center"
+            android:id="@+id/goodName"
+            android:textSize="12sp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/goodImageView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:text="大体"
+            android:textColor="#888888"
+            android:id="@+id/goodDesc"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/goodImageView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="180"
+            android:gravity="center"
+            android:textColor="#ff0000"
+            android:id="@+id/goodPriceTxt"
+            android:layout_toRightOf="@+id/goodImageView"
+            android:layout_alignRight="@+id/goodDesc"
+            android:layout_alignEnd="@+id/goodDesc"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+</RelativeLayout>
