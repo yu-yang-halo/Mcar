@@ -50,6 +50,8 @@ public class MetalplateActivity extends HeaderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_metalplate);
         initCustomActionBar();
+
+
         mFragments.add(new MetaPayFragment());
         mFragments.add(new MetaFreeFragment());
 
@@ -76,5 +78,13 @@ public class MetalplateActivity extends HeaderActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100&&resultCode>0){
+            ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,resultCode);
+            rightBtn.setText(data.getStringExtra("number"));
+        }
+    }
 
 }

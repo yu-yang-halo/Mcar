@@ -1,14 +1,9 @@
 package com.carbeauty.good;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
@@ -18,14 +13,12 @@ import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.order.HeaderActivity;
-import com.carbeauty.order.WashOilActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.service.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.GoodInfo;

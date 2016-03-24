@@ -1,7 +1,5 @@
 package com.carbeauty.order;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,14 +19,13 @@ import com.carbeauty.adapter.MyHandlerCallback;
 import com.carbeauty.adapter.OilInfoDelAdapter;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
-import com.carbeauty.dialog.AcCarSelectDialog;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.List;
 
-import cn.service.Constants;
+import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
-import cn.service.bean.CarInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.MetaOrderInfo;
@@ -56,17 +53,24 @@ public class OrderReokActivity extends HeaderActivity {
     Button  createOrderBtn;
     int shopId;
     int carId;
-
+    private String orderTime;
     float totalPrice=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_orderreok);
         shopId= ContentBox.getValueInt(this,ContentBox.KEY_SHOP_ID, 0);
-        carId=ContentBox.getValueInt(this,ContentBox.KEY_CAR_ID,0);
+        carId=ContentBox.getValueInt(this, ContentBox.KEY_CAR_ID, 0);
+
+
+
 
         initCustomActionBar();
         initView();
+
+
+
+
 
         ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,
                 Constants.AC_TYPE_WASH);
@@ -118,6 +122,17 @@ public class OrderReokActivity extends HeaderActivity {
 
             selItemListView.setAdapter(metalInfoDelAdapter);
         }
+
+        if(ac_type_value!=Constants.AC_TYPE_META
+                &&ac_type_value!=Constants.AC_TYPE_META2){
+
+            int incre=ContentBox.getValueInt(OrderReokActivity.this,ContentBox.KEY_WAHT_DAY,0);
+            String hhmm=ContentBox.getValueString(OrderReokActivity.this, ContentBox.KEY_ORDER_TIME, null);
+
+
+            orderTime=TimeUtils.createDateFormat(hhmm, incre);
+        }
+
 
         setListViewHeight();
 
@@ -204,16 +219,17 @@ public class OrderReokActivity extends HeaderActivity {
     }
 
     class OrderCommitTask extends AsyncTask<String,String,String>{
-        private String orderTime;
+        KProgressHUD progressHUD;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-           int incre=ContentBox.getValueInt(OrderReokActivity.this,ContentBox.KEY_WAHT_DAY,0);
-           String hhmm=ContentBox.getValueString(OrderReokActivity.this, ContentBox.KEY_ORDER_TIME, null);
-
-           orderTime=TimeUtils.createDateFormat(hhmm,incre);
-
+            progressHUD= KProgressHUD.create(OrderReokActivity.this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("订单提交中...")
+                    .setAnimationSpeed(1)
+                    .setDimAmount(0.3f)
+                    .show();
 
         }
 
@@ -282,11 +298,24 @@ public class OrderReokActivity extends HeaderActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            boolean orderIsOk=false;
+            progressHUD.dismiss();
             if(s==null){
-                Toast.makeText(OrderReokActivity.this,"订单提交成功",Toast.LENGTH_SHORT).show();
+                orderIsOk=true;
+               // Toast.makeText(OrderReokActivity.this,"订单提交成功",Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(OrderReokActivity.this,s,Toast.LENGTH_SHORT).show();
             }
+
+            Intent intent=new Intent(OrderReokActivity.this,OrderResultActivity.class);
+
+            intent.putExtra(Constants.AC_TYPE,ac_type_value);
+            intent.putExtra(Constants.ORDER_RESULT_IS_OK,orderIsOk);
+            intent.putExtra("Title","");
+            startActivity(intent);
+            finish();
+
+
         }
     }
 

@@ -1,5 +1,6 @@
 package com.carbeauty;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +25,23 @@ public class TimeUtils {
 		date.setDate(date.getDate() + incre);
 		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd+HH+mm+ss");
 
+		return simpleDateFormat.format(date);
+	}
+
+	public static Date formatString(String timeStr){
+		String format = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		try {
+			Date time = sdf.parse(timeStr);
+			return time;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static String getShowTime(String timeStr){
+		Date date=formatString(timeStr);
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return simpleDateFormat.format(date);
 	}
 }

@@ -15,6 +15,7 @@ import com.carbeauty.web.WebBroswerActivity;
 
 import java.util.List;
 
+import cn.service.WSConnector;
 import cn.service.bean.PromotionInfoType;
 import cn.service.bean.ShopInfo;
 
@@ -65,6 +66,9 @@ public class PromotionAdapter extends BaseAdapter {
                 intent.putExtra("URL",promotionInfoTypes.get(position).getSrc());
                 intent.putExtra("Title","活动详情");
                 ctx.startActivity(intent);
+
+
+
 
             }
         });

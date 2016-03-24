@@ -9,6 +9,7 @@ package cn.service;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,8 @@ import cn.service.bean.CarInfo;
 import cn.service.bean.CityInfo;
 import cn.service.bean.CouponInfo;
 import cn.service.bean.DecoOrderInfo;
+import cn.service.bean.GoodsOrderListType;
+import cn.service.bean.GoodsType;
 import cn.service.bean.OrderStateType;
 import cn.service.bean.DecoOrderInfo.DecoOrderNumber;
 import cn.service.bean.DecorationInfo;
@@ -108,6 +113,8 @@ public class WSConnector {
 		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr +  "/car/services/carwsapi/";
 		return instance;
 	}
+
+
 
 	private InputStream request(String service) throws WSException {
 		String path = service;
@@ -190,6 +197,9 @@ public class WSConnector {
 	public void setWSErrorCodeListener(IWSErrorCodeListener listener){
 		this.listener=listener;
 	}
+
+
+
 
 	private Element getXMLNode(String service) throws WSException {
 		Logger.getLogger(this.getClass()).info(service);
@@ -808,6 +818,95 @@ public class WSConnector {
 		}
 		return null;
 	}
+
+
+	private GoodsOrderListType parseXmlToGoodsOrderListType(Element element){
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element goodsInfoNode = (Element) element.getElementsByTagName(
+				"goodsInfo").item(0);
+		Element createTimeNode = (Element) element.getElementsByTagName(
+				"createTime").item(0);
+		Element userIdNode = (Element) element.getElementsByTagName(
+				"userId").item(0);
+		Element shopIdNode = (Element) element.getElementsByTagName(
+				"shopId").item(0);
+		Element priceNode = (Element) element.getElementsByTagName(
+				"price").item(0);
+		Element addressNode = (Element) element.getElementsByTagName(
+				"address").item(0);
+		Element nameNode = (Element) element.getElementsByTagName(
+				"name").item(0);
+		Element phoneNode = (Element) element.getElementsByTagName(
+				"phone").item(0);
+		Element stateNode = (Element) element.getElementsByTagName(
+				"state").item(0);
+		Element processTimeNode = (Element) element.getElementsByTagName(
+				"processTime").item(0);
+
+		int id=0,userId=0,shopId=0,state=0;
+		float price=0;
+		String goodsInfo="",createTime="",address="",name="",phone="",processTime="";
+
+		if (nameNode != null && nameNode.getFirstChild() != null) {
+			name = nameNode.getFirstChild().getNodeValue();
+		}
+		if (goodsInfoNode != null && goodsInfoNode.getFirstChild() != null) {
+			goodsInfo = goodsInfoNode.getFirstChild().getNodeValue();
+		}
+		if (createTimeNode != null && createTimeNode.getFirstChild() != null) {
+			createTime = createTimeNode.getFirstChild().getNodeValue();
+		}
+		if (addressNode != null && addressNode.getFirstChild() != null) {
+			address = addressNode.getFirstChild().getNodeValue();
+		}
+		if (phoneNode != null && phoneNode.getFirstChild() != null) {
+			phone = phoneNode.getFirstChild().getNodeValue();
+		}
+
+		if (processTimeNode != null && processTimeNode.getFirstChild() != null) {
+			processTime = processTimeNode.getFirstChild().getNodeValue();
+		}
+
+		if (idNode != null && idNode.getFirstChild() != null) {
+			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+		if (userIdNode != null && userIdNode.getFirstChild() != null) {
+			userId = Integer.parseInt(userIdNode.getFirstChild().getNodeValue());
+		}
+		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
+			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
+		}
+		if (stateNode != null && stateNode.getFirstChild() != null) {
+			state = Integer.parseInt(stateNode.getFirstChild().getNodeValue());
+		}
+		if (priceNode != null && priceNode.getFirstChild() != null) {
+			price = Float.parseFloat(priceNode.getFirstChild().getNodeValue());
+		}
+
+
+		GoodsOrderListType goodsOrderListType=new GoodsOrderListType(id,goodsInfo,  createTime,  userId,  shopId,  price,  address,  name,  phone,  state,  processTime);
+		return  goodsOrderListType;
+
+	}
+
+	private  GoodsType parseXmlToGoodsType(Element element){
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element nameNode = (Element) element.getElementsByTagName(
+				"name").item(0);
+		int id=-1;
+		if (idNode != null && idNode.getFirstChild() != null) {
+			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+		String name="";
+		if (nameNode != null && nameNode.getFirstChild() != null) {
+			name = nameNode.getFirstChild().getNodeValue();
+		}
+		GoodsType goodsType=new GoodsType(id,name);
+		return goodsType;
+	}
+
 	private  CouponInfo  parseXmlToCouponInfo(Element element){
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
@@ -891,6 +990,125 @@ public class WSConnector {
 		return couponInfo;
 		
 	}
+
+
+	public boolean createGoodsOrder(String goodsInfo,int shopId,float price,
+									String address,String name,String phone) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "createGoodsOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")
+				+"&userId="+this.userMap.get("userId")+"&goodsInfo="+goodsInfo
+				+"&shopId="+shopId+"&price="+price+"&address="+address
+				+"&name="+name+"&phone="+phone;
+		Logger.getLogger(this.getClass()).info(
+				"[createGoodsOrder]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+		          return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+
+		return false;
+
+	}
+
+	public List<GoodsOrderListType> getGoodsOrderList(int searchType,int shopId,String startTime) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getGoodsOrderList?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&userId="
+				+this.userMap.get("userId")+"&searchType="+searchType+"&maxNum=-1";
+
+		if(shopId>0){
+			service+="&shopId="+shopId;
+		}
+		if(startTime!=null){
+			service+="&startTime="+startTime;
+		}
+
+
+		Logger.getLogger(this.getClass()).info(
+				"[getGoodsOrderList]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				NodeList nodeList = root.getElementsByTagName("goodsOrderList");
+				Logger.getLogger(this.getClass()).info(
+						"[goodsOrderList]   nodeList Size = " + nodeList.getLength());
+				List<GoodsOrderListType> goodsOrderListTypes=new ArrayList<GoodsOrderListType>();
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Element element = (Element) (nodeList.item(i));
+					GoodsOrderListType goodsOrderListType =parseXmlToGoodsOrderListType(element);
+					Logger.getLogger(this.getClass()).info(
+							"[GoodsOrderListType]  goodsOrderListType = "
+									+ goodsOrderListType.toString());
+					goodsOrderListTypes.add(goodsOrderListType);
+				}
+				return goodsOrderListTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+	}
+
+	public List<GoodsType> getGoodsType() throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getGoodsType?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken");
+		Logger.getLogger(this.getClass()).info(
+				"[getGoodsType]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				NodeList nodeList = root.getElementsByTagName("goodsTypeList");
+				Logger.getLogger(this.getClass()).info(
+						"[goodsTypeList]   nodeList Size = " + nodeList.getLength());
+				List<GoodsType> goodsTypes=new ArrayList<GoodsType>();
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Element element = (Element) (nodeList.item(i));
+					GoodsType goodsType =parseXmlToGoodsType(element);
+					Logger.getLogger(this.getClass()).info(
+							"[GoodsType]  goodsType = "
+									+ goodsType.toString());
+					goodsTypes.add(goodsType);
+				}
+				return goodsTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+
+	}
+
 	public List<CouponInfo> getCouponList(int shopId) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "getCouponList?senderId="
@@ -1272,6 +1490,33 @@ public class WSConnector {
 		return null;
 		
 	}
+
+	public boolean updOilOrder(int id,int state) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "updOilOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
+				+"type=0&payState=0&userId="+this.userMap.get("userId") ;
+		Logger.getLogger(this.getClass()).info(
+				"[updOilOrder]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				return true;
+			}else {
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return false;
+	}
 	public boolean delOilOrder(int id) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "delOilOrder?senderId="
@@ -1404,19 +1649,19 @@ public class WSConnector {
 				+"&searchType="+searchType;
 		
 		if(shopId>0){
-			service="&shopId="+shopId;
+			service+="&shopId="+shopId;
 		}
 		if(carId>0){
-			service="&carId="+carId;
+			service+="&carId="+carId;
 		}
 		if(stationId>0){
-			service="&stationId="+stationId;
+			service+="&stationId="+stationId;
 		}
 		if(maxNum>0){
-			service="&maxNum="+maxNum;
+			service+="&maxNum="+maxNum;
 		}
 		if(startTime!=null){
-			service="&startTime="+startTime;
+			service+="&startTime="+startTime;
 		}
 	
 		Logger.getLogger(this.getClass()).info(
@@ -1521,6 +1766,62 @@ public class WSConnector {
 		return null;
 		
 	}
+
+	public boolean updCoupon(int promotionId) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "updCoupon?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")
+				+"&id=-1&userId="+this.userMap.get("userId")
+				+"&promotionId="+promotionId;
+		Logger.getLogger(this.getClass()).info(
+				"[updCoupon]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				return true;
+			}else {
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return false;
+	}
+	public boolean updMetaOrder(int id,int state) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "updMetaOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
+				+"type=0&payState=0&carId=0&shopId=0&stationId=0&userId="+this.userMap.get("userId") ;
+		Logger.getLogger(this.getClass()).info(
+				"[updMetaOrder]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				return true;
+			}else {
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return false;
+	}
+
+
 	public boolean delMetaOrder(int id) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "delMetaOrder?senderId="
@@ -1687,19 +1988,19 @@ public class WSConnector {
 				+"&searchType="+searchType;
 		
 		if(shopId>0){
-			service="&shopId="+shopId;
+			service+="&shopId="+shopId;
 		}
 		if(carId>0){
-			service="&carId="+carId;
+			service+="&carId="+carId;
 		}
 		if(stationId>0){
-			service="&stationId="+stationId;
+			service+="&stationId="+stationId;
 		}
 		if(maxNum>0){
-			service="&maxNum="+maxNum;
+			service+="&maxNum="+maxNum;
 		}
 		if(startTime!=null){
-			service="&startTime="+startTime;
+			service+="&startTime="+startTime;
 		}
 	
 		Logger.getLogger(this.getClass()).info(
@@ -1760,16 +2061,147 @@ public class WSConnector {
 		}
 		return false;
 	}
-    public boolean createMetaOrderImg(int metaOrderId,String imgName) throws WSException{
+
+	private InputStream requestPost(String service,
+									String senderId,String secToken,
+									int metaOrderId,String imgName) throws WSException{
+		String path = service;
+		InputStream is = null;
+		HttpURLConnection uc = null;
+		URL url = null;
+		try {
+			url = new URL(path);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		Map<String, Object> requestParamsMap = new HashMap<String, Object>();
+		requestParamsMap.put("senderId", senderId);
+		requestParamsMap.put("secToken", secToken);
+		requestParamsMap.put("metaOrderId", metaOrderId);
+		requestParamsMap.put("imgName",imgName);
+
+		StringBuffer params = new StringBuffer();
+
+		// 组织请求参数
+		Iterator it = requestParamsMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry element = (Map.Entry) it.next();
+			params.append(element.getKey());
+			params.append("=");
+			params.append(element.getValue());
+			params.append("&");
+		}
+		if (params.length() > 0) {
+			params.deleteCharAt(params.length() - 1);
+		}
+
+
+		try {
+			uc = (HttpURLConnection) url.openConnection();
+			uc.setRequestProperty("accept", "*/*");
+			uc.setRequestProperty("connection", "Keep-Alive");
+			uc.setRequestProperty("Content-Length",
+					String.valueOf(params.length()));
+			uc.setRequestMethod("POST");
+			// uc.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+			// uc.setRequestProperty("Accept-Encoding", "gzip, deflate");
+			// uc.setRequestProperty("Accept-Language",
+			// "en,zh-cn;q=0.8,zh;q=0.5,en-us;q=0.3");
+			// uc.setRequestProperty("Cache-Control", "max-age=0");
+			// uc.setRequestProperty("Connection", "keep-alive");
+			// uc.setRequestProperty("User-Agent",
+			// "Mozilla/5.0 (Windows NT 6.1; rv:28.0) Gecko/20100101 Firefox/28.0");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		uc.setConnectTimeout(Util.REQ_TIME_OUT);
+		uc.setReadTimeout(Util.READ_TIME_OUT);
+		uc.setDoOutput(true);
+		uc.setDoInput(true);
+		try {
+			uc.connect();
+
+			// 建立输入流，向指向的URL传入参数
+			DataOutputStream dos = new DataOutputStream(uc.getOutputStream());
+			dos.writeBytes(params.toString());
+			dos.flush();
+			dos.close();
+
+		} catch (Exception e1) {
+			throw new WSException(ErrorCode.NET_WORK_TIME_OUT);
+		}
+		try {
+			System.out.println("rspCode=========================:"
+					+ uc.getResponseCode());
+			is = uc.getInputStream();
+		} catch (Exception e) {
+			throw new WSException(ErrorCode.NET_WORK_TIME_OUT);
+		}
+		return is;
+	}
+
+
+
+	private Element getPostXMLNode(String service,
+								   String senderId,String secToken,
+								   int metaOrderId,String imgName) throws WSException{
+		Logger.getLogger(this.getClass()).info(service);
+
+		InputStream is = requestPost(service,senderId,secToken,metaOrderId, imgName);
+
+		Logger.getLogger(this.getClass()).info("inputStream :" + is);
+		if (is == null) {
+			throw new WSException(ErrorCode.CONN_TO_WS_ERR);
+		}
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+
+		try {
+			builder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		Document document = null;
+		try {
+			document = builder.parse(is);
+		} catch (Exception e) {
+			e.printStackTrace();
+			is = null;
+			return null;
+		}
+		Logger.getLogger(this.getClass()).info("document :" + document);
+		Element rootElement = document.getDocumentElement();
+
+		Logger.getLogger(this.getClass()).info(rootElement.toString());
+		if (is != null) {
+			try {
+				is.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(listener!=null){
+			listener.handleErrorCode(getErrorCodeInElement(rootElement));
+		}
+
+		return rootElement;
+	}
+
+
+	public boolean createMetaOrderImg(int metaOrderId,String imgName) throws WSException, UnsupportedEncodingException {
     	String service = "";
-		service = WSConnector.wsUrl + "createMetaOrderImg?senderId="
-				+ this.userMap.get("userId") + "&secToken="
-				+ this.userMap.get("secToken")+"&metaOrderId="+metaOrderId 
-				+"&imgName="+imgName;
+		service = WSConnector.wsUrl + "createMetaOrderImg";
 		Logger.getLogger(this.getClass()).info(
 				"[createMetaOrderImg]  ws query = " + service);
 
-		Element root = getXMLNode(service);
+		Element root = getPostXMLNode(service,this.userMap.get("userId"),
+				this.userMap.get("secToken"),
+				metaOrderId,URLEncoder.encode(imgName,"UTF-8"));
 		if (root == null) {
 			throw new WSException(ErrorCode.REJECT);
 		}
@@ -1831,6 +2263,34 @@ public class WSConnector {
 		}
 		return null;
     }
+
+	public boolean updDecoOrder(int id,int state) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "updDecoOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
+				+"type=0&payState=0&carId=0&shopId=0&userId="+this.userMap.get("userId") ;
+		Logger.getLogger(this.getClass()).info(
+				"[updDecoOrder]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				return true;
+			}else {
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return false;
+	}
+
     public boolean delDecoOrder(int id) throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "delDecoOrder?senderId="
@@ -1964,19 +2424,19 @@ public class WSConnector {
 				+"&searchType="+searchType;
 		
 		if(shopId>0){
-			service="&shopId="+shopId;
+			service+="&shopId="+shopId;
 		}
 		if(carId>0){
-			service="&carId="+carId;
+			service+="&carId="+carId;
 		}
 		if(stationId>0){
-			service="&stationId="+stationId;
+			service+="&stationId="+stationId;
 		}
 		if(maxNum>0){
-			service="&maxNum="+maxNum;
+			service+="&maxNum="+maxNum;
 		}
 		if(startTime!=null){
-			service="&startTime="+startTime;
+			service+="&startTime="+startTime;
 		}
 	
 		Logger.getLogger(this.getClass()).info(

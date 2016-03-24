@@ -23,7 +23,7 @@ public class HeaderActivity extends FragmentActivity {
    protected ActionBar mActionbar;
    protected TextView tvTitle;
    protected Button rightBtn;
-
+   protected Button leftBtn;
     @Override
     protected void onStart() {
         super.onStart();
@@ -73,7 +73,7 @@ public class HeaderActivity extends FragmentActivity {
         tvTitle.setText(getIntent().getStringExtra("Title"));
 
         rightBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
-        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
+        leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
         leftBtn.setVisibility(View.VISIBLE);
 
         leftBtn.setOnClickListener(new View.OnClickListener() {

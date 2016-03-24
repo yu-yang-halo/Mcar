@@ -8,15 +8,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
+import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.manager.CarManagerActivity;
+import com.carbeauty.order.MyOrderActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -94,6 +97,20 @@ public class IndividualFragment extends Fragment {
                 data_list, R.layout.item01, from, to);
         individualListView.setAdapter(sim_adapter);
         individualListView.setDividerHeight(1);
+        individualListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getActivity(), MyOrderActivity.class);
+                if(position==0){
+                    intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_AFTER);
+                    intent.putExtra("Title","我的订单");
+                }else if(position==1){
+                    intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
+                    intent.putExtra("Title","我的预约");
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     class LoadUserInfoTask extends AsyncTask<String,String,String> {

@@ -1,11 +1,8 @@
 package com.carbeauty.order;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -22,17 +19,13 @@ import com.carbeauty.adapter.OilInfoAdapter;
 import com.carbeauty.adapter.OrderTimeAdapter;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
-import com.carbeauty.dialog.AcCarSelectDialog;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import cn.service.Constants;
+import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
-import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.OilInfo;
 import cn.service.bean.OrderStateType;
