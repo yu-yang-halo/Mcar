@@ -94,6 +94,24 @@ public class WSConnector {
 		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr + "/car/services/carwsapi/";
 	}
 
+	/*
+	   http://ip:80/upload/banner/图片名
+       http://ip:80/upload/goods/店铺ID/图片名
+       http://ip:80/upload/promotion/图片名
+
+	 */
+
+	public static String getBannerURL(String imageName){
+		return REQUEST_HEAD+IP1+"/upload/banner/"+imageName;
+	}
+	public static String getPromotionURL(String imageName){
+		return REQUEST_HEAD+IP1+"/upload/promotion/"+imageName;
+	}
+
+	public static String getGoodsURLPrefix(String shopId,String imageName){
+		return REQUEST_HEAD+IP1+"/upload/goods/"+shopId+"/"+imageName;
+	}
+
 	public Map<String, String> getUserMap() {
 		return userMap;
 	}
@@ -1496,7 +1514,7 @@ public class WSConnector {
 		service = WSConnector.wsUrl + "updOilOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
-				+"type=0&payState=0&userId="+this.userMap.get("userId") ;
+				+"&payState=0" ;
 		Logger.getLogger(this.getClass()).info(
 				"[updOilOrder]  ws query = " + service);
 
@@ -1799,7 +1817,7 @@ public class WSConnector {
 		service = WSConnector.wsUrl + "updMetaOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
-				+"type=0&payState=0&carId=0&shopId=0&stationId=0&userId="+this.userMap.get("userId") ;
+				+"&payState=0";
 		Logger.getLogger(this.getClass()).info(
 				"[updMetaOrder]  ws query = " + service);
 
@@ -2269,7 +2287,7 @@ public class WSConnector {
 		service = WSConnector.wsUrl + "updDecoOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
-				+"type=0&payState=0&carId=0&shopId=0&userId="+this.userMap.get("userId") ;
+				+"&payState=0" ;
 		Logger.getLogger(this.getClass()).info(
 				"[updDecoOrder]  ws query = " + service);
 

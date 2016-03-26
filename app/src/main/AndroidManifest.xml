@@ -111,6 +111,14 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".order.CouponActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".web.PanoramaActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <activity android:name=".order.LookShopActivity"
             android:screenOrientation="portrait">
@@ -129,6 +137,7 @@
 
         <activity android:name="me.iwf.photopicker.PhotoPagerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
 
 
 

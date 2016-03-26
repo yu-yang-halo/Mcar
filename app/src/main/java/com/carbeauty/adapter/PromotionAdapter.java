@@ -2,6 +2,7 @@ package com.carbeauty.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,12 @@ import android.widget.Toast;
 
 import com.carbeauty.R;
 import com.carbeauty.web.WebBroswerActivity;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.List;
 
 import cn.service.WSConnector;
+import cn.service.WSException;
 import cn.service.bean.PromotionInfoType;
 import cn.service.bean.ShopInfo;
 
@@ -61,18 +64,48 @@ public class PromotionAdapter extends BaseAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent=new Intent(ctx,WebBroswerActivity.class);
-                intent.putExtra("URL",promotionInfoTypes.get(position).getSrc());
-                intent.putExtra("Title","活动详情");
-                ctx.startActivity(intent);
-
-
-
-
+                new GetCouponTask(promotionInfoTypes.get(position).getId()).execute();
             }
         });
 
         return convertView;
+    }
+    class GetCouponTask extends AsyncTask<String,String,String>{
+        int promotionId;
+        KProgressHUD progressHUD;
+        GetCouponTask(int promotionId){
+            this.promotionId=promotionId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressHUD= KProgressHUD.create(ctx)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("领取中...")
+                    .setAnimationSpeed(1)
+                    .setDimAmount(0.3f)
+                    .show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                WSConnector.getInstance().updCoupon(promotionId);
+            } catch (WSException e) {
+                return e.getErrorMsg();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressHUD.dismiss();
+            if(s==null){
+                Toast.makeText(ctx,"购物券领取成功",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

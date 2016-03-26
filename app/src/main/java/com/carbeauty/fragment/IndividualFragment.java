@@ -19,6 +19,7 @@ import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.manager.CarManagerActivity;
+import com.carbeauty.order.CouponActivity;
 import com.carbeauty.order.MyOrderActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -107,6 +108,9 @@ public class IndividualFragment extends Fragment {
                 }else if(position==1){
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
                     intent.putExtra("Title","我的预约");
+                }else if(position==3){
+                    intent=new Intent(getActivity(), CouponActivity.class);
+                    intent.putExtra("Title","我的优惠券");
                 }
                 startActivity(intent);
             }

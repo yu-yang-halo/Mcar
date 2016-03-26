@@ -92,7 +92,7 @@
             android:text="2012-09-08"
             android:textSize="12sp"
             android:id="@+id/createTimeTxt"
-            android:layout_alignBottom="@+id/delBtn"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

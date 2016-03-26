@@ -68,6 +68,8 @@ public enum ErrorCode {
 	
 	DEVICE_NOT_ASSIGN_CLASS(1051,"The car has already exist"),
 	CAN_NOT_FIND_STATION(1052,"can't find the station"),
+	COUPUN_EXIST(1053,"优惠券不可重复领取"),
+	COUPUN_HAS_EMPTY(1054,"优惠券已全部被领取"),
 	REQ_TIME_OUT(1100, "网络慢。请稍后再试！"),
 	INTERNAL_CONN_ERROR(1101, "e联WS接口服务器连接错误"),
 	CODE_CACHE_NULL(1048, "Verification code cache is null"),

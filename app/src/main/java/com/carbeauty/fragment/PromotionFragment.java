@@ -67,7 +67,7 @@ public class PromotionFragment extends Fragment {
             try {
                 promotionInfoTypes = WSConnector.getInstance().getPromotionList(5);
             } catch (WSException e) {
-                e.printStackTrace();
+                return e.getErrorMsg();
             }
             System.out.println(promotionInfoTypes);
             return null;
@@ -80,7 +80,6 @@ public class PromotionFragment extends Fragment {
                 PromotionAdapter promotionAdapter=new PromotionAdapter(promotionInfoTypes,getActivity());
                 promlistView.setAdapter(promotionAdapter);
                 promlistView.setDividerHeight(2);
-
             }else {
                 Toast.makeText(getActivity(),s, Toast.LENGTH_SHORT).show();
             }

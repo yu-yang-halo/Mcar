@@ -40,7 +40,7 @@ public class MyOrderActivity extends HeaderActivity {
 
         swipeRefreshLayout=(PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         orderlistView= (ListView) findViewById(R.id.orderlistView);
-        orderlistView.setDividerHeight(50);
+        orderlistView.setDividerHeight(20);
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

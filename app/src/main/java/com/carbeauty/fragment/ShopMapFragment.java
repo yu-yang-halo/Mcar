@@ -1,5 +1,6 @@
 package com.carbeauty.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
+import com.carbeauty.web.PanoramaActivity;
 
 import java.util.List;
 
@@ -101,11 +103,21 @@ public class ShopMapFragment extends Fragment {
                 mBaiduMap.showInfoWindow(mInfoWindow);
                 Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
                 TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
+                Button photoRotoa= (Button) dialogMap.findViewById(R.id.photoRotoa);
+
                 contentView.setText( marker.getTitle());
                 closeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mBaiduMap.hideInfoWindow();
+                    }
+                });
+                photoRotoa.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getActivity(), PanoramaActivity.class);
+                        intent.putExtra("Title","门店全景");
+                        startActivity(intent);
                     }
                 });
                 return false;
