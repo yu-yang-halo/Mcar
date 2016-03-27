@@ -32,11 +32,11 @@ import cn.service.bean.UserInfo;
 /**
  * Created by Administrator on 2016/3/6.
  */
-public class ShopFragment extends Fragment implements LocationUpdateListenser {
+public class ShopFragment extends Fragment{
     ListView shoplistView;
     TextView textView;
     PullRefreshLayout swipeRefreshLayout;
-    MainActivity mainActivity;
+    LocationUpdateListenser mainActivity;
     BDLocation bdLocation;
     @Nullable
     @Override
@@ -61,7 +61,8 @@ public class ShopFragment extends Fragment implements LocationUpdateListenser {
     public void onAttach(Context context) {
         super.onAttach(context);
         mainActivity= (MainActivity) context;
-        mainActivity.setLocationUpdateListenser(this);
+        bdLocation=mainActivity.getLocation();
+
 
     }
 
@@ -71,11 +72,6 @@ public class ShopFragment extends Fragment implements LocationUpdateListenser {
         new ShopInfosTask().execute();
     }
 
-    @Override
-    public void onGetLocation(BDLocation bdLocation) {
-        this.bdLocation=bdLocation;
-        new ShopInfosTask().execute();
-    }
 
 
     class ShopInfosTask extends AsyncTask<String,String,String>{

@@ -30,7 +30,7 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import java.util.ArrayList;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements LocationUpdateListenser {
 	private Context mContext = this;
 	private ArrayList<Fragment> mFragments = new ArrayList<>();
 	private String[] mTitles = {"首页", "门店", "活动", "我的"};
@@ -49,18 +49,13 @@ public class MainActivity extends FragmentActivity {
 	private TextView tvTitle;
 	private ImageView logoImageView;
 	Button leftBtn;
-	public LocationClient mLocationClient = null;
-	public BDLocationListener myListener = new MyLocationListener();
-	LocationUpdateListenser locationUpdateListenser;
-	boolean ONLY_ONCE=true;
+	BDLocation bdLocation;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		mLocationClient = new LocationClient(getApplicationContext());
-		mLocationClient.registerLocationListener(myListener);
-		initLocation();
-		mLocationClient.start();
+		MyApplication application= (MyApplication) getApplication();
+		bdLocation=application.getMyLocation();
 
 
 		initCustomActionBar();
@@ -84,7 +79,6 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onTabSelect(int position) {
 				setSelectPos(position);
-
 
 
 			}
@@ -134,50 +128,16 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 
+		leftBtn.setText(bdLocation.getCity());
+
 		return true;
 	}
 
 
-	private void initLocation(){
-		SDKInitializer.initialize(getApplicationContext());
-		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
-		);
-		option.setCoorType("bd09ll");
-		int span=1000;
-		option.setScanSpan(span);
-		option.setIsNeedAddress(true);
-		option.setOpenGps(true);
-		option.setLocationNotify(true);
-		option.setIsNeedLocationDescribe(true);
-		option.setIsNeedLocationPoiList(true);
-		option.setIgnoreKillProcess(false);
-		option.SetIgnoreCacheException(false);
-		option.setEnableSimulateGps(false);
-		mLocationClient.setLocOption(option);
-	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mLocationClient.unRegisterLocationListener(myListener);
-	}
-    public void setLocationUpdateListenser(LocationUpdateListenser locationUpdateListenser){
-		this.locationUpdateListenser=locationUpdateListenser;
-	}
+	public BDLocation getLocation() {
 
-	public class MyLocationListener implements BDLocationListener {
-
-		@Override
-		public void onReceiveLocation(BDLocation location) {
-			leftBtn.setText(location.getCity());
-			ContentBox.loadString(MainActivity.this, ContentBox.KEY_LONG_LAT,
-					location.getLongitude() + ":" + location.getLatitude());
-            if(ONLY_ONCE){
-				locationUpdateListenser.onGetLocation(location);
-			}
-			ONLY_ONCE=false;
-
-		}
+		return bdLocation;
 	}
 }
