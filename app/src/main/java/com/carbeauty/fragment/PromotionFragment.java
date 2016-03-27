@@ -1,6 +1,7 @@
 package com.carbeauty.fragment;
 
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.adapter.PromotionAdapter;
 
@@ -53,8 +55,8 @@ public class PromotionFragment extends Fragment {
     }
 
     class PromotionInfoTask extends AsyncTask<String,String,String>{
-        List<PromotionInfoType> promotionInfoTypes= null;
-
+        List<PromotionInfoType> promotionInfoTypes;
+        List<Bitmap> bitmaps= new ArrayList<Bitmap>();
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -66,6 +68,17 @@ public class PromotionFragment extends Fragment {
 
             try {
                 promotionInfoTypes = WSConnector.getInstance().getPromotionList(5);
+
+                for (PromotionInfoType promotionInfoType:promotionInfoTypes){
+
+                   //String url= WSConnector.getPromotionURL(promotionInfoType.getImgName());
+                    String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
+
+                    bitmaps.add(ImageUtils.convertNetToBitmap(url));
+
+                }
+
+
             } catch (WSException e) {
                 return e.getErrorMsg();
             }
@@ -77,7 +90,7 @@ public class PromotionFragment extends Fragment {
         protected void onPostExecute(String s) {
             swipeRefreshLayout.setRefreshing(false);
             if(s==null){
-                PromotionAdapter promotionAdapter=new PromotionAdapter(promotionInfoTypes,getActivity());
+                PromotionAdapter promotionAdapter=new PromotionAdapter(promotionInfoTypes,getActivity(),bitmaps);
                 promlistView.setAdapter(promotionAdapter);
                 promlistView.setDividerHeight(2);
             }else {

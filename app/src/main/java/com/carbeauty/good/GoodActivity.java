@@ -3,6 +3,10 @@ package com.carbeauty.good;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -11,8 +15,10 @@ import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
+import com.carbeauty.ViewFindUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.order.HeaderActivity;
+import com.flyco.tablayout.SlidingTabLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,87 +28,96 @@ import java.util.Map;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.GoodInfo;
+import cn.service.bean.GoodsType;
 
 /**
  * Created by Administrator on 2016/3/22.
  */
 public class GoodActivity extends HeaderActivity {
-    GridView goodGridView;
+
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
     int shopId;
-    PullRefreshLayout  swipeRefreshLayout;
+    List<GoodsType> goodsTypes;
+
+    private GoodsInfoListenser listenser;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_goods);
-        shopId= ContentBox.getValueInt(this,ContentBox.KEY_SHOP_ID, 0);
         initCustomActionBar();
         rightBtn.setVisibility(View.GONE);
-        goodGridView= (GridView) findViewById(R.id.goodGridView);
-        swipeRefreshLayout= (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new GetGoodTask().execute();
-            }
-        });
+        shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
+        new GetGoodsTypeTask().execute();
 
-        new GetGoodTask().execute();
     }
 
-    class GetGoodTask extends AsyncTask<String,String,String>{
-        List<GoodInfo> goodInfos;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            swipeRefreshLayout.setRefreshing(true);
+
+    private void initSlidTab(){
+
+        for (GoodsType goodsType : goodsTypes) {
+            mFragments.add(SimpleCardFragment.getInstance(goodsType));
         }
+
+        View decorView = getWindow().getDecorView();
+        ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
+        vp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        /** indicator圆角色块 */
+        SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
+        tabLayout_10.setViewPager(vp);
+    }
+    class GetGoodsTypeTask extends AsyncTask<String,String,String>{
+        List<GoodInfo> goodInfos;
 
         @Override
         protected String doInBackground(String... params) {
             try {
+                goodsTypes= WSConnector.getInstance().getGoodsType();
                 goodInfos= WSConnector.getInstance().getGoodsList(shopId);
             } catch (WSException e) {
-                return e.getErrorMsg();
+               return e.getErrorMsg();
             }
-
 
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            swipeRefreshLayout.setRefreshing(false);
             if(s==null){
-                initGridView(goodInfos);
+                initSlidTab();
+                listenser.onCallback(goodInfos);
             }else {
                 Toast.makeText(GoodActivity.this,s,Toast.LENGTH_SHORT).show();
             }
         }
     }
-
-
-    private void initGridView(List<GoodInfo> goodInfos){
-        List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
-
-
-        for(GoodInfo goodInfo:goodInfos){
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("name", goodInfo.getName());
-            map.put("desc", goodInfo.getDesc());
-            map.put("price", goodInfo.getPrice());
-            data_list.add(map);
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
-        String [] from ={"name","desc","price"};
-        int [] to = {R.id.goodName,R.id.goodDesc,R.id.goodPriceTxt};
-        SimpleAdapter sim_adapter = new SimpleAdapter(this,
-                data_list, R.layout.grid_gooditem, from, to);
-        goodGridView.setAdapter(sim_adapter);
-        goodGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Toast.makeText(GoodActivity.this,"ok"+position,Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return goodsTypes.get(position).getName();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+    }
+
+    public void setListenser(GoodsInfoListenser listenser) {
+        this.listenser = listenser;
+    }
+
+    public interface GoodsInfoListenser{
+        public void onCallback(List<GoodInfo> goodInfos);
     }
 }

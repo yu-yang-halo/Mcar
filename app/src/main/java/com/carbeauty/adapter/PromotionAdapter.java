@@ -2,6 +2,8 @@ package com.carbeauty.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.web.WebBroswerActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -28,9 +31,11 @@ import cn.service.bean.ShopInfo;
 public class PromotionAdapter extends BaseAdapter {
     List<PromotionInfoType> promotionInfoTypes;
     Context ctx;
-    public PromotionAdapter(List<PromotionInfoType> promotionInfoTypes,Context ctx){
+    List<Bitmap> bitmaps;
+    public PromotionAdapter(List<PromotionInfoType> promotionInfoTypes,Context ctx,List<Bitmap> bms){
         this.promotionInfoTypes=promotionInfoTypes;
         this.ctx=ctx;
+        this.bitmaps=bms;
     }
     @Override
     public int getCount() {
@@ -60,7 +65,7 @@ public class PromotionAdapter extends BaseAdapter {
             convertView= LayoutInflater.from(ctx).inflate(R.layout.item1,null);
         }
         ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
-        imageView.setBackgroundResource(R.drawable.active_01);
+        imageView.setBackgroundDrawable(new BitmapDrawable(bitmaps.get(position)));
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

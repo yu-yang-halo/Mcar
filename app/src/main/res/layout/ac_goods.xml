@@ -1,24 +1,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tl="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.baoyz.widget.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:refreshColors="@array/scheme_colors">
-
-
-        <GridView
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearlayout">
+        <com.flyco.tablayout.SlidingTabLayout
+            android:id="@+id/tl_10"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/goodGridView"
-            android:background="#dddddd"
-            android:numColumns="2"
-            android:layout_marginTop="10dp"/>
+            android:layout_height="48dp"
+            android:background="#222831"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            tl:tl_indicator_color="#393E46"
+            tl:tl_indicator_corner_radius="5dp"
+            tl:tl_indicator_margin_left="2dp"
+            tl:tl_indicator_margin_right="2dp"
+            tl:tl_indicator_style="BLOCK"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="482dp"
 
-        </com.baoyz.widget.PullRefreshLayout>
+            android:layout_below="@+id/tl_10"
+            android:layout_alignParentBottom="true"
+           />
+    </RelativeLayout>
+
 
 
 </RelativeLayout>

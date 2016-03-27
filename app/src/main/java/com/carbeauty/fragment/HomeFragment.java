@@ -2,6 +2,7 @@ package com.carbeauty.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
@@ -44,6 +46,7 @@ public class HomeFragment extends Fragment {
     private GridView gridView;
     private ListView listView;
     private MainActivity mainActivity;
+    List<Bitmap> localImages;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -180,11 +183,10 @@ public class HomeFragment extends Fragment {
         listView.setDividerHeight(0);
     }
 
+
+
+
     private void initBanner(final List<BannerInfoType> bannerInfoTypes){
-        List<Integer> localImages=new ArrayList<Integer>();
-        localImages.add(R.drawable.ad);
-        localImages.add(R.drawable.ad);
-        localImages.add(R.drawable.ad);
         banner.setPages(
                 new CBViewHolderCreator<LocalImageHolderView>() {
                     @Override
@@ -220,6 +222,17 @@ public class HomeFragment extends Fragment {
         protected String doInBackground(String... params) {
             try {
                bannerInfoTypes=WSConnector.getInstance().getBannerList(3);
+               localImages=new ArrayList<Bitmap>();
+               for (BannerInfoType bannerInfoType:bannerInfoTypes){
+                   String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
+                   //String url=WSConnector.getBannerURL(bannerInfoType.getImgName());
+                   Bitmap bm=ImageUtils.convertNetToBitmap(url);
+                   if(bm!=null){
+                       localImages.add(bm);
+                   }
+
+               }
+
             } catch (WSException e) {
                 e.printStackTrace();
             }
@@ -236,7 +249,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    public class LocalImageHolderView implements Holder<Integer> {
+    public class LocalImageHolderView implements Holder<Bitmap> {
         private ImageView imageView;
         @Override
         public View createView(Context context) {
@@ -244,10 +257,9 @@ public class HomeFragment extends Fragment {
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             return imageView;
         }
-
         @Override
-        public void UpdateUI(Context context, final int position, Integer data) {
-            imageView.setImageResource(data);
+        public void UpdateUI(Context context, final int position, Bitmap bm) {
+            imageView.setImageBitmap(bm);
         }
     }
 
