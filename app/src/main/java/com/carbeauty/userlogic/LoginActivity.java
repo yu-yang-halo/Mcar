@@ -20,6 +20,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.service.MD5Generator;
 import cn.service.RegType;
 import cn.service.Util;
@@ -145,9 +151,20 @@ public class LoginActivity extends Activity {
 			if(result==null){
 				ContentCacheUtils.cacheUsernamePass(ctx, loginName, password);
 				Intent intent=new Intent();
-				intent.setClass(LoginActivity.this,MainActivity.class);
+				intent.setClass(LoginActivity.this, MainActivity.class);
 				startActivity(intent);
 				finish();
+
+				Set<String> tags=new HashSet<String>();
+				tags.add(loginName);
+				JPushInterface.setAliasAndTags(getApplicationContext(), null,tags, new TagAliasCallback() {
+					@Override
+					public void gotResult(int i, String s, Set<String> set) {
+
+					}
+				});
+
+
 			}else{
 				Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
 			}

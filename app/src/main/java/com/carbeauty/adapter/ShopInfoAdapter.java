@@ -145,7 +145,7 @@ public class ShopInfoAdapter extends BaseAdapter {
             if(s==null){
                 setSelectShopId(shopId);
                 notifyDataSetChanged();
-                ContentBox.loadInt(ctx, "shopId", shopId);
+                ContentBox.loadInt(ctx, ContentBox.KEY_SHOP_ID, shopId);
              }else{
                 Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
              }

@@ -37,6 +37,7 @@ public class WebBroswerActivity extends Activity {
         String url=getIntent().getStringExtra("URL");
         //Toast.makeText(this, getHttpURL(url), Toast.LENGTH_SHORT).show();
 
+
         WebSettings setting = webView.getSettings();
         setting.setJavaScriptEnabled(true);
         setting.setDefaultTextEncodingName("GBK");

@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.+'
     compile 'com.android.support:support-v4:23.1.1'
@@ -42,4 +42,5 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.6.0'
     compile 'info.hoang8f:android-segmented:1.0.6'
     compile files('src/main/jniLibs/BaiduLBS_Android.jar')
+    compile files('libs/jpush-android-2.1.0.jar')
 }

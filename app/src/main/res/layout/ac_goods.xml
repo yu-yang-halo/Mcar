@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:refreshColors="@array/scheme_colors">
+
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/goodGridView"
+            android:background="#dddddd"
+            android:numColumns="2"
+            android:layout_marginTop="10dp"/>
+
+        </com.baoyz.widget.PullRefreshLayout>
+
+
+</RelativeLayout>

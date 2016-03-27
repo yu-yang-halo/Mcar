@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,13 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
+import com.carbeauty.cache.ContentBox;
+import com.carbeauty.order.OrderResultActivity;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.carbeauty.Constants;
+import cn.service.WSConnector;
+import cn.service.WSException;
+import cn.service.bean.MetaOrderInfo;
 import me.iwf.photopicker.PhotoPickerActivity;
 import me.iwf.photopicker.utils.PhotoPickerIntent;
 
@@ -44,12 +52,29 @@ public class MetaFreeFragment extends Fragment {
     ImageView upimage22;
     ImageView upimage33;
 
+    List<Bitmap> typeBitmaps0;
+    List<Bitmap> typeBitmaps1;
+
+    Button commitBtn;
+
+    private int shopId;
+    private int carId;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=inflater.from(getActivity()).inflate(R.layout.fr_metafree, null);
+
+
+        shopId= ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID, 0);
+        carId=ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, 0);
+
+
         btn0= (Button) v.findViewById(R.id.button3);
         btn1= (Button) v.findViewById(R.id.button4);
+
+        commitBtn= (Button) v.findViewById(R.id.button5);
 
         upimage0= (ImageView) v.findViewById(R.id.upimage0);
         upimage1= (ImageView) v.findViewById(R.id.upimage1);
@@ -83,11 +108,26 @@ public class MetaFreeFragment extends Fragment {
         });
 
 
+        commitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(typeBitmaps0!=null){
+
+                    new OrderCommitTask().execute();
+
+                }else{
+                    Toast.makeText(getActivity(),"请添加车辆受损照片",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return v;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK && requestCode == TAKE_PHOTO_WITH_DATA0) {
             if (data != null) {
                 clearImageView(TAKE_PHOTO_WITH_DATA0);
@@ -138,7 +178,7 @@ public class MetaFreeFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             for (String path:photos){
-                bitmaps.add(ImageUtils.convertToBitmap(path, 400,400));
+                bitmaps.add(ImageUtils.convertToBitmap(path, 100,100));
             }
 
             return null;
@@ -147,10 +187,20 @@ public class MetaFreeFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
            if(bitmaps!=null&&bitmaps.size()>0){
+
+               if(requestCode==TAKE_PHOTO_WITH_DATA0){
+                   typeBitmaps0=bitmaps;
+               }else if(requestCode==TAKE_PHOTO_WITH_DATA1){
+                   typeBitmaps1=bitmaps;
+               }
+
+
                for (int i=0;i<bitmaps.size();i++){
 
                    initImageView(i,new BitmapDrawable(getResources(),bitmaps.get(i)));
                }
+
+
            }
         }
 
@@ -180,6 +230,87 @@ public class MetaFreeFragment extends Fragment {
 
 
 
+    }
+
+    class OrderCommitTask extends AsyncTask<String,String,String>{
+        KProgressHUD progressHUD;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            carId=ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, 0);
+
+            progressHUD= KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("预约中...")
+                    .setAnimationSpeed(1)
+                    .setDimAmount(0.3f)
+                    .show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+                MetaOrderInfo metaOrderInfo=new MetaOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                        Constants.STATE_ORDER_UNFINISHED,Constants.PAY_STATE_UNFINISHED,0,
+                        carId,shopId,0,0,0,null,null, null,
+                        null,
+                        null);
+                try {
+                    metaOrderInfo=WSConnector.getInstance().createMetaOrder(metaOrderInfo);
+                    if(typeBitmaps0!=null&&typeBitmaps0.size()>0){
+
+                        for (Bitmap bm:typeBitmaps0){
+                            try {
+                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bm));
+                            } catch (UnsupportedEncodingException e) {
+                                return e.getMessage();
+                            }
+
+                        }
+
+                    }
+                    if(typeBitmaps1!=null&&typeBitmaps1.size()>0){
+
+                        for (Bitmap bm:typeBitmaps1){
+                            try {
+                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bm));
+                            } catch (UnsupportedEncodingException e) {
+                                return e.getMessage();
+                            }
+
+                        }
+
+                    }
+
+
+
+
+
+                } catch (WSException e) {
+                    return e.getErrorMsg();
+                }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            boolean orderIsOk=false;
+            progressHUD.dismiss();
+            if(s==null){
+                orderIsOk=true;
+                // Toast.makeText(OrderReokActivity.this,"订单提交成功",Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+            }
+
+            Intent intent=new Intent(getActivity(),OrderResultActivity.class);
+            intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_META2);
+            intent.putExtra(Constants.ORDER_RESULT_IS_OK,orderIsOk);
+            intent.putExtra("Title","");
+            startActivity(intent);
+            getActivity().finish();
+
+        }
     }
 
 

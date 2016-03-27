@@ -33,5 +33,15 @@ public class BannerInfoType {
 		this.imgName = imgName;
 		this.src = src;
 	}
+	/*
+
+
+	http://ip:80/upload/banner/图片名
+    http://ip:80/upload/goods/店铺ID/图片名
+    http://ip:80/upload/promotion/图片名
+
+
+
+	 */
 	
 }

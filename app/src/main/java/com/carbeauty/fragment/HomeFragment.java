@@ -2,11 +2,9 @@ package com.carbeauty.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +15,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.baoyz.widget.PullRefreshLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
@@ -30,18 +23,18 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.good.GoodActivity;
 import com.carbeauty.order.LookShopActivity;
 import com.carbeauty.order.MetalplateActivity;
 import com.carbeauty.order.WashOilActivity;
 import com.carbeauty.web.WebBroswerActivity;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.service.Constants;
+import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.BannerInfoType;
@@ -140,9 +133,12 @@ public class HomeFragment extends Fragment {
                         startActivity(intent);
                     } else if (position == 2) {
                         toMetalplate(position);
-                    }else if(position==3){
+                    } else if (position == 3) {
                         toLookShop(position);
+                    } else if (position == 5) {
+                        toGoods(position);
                     }
+
 
                 }
 
@@ -156,6 +152,11 @@ public class HomeFragment extends Fragment {
     }
     private void toLookShop(int position){
         Intent intent=new Intent(getActivity(), LookShopActivity.class);
+        intent.putExtra("Title", iconName[position]);
+        startActivity(intent);
+    }
+    private void toGoods(int position){
+        Intent intent=new Intent(getActivity(), GoodActivity.class);
         intent.putExtra("Title", iconName[position]);
         startActivity(intent);
     }

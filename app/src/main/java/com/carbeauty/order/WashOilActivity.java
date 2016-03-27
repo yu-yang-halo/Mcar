@@ -1,11 +1,8 @@
 package com.carbeauty.order;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -22,17 +19,13 @@ import com.carbeauty.adapter.OilInfoAdapter;
 import com.carbeauty.adapter.OrderTimeAdapter;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
-import com.carbeauty.dialog.AcCarSelectDialog;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import cn.service.Constants;
+import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
-import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.OilInfo;
 import cn.service.bean.OrderStateType;
@@ -41,13 +34,12 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 /**
  * Created by Administrator on 2016/3/10.
  */
-public class WashOilActivity extends Activity {
+public class WashOilActivity extends HeaderActivity {
 
 
     private int ac_type_value=0;
 
-    private ActionBar mActionbar;
-    private TextView tvTitle;
+
     private int shopId;
     private GridView gridView;
     private ListView listView;
@@ -55,7 +47,7 @@ public class WashOilActivity extends Activity {
     TextView itemNums;
     Button bOrderBtn;
 
-    Button rightBtn;
+
 
     DecorationAdapter decorationAdapter;
     OilInfoAdapter oilInfoAdapter;
@@ -148,6 +140,10 @@ public class WashOilActivity extends Activity {
     }
 
     private void initData(){
+
+
+
+
         float total=0;
         int data=0;
 
@@ -176,31 +172,6 @@ public class WashOilActivity extends Activity {
         itemNums.setText(data+"");
         itemTotalPrice.setText(total+"元");
 
-        List<CarInfo> carInfos=IDataHandler.getInstance().getCarInfos();
-
-        if(carInfos!=null&&carInfos.size()>0){
-            CarInfo selCar=null;
-            for (CarInfo carInfo:carInfos){
-                if(ContentBox.getValueInt(this,ContentBox.KEY_CAR_ID,-1)==carInfo.getId()){
-                    selCar=carInfo;
-                }
-            }
-            if(selCar==null){
-                selCar=carInfos.get(0);
-            }
-            rightBtn.setText(selCar.getNumber());
-            ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,selCar.getId());
-        }
-        if(carInfos.size()>1){
-            rightBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent=new Intent(WashOilActivity.this, AcCarSelectDialog.class);
-                    startActivityForResult(intent,100);
-                }
-            });
-
-        }
     }
     private void initDecorationListView(List<DecorationInfo> decorationInfos){
         decorationAdapter=new DecorationAdapter(decorationInfos,this);
@@ -279,33 +250,6 @@ public class WashOilActivity extends Activity {
 
 
 
-
-    private boolean initCustomActionBar() {
-        mActionbar = getActionBar();
-        if (mActionbar == null) {
-            return false;
-        }
-        mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        mActionbar.setDisplayShowCustomEnabled(true);
-        mActionbar.setCustomView(R.layout.header_home1);
-        tvTitle = (TextView) mActionbar.getCustomView().findViewById(R.id.tv_tbb_title);
-        tvTitle.setText(getIntent().getStringExtra("Title"));
-
-        rightBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
-        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
-        leftBtn.setVisibility(View.VISIBLE);
-
-        leftBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

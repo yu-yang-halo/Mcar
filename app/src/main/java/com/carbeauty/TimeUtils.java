@@ -1,5 +1,6 @@
 package com.carbeauty;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,5 +26,40 @@ public class TimeUtils {
 		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd+HH+mm+ss");
 
 		return simpleDateFormat.format(date);
+	}
+
+	public static Date formatString(String timeStr){
+		String format = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		try {
+			Date time = sdf.parse(timeStr);
+			return time;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static String getShowTime(String timeStr){
+		Date date=formatString(timeStr);
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return simpleDateFormat.format(date);
+	}
+	public static String getShowTime(String timeStr,String format){
+		Date date=formatString(timeStr);
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat(format);
+		return simpleDateFormat.format(date);
+	}
+
+	public static boolean isOverTime(String endTime){
+		Date date=formatString(endTime);
+		Date nowTime=new Date();
+
+		int retVal=nowTime.compareTo(date);
+
+		if(retVal>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }
