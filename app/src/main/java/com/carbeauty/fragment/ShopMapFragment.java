@@ -31,6 +31,7 @@ import com.carbeauty.web.PanoramaActivity;
 
 import java.util.List;
 
+import cn.service.WSConnector;
 import cn.service.bean.ShopInfo;
 
 /**
@@ -74,17 +75,22 @@ public class ShopMapFragment extends Fragment {
         return v;
 
     }
-    private void addPointToMap(double lgt,double lat,String shopName){
+    private void addPointToMap(ShopInfo shopInfo){
         //定义Maker坐标点
-        LatLng point = new LatLng(lat, lgt);
+        LatLng point = new LatLng(shopInfo.getLatitude(), shopInfo.getLongitude());
 //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.maker);
+        Bundle bundle=new Bundle();
+        bundle.putString("URL", WSConnector.getPanoramaURL(shopInfo.getShopId()+"",shopInfo.getPanorama()));
+        bundle.putString("NAME",shopInfo.getName());
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
-                .title(shopName)
+                .title(shopInfo.getName())
+                .extraInfo(bundle)
                 .icon(bitmap);
+
 
 //在地图上添加Marker，并显示
         mBaiduMap.addOverlay(option);
@@ -95,6 +101,8 @@ public class ShopMapFragment extends Fragment {
                 //创建InfoWindow展示的view
 
                 View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
+                final String url=marker.getExtraInfo().getString("URL");
+                final String name=marker.getExtraInfo().getString("NAME");
 
 
 //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
@@ -116,7 +124,8 @@ public class ShopMapFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent=new Intent(getActivity(), PanoramaActivity.class);
-                        intent.putExtra("Title","门店全景");
+                        intent.putExtra("Title",name);
+                        intent.putExtra("URL",url);
                         startActivity(intent);
                     }
                 });
@@ -133,7 +142,7 @@ public class ShopMapFragment extends Fragment {
             return;
         }
         for (ShopInfo shopInfo: shopInfos){
-            addPointToMap(shopInfo.getLongitude(),shopInfo.getLatitude(),shopInfo.getName());
+            addPointToMap(shopInfo);
         }
 
     }

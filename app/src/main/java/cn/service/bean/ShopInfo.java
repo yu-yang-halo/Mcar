@@ -7,6 +7,7 @@ public class ShopInfo {
 	private float latitude;
 	private int cityId;
 	private String desc;
+	private String panorama;
 
 	public int getShopId() {
 		return shopId;
@@ -57,7 +58,7 @@ public class ShopInfo {
 	}
 
 	public ShopInfo(int shopId, String name, float longitude, float latitude,
-			int cityId, String desc) {
+			int cityId, String desc,String panorama) {
 		super();
 		this.shopId = shopId;
 		this.name = name;
@@ -65,15 +66,23 @@ public class ShopInfo {
 		this.latitude = latitude;
 		this.cityId = cityId;
 		this.desc = desc;
+		this.panorama=panorama;
 	}
 
 
+	public String getPanorama() {
+		return panorama;
+	}
+
+	public void setPanorama(String panorama) {
+		this.panorama = panorama;
+	}
 
 	@Override
 	public String toString() {
 		return "ShopInfo [shopId=" + shopId + ", name=" + name + ", longitude="
 				+ longitude + ", latitude=" + latitude + ", cityId=" + cityId
-				+ ", desc=" + desc + "]";
+				+ ", desc=" + desc + ",panorama="+panorama+"]";
 	}
 
 }

@@ -43,4 +43,6 @@ dependencies {
     compile 'info.hoang8f:android-segmented:1.0.6'
     compile files('src/main/jniLibs/BaiduLBS_Android.jar')
     compile files('libs/jpush-android-2.1.0.jar')
+
+
 }

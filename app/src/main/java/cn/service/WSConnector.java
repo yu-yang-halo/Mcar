@@ -95,21 +95,24 @@ public class WSConnector {
 	}
 
 	/*
-	   http://ip:80/upload/banner/图片名
-       http://ip:80/upload/goods/店铺ID/图片名
-       http://ip:80/upload/promotion/图片名
-
+	   http://ip:80/kele/upload/banner/图片名
+       http://ip:80/kele/upload/goods/店铺ID/图片名
+       http://ip:80/kele/upload/promotion/图片名
+       http://ip:80/kele/upload/panorama/店铺ID/图片名
 	 */
 
 	public static String getBannerURL(String imageName){
-		return REQUEST_HEAD+IP1+"/upload/banner/"+imageName;
+		return REQUEST_HEAD+IP1+"/kele/upload/banner/"+imageName;
 	}
 	public static String getPromotionURL(String imageName){
-		return REQUEST_HEAD+IP1+"/upload/promotion/"+imageName;
+		return REQUEST_HEAD+IP1+"/kele/upload/promotion/"+imageName;
 	}
 
-	public static String getGoodsURLPrefix(String shopId,String imageName){
-		return REQUEST_HEAD+IP1+"/upload/goods/"+shopId+"/"+imageName;
+	public static String getGoodsURL(String shopId,String imageName){
+		return REQUEST_HEAD+IP1+"/kele/upload/goods/"+shopId+"/"+imageName;
+	}
+	public static String getPanoramaURL(String shopId,String imageName){
+		return REQUEST_HEAD+IP1+"/kele/upload/panorama/"+shopId+"/"+imageName;
 	}
 
 	public Map<String, String> getUserMap() {
@@ -542,6 +545,9 @@ public class WSConnector {
 				.item(0);
 		Element descNode = (Element) element.getElementsByTagName(
 				"desc").item(0);
+
+		Element panoramaNode = (Element) element.getElementsByTagName(
+				"panorama").item(0);
 		int shopId =-1;
 		int cityId=-1;
 		
@@ -561,13 +567,17 @@ public class WSConnector {
 		
 		String name = "";
 		String desc = "";
+		String panorama="";
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
 		if (descNode != null && descNode.getFirstChild() != null) {
 			desc = descNode.getFirstChild().getNodeValue();
 		}
-		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude, latitude, cityId, desc);
+		if (panoramaNode != null && panoramaNode.getFirstChild() != null) {
+			panorama = panoramaNode.getFirstChild().getNodeValue();
+		}
+		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude, latitude, cityId, desc,panorama);
 		
 		return shopInfo;
 	}
@@ -1398,7 +1408,9 @@ public class WSConnector {
 				"src").item(0);
 		Element shopIdNode = (Element) element.getElementsByTagName(
 				"shopId").item(0);
-		int  id=-1,isShow=-1,isChange=-1,shopId=-1;
+		Element typeNode = (Element) element.getElementsByTagName(
+				"type").item(0);
+		int  id=-1,isShow=-1,isChange=-1,shopId=-1,type=-1;
 		float price=0;
 		String name="",desc="",src="";
 		if (idNode != null && idNode.getFirstChild() != null) {
@@ -1412,6 +1424,9 @@ public class WSConnector {
 		}
 		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
 			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
+		}
+		if (typeNode != null && typeNode.getFirstChild() != null) {
+			type = Integer.parseInt(typeNode.getFirstChild().getNodeValue());
 		}
 		if (priceNode != null && priceNode.getFirstChild() != null) {
 			price = Float.parseFloat(priceNode.getFirstChild().getNodeValue());
@@ -1427,7 +1442,7 @@ public class WSConnector {
 			src =srcNode.getFirstChild().getNodeValue();
 		}
 		
-		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId);
+		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type);
 		return goodInfo;
 	}
 	public List<GoodInfo> getGoodsList(int shopId) throws WSException{

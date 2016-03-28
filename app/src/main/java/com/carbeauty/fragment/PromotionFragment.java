@@ -71,8 +71,8 @@ public class PromotionFragment extends Fragment {
 
                 for (PromotionInfoType promotionInfoType:promotionInfoTypes){
 
-                   //String url= WSConnector.getPromotionURL(promotionInfoType.getImgName());
-                    String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
+                    String url= WSConnector.getPromotionURL(promotionInfoType.getImgName());
+                    //String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
 
                     bitmaps.add(ImageUtils.convertNetToBitmap(url));
 

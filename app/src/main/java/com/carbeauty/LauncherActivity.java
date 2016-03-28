@@ -12,6 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import cn.jpush.android.api.JPushInterface;
+
 public class LauncherActivity extends Activity {
 	private static final int MSG_CODE_DISMISS=101;
 	private static final int ANIMATION_DURATION=3000;
@@ -37,6 +39,19 @@ public class LauncherActivity extends Activity {
 		
 		dissmissDelay(ANIMATION_DURATION);
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		JPushInterface.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	    JPushInterface.onPause(this);
+	}
+
 	private void dissmissDelay(int delayMillis){
 	    handler.postDelayed(new Runnable() {
 			@Override
@@ -52,5 +67,6 @@ public class LauncherActivity extends Activity {
 	   	intent.setClass(LauncherActivity.this,LoginActivity.class);
 	   	startActivity(intent);
 	   	finish();
+
 	}
 }

@@ -44,7 +44,7 @@ public enum ErrorCode {
 	CAN_NOT_DEL(1020, "名称被使用，不能删除。"),
 	SERVICE_CLIENT_LOGOFF(1021, "The client for the services is not logged in."),
 	EMPTY_DATA(1022, "设备属性已经被使用。"),
-	PERMISSION_DENY(1023, "没有权限"),
+	PERMISSION_DENY(1023, "登录失效,请重新登录"),
 	INVALID_OBJECT_ID(1024, "设备ID错误。"),
 	INVALID_FIELD_ID(1025, "字段ID错误。"),
 	INVALID_FIELD_NAME(1026, "字段名称错误。"),

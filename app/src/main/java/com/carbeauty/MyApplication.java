@@ -1,17 +1,31 @@
 package com.carbeauty;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
+import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.userlogic.LoginActivity;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
+import cn.service.ErrorCode;
+import cn.service.IWSErrorCodeListener;
+import cn.service.WSConnector;
 
 /**
  * Created by Administrator on 2016/3/20.
@@ -22,6 +36,28 @@ public class MyApplication extends Application {
     private LocationClient mLocationClient = null;
     private BDLocationListener myListener = new MyLocationListener();
     private BDLocation bdLocation;
+
+    private Handler applicationHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            ErrorCode errorCode= ErrorCode.get(msg.what);
+            if(errorCode==ErrorCode.PERMISSION_DENY){
+
+                DialogManagerUtils.showMessage(MyActivityManager.getInstance().getCurrentActivity(), "提示", "登录超时，请重新登录", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(MyActivityManager.getInstance().getCurrentActivity(), LoginActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+
+
+
+
+            }
+        }
+    };
 
     public void onLowMemory() {
         super.onLowMemory();
@@ -41,7 +77,58 @@ public class MyApplication extends Application {
         JPushInterface.init(this);     		// 初始化 JPush
 
         setStyleBasic();
+
+        WSConnector.getInstance().setWSErrorCodeListener(new IWSErrorCodeListener() {
+            @Override
+            public void handleErrorCode(ErrorCode errorcode) {
+                Message message = new Message();
+                message.what = errorcode.getCode();
+                applicationHandler.sendMessage(message);
+            }
+        });
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                MyActivityManager.getInstance().setCurrentActivity(activity);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+
     }
+
+
+
+
     /**
      *设置通知提示方式 - 基础属性
      */

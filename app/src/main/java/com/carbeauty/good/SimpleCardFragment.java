@@ -2,6 +2,7 @@ package com.carbeauty.good;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
+import com.carbeauty.adapter.GoodsAdapter;
 import com.carbeauty.cache.ContentBox;
 
 import java.util.ArrayList;
@@ -30,23 +32,32 @@ import cn.service.bean.GoodsType;
 
 
 @SuppressLint("ValidFragment")
-public class SimpleCardFragment extends Fragment implements GoodActivity.GoodsInfoListenser {
+public class SimpleCardFragment extends Fragment {
     GridView goodGridView;
     PullRefreshLayout  swipeRefreshLayout;
     GoodsType goodsType;
+    List<GoodInfo> goodInfos;
     GoodActivity goodActivity;
-    public static SimpleCardFragment getInstance(GoodsType goodsType) {
+    public static SimpleCardFragment getInstance(GoodsType goodsType, List<GoodInfo> goodInfos) {
         SimpleCardFragment sf = new SimpleCardFragment();
         sf.goodsType=goodsType;
+        sf.filterMyGoodInfos(goodsType,goodInfos);
         return sf;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        goodActivity= (GoodActivity) context;
-        goodActivity.setListenser(this);
+    private void filterMyGoodInfos(GoodsType goodsType, List<GoodInfo> goodInfosParam){
+        this.goodInfos=new ArrayList<GoodInfo>();
+
+        for (GoodInfo goodInfo:goodInfosParam){
+            if(goodInfo.getType()!=goodsType.getId()){
+                continue;
+            }
+            this.goodInfos.add(goodInfo);
+        }
+
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,68 +72,23 @@ public class SimpleCardFragment extends Fragment implements GoodActivity.GoodsIn
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new GetGoodTask().execute();
+
             }
         });
 
-        new GetGoodTask().execute();
+        initGridView();
         return v;
     }
 
-    @Override
-    public void onCallback(List<GoodInfo> goodInfos) {
-
-    }
-
-    class GetGoodTask extends AsyncTask<String,String,String> {
-        List<GoodInfo> goodInfos;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                goodInfos= WSConnector.getInstance().getGoodsList(shopId);
-            } catch (WSException e) {
-                return e.getErrorMsg();
-            }
 
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            swipeRefreshLayout.setRefreshing(false);
-            if(s==null){
-                initGridView(goodInfos);
-            }else {
-                Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 
-    private void initGridView(List<GoodInfo> goodInfos){
-        List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
 
+    private void initGridView(){
+        GoodsAdapter goodsAdapter=new GoodsAdapter(getActivity(),goodInfos);
 
-        for(GoodInfo goodInfo:goodInfos){
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("name", goodInfo.getName());
-            map.put("desc", goodInfo.getDesc());
-            map.put("price", goodInfo.getPrice());
-            data_list.add(map);
-        }
-        String [] from ={"name","desc","price"};
-        int [] to = {R.id.goodName,R.id.goodDesc,R.id.goodPriceTxt};
-        SimpleAdapter sim_adapter = new SimpleAdapter(getActivity(),
-                data_list, R.layout.grid_gooditem, from, to);
-        goodGridView.setAdapter(sim_adapter);
+        goodGridView.setAdapter(goodsAdapter);
         goodGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

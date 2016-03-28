@@ -6,7 +6,7 @@ public class GoodInfo {
 	public String toString() {
 		return "GoodInfo [id=" + id + ", name=" + name + ", desc=" + desc
 				+ ", isShow=" + isShow + ", isChange=" + isChange + ", price="
-				+ price + ", src=" + src + ", shopId=" + shopId + "]";
+				+ price + ", src=" + src + ", shopId=" + shopId + ",type="+type+" ]";
 	}
 	public int getId() {
 		return id;
@@ -58,8 +58,18 @@ public class GoodInfo {
 	private float price;
 	private String src;
 	private int shopId;
+	private int type;
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	public GoodInfo(int id, String name, String desc, int isShow, int isChange,
-			float price, String src, int shopId) {
+			float price, String src, int shopId,int type) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -67,8 +77,10 @@ public class GoodInfo {
 		this.isShow = isShow;
 		this.isChange = isChange;
 		this.price = price;
+
 		this.src = src;
 		this.shopId = shopId;
+		this.type=type;
 	}
 	public int getShopId() {
 		return shopId;

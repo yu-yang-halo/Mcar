@@ -1,5 +1,6 @@
 package com.carbeauty.good;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.ViewFindUtils;
 import com.carbeauty.cache.ContentBox;
@@ -38,8 +40,6 @@ public class GoodActivity extends HeaderActivity {
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     int shopId;
     List<GoodsType> goodsTypes;
-
-    private GoodsInfoListenser listenser;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +53,10 @@ public class GoodActivity extends HeaderActivity {
 
 
 
-    private void initSlidTab(){
+    private void initSlidTab( List<GoodInfo> goodInfos){
 
         for (GoodsType goodsType : goodsTypes) {
-            mFragments.add(SimpleCardFragment.getInstance(goodsType));
+            mFragments.add(SimpleCardFragment.getInstance(goodsType,goodInfos));
         }
 
         View decorView = getWindow().getDecorView();
@@ -75,6 +75,9 @@ public class GoodActivity extends HeaderActivity {
             try {
                 goodsTypes= WSConnector.getInstance().getGoodsType();
                 goodInfos= WSConnector.getInstance().getGoodsList(shopId);
+
+
+
             } catch (WSException e) {
                return e.getErrorMsg();
             }
@@ -85,8 +88,8 @@ public class GoodActivity extends HeaderActivity {
         @Override
         protected void onPostExecute(String s) {
             if(s==null){
-                initSlidTab();
-                listenser.onCallback(goodInfos);
+                initSlidTab(goodInfos);
+
             }else {
                 Toast.makeText(GoodActivity.this,s,Toast.LENGTH_SHORT).show();
             }
@@ -113,11 +116,4 @@ public class GoodActivity extends HeaderActivity {
         }
     }
 
-    public void setListenser(GoodsInfoListenser listenser) {
-        this.listenser = listenser;
-    }
-
-    public interface GoodsInfoListenser{
-        public void onCallback(List<GoodInfo> goodInfos);
-    }
 }

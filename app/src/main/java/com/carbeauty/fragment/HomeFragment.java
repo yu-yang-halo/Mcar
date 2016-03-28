@@ -224,8 +224,8 @@ public class HomeFragment extends Fragment {
                bannerInfoTypes=WSConnector.getInstance().getBannerList(3);
                localImages=new ArrayList<Bitmap>();
                for (BannerInfoType bannerInfoType:bannerInfoTypes){
-                   String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
-                   //String url=WSConnector.getBannerURL(bannerInfoType.getImgName());
+                   //String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
+                   String url=WSConnector.getBannerURL(bannerInfoType.getImgName());
                    Bitmap bm=ImageUtils.convertNetToBitmap(url);
                    if(bm!=null){
                        localImages.add(bm);
