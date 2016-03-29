@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white_ios"
+    android:orientation="vertical" >
+
+
+
+    <Button
+        android:id="@+id/leftBtn"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@null"
+        android:text="返回"
+        android:textColor="@color/black"
+        android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="26sp"
+        android:gravity="center"
+        android:id="@+id/titleTxt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/cart6"
+        android:id="@+id/cartButton"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

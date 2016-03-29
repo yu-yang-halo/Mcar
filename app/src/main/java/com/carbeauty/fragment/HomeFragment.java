@@ -121,10 +121,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
+                int carId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
                 if (shopId <= 0) {
                     mainActivity.setSelectPos(1);
                     Toast.makeText(getActivity(), "请先选择店铺", Toast.LENGTH_SHORT).show();
                 } else {
+
+                    if(carId<=0){
+                        Toast.makeText(getActivity(), "为了不影响您的订单提交，请添加车牌信息", Toast.LENGTH_SHORT).show();
+                    }
+
                     if (position == 0 || position == 1) {
                         Intent intent = new Intent(getActivity(), WashOilActivity.class);
                         if (position == 0) {

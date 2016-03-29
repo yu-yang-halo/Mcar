@@ -1,6 +1,7 @@
 package com.carbeauty.web;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -17,11 +18,15 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 public class PanoramaActivity extends HeaderActivity {
     WebView webView;
     KProgressHUD progressHUD;
+    String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_panorama);
         initCustomActionBar();
+        url=getIntent().getStringExtra("URL");
+        Log.v("URL","URL:::"+url);
+
         rightBtn.setVisibility(View.GONE);
 
         webView= (WebView) findViewById(R.id.webView);
@@ -45,7 +50,7 @@ public class PanoramaActivity extends HeaderActivity {
                 if (progress == 100) {
                     progressHUD.dismiss();
 
-                    String url="http://himg2.huanqiu.com/attachment2010/2016/0325/20160325075958692.jpg";
+                    //String url="http://himg2.huanqiu.com/attachment2010/2016/0325/20160325075958692.jpg";
                     webView.loadUrl("javascript:initImageURL('"+url+"')");
                 }
             }

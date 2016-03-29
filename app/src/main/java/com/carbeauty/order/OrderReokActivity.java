@@ -194,6 +194,12 @@ public class OrderReokActivity extends HeaderActivity {
         createOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(carId<=0){
+                    Toast.makeText(OrderReokActivity.this,"没有车牌信息，请添加车牌",Toast.LENGTH_SHORT).show();
+                    return ;
+                }
+
+
                 if(ac_type_value==Constants.AC_TYPE_WASH){
                     if(decorationInfoSet!=null&&decorationInfoSet.size()>0){
                         new OrderCommitTask().execute();
@@ -324,6 +330,7 @@ public class OrderReokActivity extends HeaderActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==100&&resultCode>0){
             ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,resultCode);
+            carId=ContentBox.getValueInt(this, ContentBox.KEY_CAR_ID, 0);
             rightBtn.setText(data.getStringExtra("number"));
         }
     }

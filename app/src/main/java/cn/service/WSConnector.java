@@ -82,8 +82,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	private static String IP1 = "liuzhi1212.gicp.net";
-	//private static String IP1 = "192.168.1.109";
+	//private static String IP1 = "liuzhi1212.gicp.net";
+	private static String IP1 = "192.168.2.177";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();

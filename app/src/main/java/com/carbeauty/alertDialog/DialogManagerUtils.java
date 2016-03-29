@@ -25,6 +25,18 @@ public class DialogManagerUtils {
                         .show();
 
     }
+    public static void showMessageAndCancel(Context ctx,String title,String message,DialogInterface.OnClickListener listener){
+
+        new  AlertDialog.Builder(ctx)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("确定", listener)
+                .setNegativeButton("取消", null)
+                .show();
+
+    }
+
+
     public static void showToast(Context ctx,String message){
         Toast toast= Toast.makeText(ctx, message, Toast.LENGTH_LONG);
         View view = LayoutInflater.from(ctx).inflate(R.layout.toast_alert,null);

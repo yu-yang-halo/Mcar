@@ -19,6 +19,8 @@
     <color name="font_origan0">#f07e25</color>
     <color name="font_origan1">#fbaa58</color>
 
+    <color name="font_origan00">#a0f06f00</color>
+    <color name="font_origan11">#f06f00</color>
 
     <color name="font_gray0">#4d4b59</color>
     <color name="font_gray1">#a1a1a1</color>

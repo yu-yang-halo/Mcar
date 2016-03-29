@@ -1,23 +1,29 @@
 package com.carbeauty.good;
 
+import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.ViewFindUtils;
+import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.order.HeaderActivity;
 import com.flyco.tablayout.SlidingTabLayout;
@@ -35,23 +41,46 @@ import cn.service.bean.GoodsType;
 /**
  * Created by Administrator on 2016/3/22.
  */
-public class GoodActivity extends HeaderActivity {
+public class GoodActivity extends FragmentActivity {
 
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     int shopId;
     List<GoodsType> goodsTypes;
+    ActionBar mActionbar;
+    Button cartButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_goods);
         initCustomActionBar();
-        rightBtn.setVisibility(View.GONE);
+
         shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
+
+         /*
+            进入购物车界面
+         */
+        cartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(CartManager.getInstance().getMyCartClassList().size()<=0){
+                    Toast.makeText(GoodActivity.this,"您的购物车还没有任何商品哦",Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent=new Intent(GoodActivity.this,GoodOrderActivity.class);
+                    intent.putExtra("Title","我的购物车");
+                    startActivity(intent);
+                }
+            }
+        });
         new GetGoodsTypeTask().execute();
 
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        CartManager.getInstance().clearCartList();
+    }
 
     private void initSlidTab( List<GoodInfo> goodInfos){
 
@@ -115,5 +144,35 @@ public class GoodActivity extends HeaderActivity {
             return mFragments.get(position);
         }
     }
+
+
+    protected boolean initCustomActionBar() {
+        mActionbar = getActionBar();
+        if (mActionbar == null) {
+            return false;
+        }
+        mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        mActionbar.setDisplayShowCustomEnabled(true);
+        mActionbar.setCustomView(R.layout.goodheader);
+
+        cartButton=(Button) mActionbar.getCustomView().findViewById(R.id.cartButton);
+        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
+
+        TextView titleTxt=(TextView) mActionbar.getCustomView().findViewById(R.id.titleTxt);
+
+        leftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        String title=getIntent().getExtras().getString("Title");
+        titleTxt.setText(title);
+
+
+
+        return true;
+    }
+
 
 }

@@ -41,6 +41,7 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.bumptech.glide:glide:3.6.0'
     compile 'info.hoang8f:android-segmented:1.0.6'
+    compile 'com.github.florent37:viewanimator:1.0.2'
     compile files('src/main/jniLibs/BaiduLBS_Android.jar')
     compile files('libs/jpush-android-2.1.0.jar')
 

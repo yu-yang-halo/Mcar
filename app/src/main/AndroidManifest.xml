@@ -124,6 +124,10 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".good.GoodOrderActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".good.GoodLookActivity"
+            android:screenOrientation="portrait"></activity>
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
         </service>
         <meta-data

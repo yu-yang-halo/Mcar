@@ -2,6 +2,7 @@ package com.carbeauty.good;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -92,7 +93,19 @@ public class SimpleCardFragment extends Fragment {
         goodGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "ok" + position, Toast.LENGTH_SHORT).show();
+
+                Intent intent=new Intent(getActivity(),GoodLookActivity.class);
+
+                intent.putExtra("price",goodInfos.get(position).getPrice());
+                intent.putExtra("name",goodInfos.get(position).getName());
+                intent.putExtra("desc",goodInfos.get(position).getDesc());
+                intent.putExtra("id",goodInfos.get(position).getId());
+                intent.putExtra("shopId",goodInfos.get(position).getShopId());
+                intent.putExtra("src",goodInfos.get(position).getSrc());
+
+                startActivity(intent);
+
+
             }
         });
     }
