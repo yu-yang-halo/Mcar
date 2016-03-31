@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_loc_bgcolor"
         android:gravity="left|center_vertical"
-        android:text="皖A PS826"
         android:paddingLeft="3dp"
         android:textColor="@color/black"
         android:textSize="15sp"

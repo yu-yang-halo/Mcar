@@ -58,11 +58,12 @@
             android:layout_alignParentStart="true" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:text="-"
+            android:gravity="center"
             android:id="@+id/btnRemove"
-            android:textSize="35sp"
+            android:textSize="30sp"
             android:layout_marginLeft="30dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textView22"
@@ -80,10 +81,10 @@
             android:layout_toEndOf="@+id/btnRemove" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:text="+"
-            android:textSize="35sp"
+            android:textSize="30sp"
             android:id="@+id/btnAdd"
             android:layout_alignBottom="@+id/gCount"
             android:layout_toRightOf="@+id/gCount"

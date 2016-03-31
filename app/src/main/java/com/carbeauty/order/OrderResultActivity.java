@@ -56,32 +56,50 @@ public class OrderResultActivity extends HeaderActivity{
 
 
 
-        ac_type_val=this.getIntent().getIntExtra(Constants.AC_TYPE,0);
+        ac_type_val=this.getIntent().getIntExtra(Constants.AC_TYPE, 0);
         order_is_ok=this.getIntent().getBooleanExtra(Constants.ORDER_RESULT_IS_OK, false);
 
-        tvTitle.setText("预约详情");
-        if(order_is_ok){
-            resultText.setText("预约成功\n请等待客服确认");
+        if(ac_type_val==Constants.AC_TYPE_GOOD){
 
-            if(ac_type_val!=Constants.AC_TYPE_META2){
-                CommonAdapter commonAdapter=new CommonAdapter(ac_type_val,this);
-
-                if(ac_type_val==Constants.AC_TYPE_OIL){
-                    commonAdapter.setOilInfos(IDataHandler.getInstance().getOilInfoSet());
-                }else if(ac_type_val==Constants.AC_TYPE_WASH){
-                    commonAdapter.setDecorationInfos(IDataHandler.getInstance().getDecorationInfoSet());
-                }else if(ac_type_val==Constants.AC_TYPE_META){
-                    commonAdapter.setMetalplateInfos(IDataHandler.getInstance().getMetalplateInfoSet());
-                }
-
-                resultListView.setAdapter(commonAdapter);
+            tvTitle.setText("订单详情");
+            if(order_is_ok){
+                resultText.setText("提交成功\n请等待发货");
+            }else{
+                resultLayout.setBackgroundColor(getResources().getColor(R.color.red));
+                resultText.setText("提交失败");
+                resultImageView.setVisibility(View.GONE);
             }
 
         }else{
-            resultLayout.setBackgroundColor(getResources().getColor(R.color.red));
-            resultText.setText("预约失败");
-            resultImageView.setVisibility(View.GONE);
+            tvTitle.setText("预约详情");
+
+
+            if(order_is_ok){
+                resultText.setText("预约成功\n请等待客服确认");
+
+                if(ac_type_val!=Constants.AC_TYPE_META2){
+                    CommonAdapter commonAdapter=new CommonAdapter(ac_type_val,this);
+
+                    if(ac_type_val==Constants.AC_TYPE_OIL){
+                        commonAdapter.setOilInfos(IDataHandler.getInstance().getOilInfoSet());
+                    }else if(ac_type_val==Constants.AC_TYPE_WASH){
+                        commonAdapter.setDecorationInfos(IDataHandler.getInstance().getDecorationInfoSet());
+                    }else if(ac_type_val==Constants.AC_TYPE_META){
+                        commonAdapter.setMetalplateInfos(IDataHandler.getInstance().getMetalplateInfoSet());
+                    }
+
+                    resultListView.setAdapter(commonAdapter);
+                }
+
+            }else{
+                resultLayout.setBackgroundColor(getResources().getColor(R.color.red));
+                resultText.setText("预约失败");
+                resultImageView.setVisibility(View.GONE);
+            }
+
         }
+
+
 
 
 

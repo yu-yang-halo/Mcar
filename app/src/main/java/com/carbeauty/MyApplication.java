@@ -19,7 +19,9 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
+import com.tutk.IOTC.Camera;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
@@ -75,6 +77,8 @@ public class MyApplication extends Application {
         initLocation();
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
+
+        Camera.init();
 
         setStyleBasic();
 

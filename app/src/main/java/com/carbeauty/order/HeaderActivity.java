@@ -48,6 +48,8 @@ public class HeaderActivity extends FragmentActivity {
             }
             rightBtn.setText(selCar.getNumber());
             ContentBox.loadInt(this, ContentBox.KEY_CAR_ID, selCar.getId());
+        }else{
+            ContentBox.loadInt(this, ContentBox.KEY_CAR_ID, -1);
         }
         if (carInfos != null&&carInfos.size() > 1) {
             rightBtn.setOnClickListener(new View.OnClickListener() {

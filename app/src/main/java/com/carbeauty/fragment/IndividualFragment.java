@@ -17,7 +17,9 @@ import android.widget.TextView;
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
+import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
+import com.carbeauty.good.GoodListShowActivity;
 import com.carbeauty.manager.CarManagerActivity;
 import com.carbeauty.order.CouponActivity;
 import com.carbeauty.order.MyOrderActivity;
@@ -97,7 +99,7 @@ public class IndividualFragment extends Fragment {
         SimpleAdapter sim_adapter = new SimpleAdapter(getActivity(),
                 data_list, R.layout.item01, from, to);
         individualListView.setAdapter(sim_adapter);
-        individualListView.setDividerHeight(1);
+        individualListView.setDividerHeight(2);
         individualListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -106,6 +108,9 @@ public class IndividualFragment extends Fragment {
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_AFTER);
                     intent.putExtra("Title","我的订单");
                 }else if(position==1){
+                    intent=new Intent(getActivity(), GoodListShowActivity.class);
+                    intent.putExtra("Title","我的商品订单");
+                }else if (position==2){
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
                     intent.putExtra("Title","我的预约");
                 }else if(position==3){
@@ -153,6 +158,9 @@ public class IndividualFragment extends Fragment {
             }
 
             if(carInfos!=null&&carInfos.size()>0){
+                if(ContentBox.getValueInt(getActivity(),ContentBox.KEY_CAR_ID,-1)<=0){
+                    ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, carInfos.get(0).getId());
+                }
                 IDataHandler.getInstance().setCarInfos(carInfos);
                 if(carInfos.size()>1){
                     plateNumber.setText(carInfos.get(0).getNumber()+" 更多");
@@ -162,6 +170,7 @@ public class IndividualFragment extends Fragment {
 
             }else{
                 plateNumber.setText("请添加车牌信息！");
+                ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
             }
 
         }

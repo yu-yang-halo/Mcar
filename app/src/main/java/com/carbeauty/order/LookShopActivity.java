@@ -40,6 +40,9 @@ public class LookShopActivity extends HeaderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_lookshop);
         initCustomActionBar();
+        rightBtn.setVisibility(View.GONE);
+
+
         mFragments.add(new ShopMapFragment());
         mFragments.add(new ShopVideoFragment());
 

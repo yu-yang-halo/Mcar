@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
 
 import cn.service.bean.AssessInfoType;
 import cn.service.bean.BannerInfoType;
+import cn.service.bean.CameraListType;
 import cn.service.bean.CarInfo;
 import cn.service.bean.CityInfo;
 import cn.service.bean.CouponInfo;
@@ -83,7 +84,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class WSConnector {
 	private static String wsUrl = "";
 	//private static String IP1 = "liuzhi1212.gicp.net";
-	private static String IP1 = "192.168.2.177";
+	private static String IP1 = "192.168.188.31";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -1136,6 +1137,89 @@ public class WSConnector {
 					goodsTypes.add(goodsType);
 				}
 				return goodsTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+
+	}
+	private CameraListType parseXmlToCameraListType(Element element){
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element nameNode = (Element) element.getElementsByTagName(
+				"name").item(0);
+		Element uidNode = (Element) element.getElementsByTagName(
+				"uid").item(0);
+		Element accountNode = (Element) element.getElementsByTagName(
+				"account").item(0);
+		Element passwordNode = (Element) element.getElementsByTagName(
+				"password").item(0);
+
+		Element shopIdNode = (Element) element.getElementsByTagName(
+				"shopId").item(0);
+
+
+
+		int id=-1,shopId=-1;
+		String name="",uid="",account="",password="";
+
+		if (idNode != null && idNode.getFirstChild() != null) {
+			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
+			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
+		}
+
+		if (nameNode != null && nameNode.getFirstChild() != null) {
+			name = nameNode.getFirstChild().getNodeValue();
+		}
+		if (uidNode != null && uidNode.getFirstChild() != null) {
+			uid = uidNode.getFirstChild().getNodeValue();
+		}
+		if (accountNode != null && accountNode.getFirstChild() != null) {
+			account = accountNode.getFirstChild().getNodeValue();
+		}
+		if (passwordNode != null && passwordNode.getFirstChild() != null) {
+			password = passwordNode.getFirstChild().getNodeValue();
+		}
+
+		CameraListType cameraListType=new CameraListType(id,name,uid,account,password,shopId);
+
+		return cameraListType;
+
+	}
+
+	public List<CameraListType> getCameraList(int shopId) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getCameraList?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&shopId="+shopId;
+		Logger.getLogger(this.getClass()).info(
+				"[getCameraList]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				NodeList nodeList = root.getElementsByTagName("cameraList");
+				Logger.getLogger(this.getClass()).info(
+						"[cameraList]   nodeList Size = " + nodeList.getLength());
+				List<CameraListType> cameraListTypes=new ArrayList<CameraListType>();
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Element element = (Element) (nodeList.item(i));
+					CameraListType cameraListType =parseXmlToCameraListType(element);
+					Logger.getLogger(this.getClass()).info(
+							"[CameraListType]  cameraListType = "
+									+ cameraListType.toString());
+					cameraListTypes.add(cameraListType);
+				}
+				return cameraListTypes;
 			}else{
 				throw new WSException(ErrorCode.get(errorCode));
 			}

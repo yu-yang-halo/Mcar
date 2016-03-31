@@ -21,7 +21,7 @@
     <string name="projoin1">已有10023人参加</string>
 
     <string name="individual0">我的订单</string>
-    <string name="individual1">我的预约</string>
-    <string name="individual2">我的服务卡</string>
+    <string name="individual1">我的商品订单</string>
+    <string name="individual2">我的预约</string>
     <string name="individual3">优惠券</string>
 </resources>

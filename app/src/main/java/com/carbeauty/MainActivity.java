@@ -73,8 +73,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		/** with nothing */
 		mTabLayout_1 = ViewFindUtils.find(mDecorView, R.id.tl_1);
 		mTabLayout_1.setTabData(mTabEntities, this, R.id.currentPageFragment, mFragments);
-		//显示未读红点
-		mTabLayout_1.showDot(2);
+
 		mTabLayout_1.setOnTabSelectListener(new OnTabSelectListener() {
 			@Override
 			public void onTabSelect(int position) {
@@ -122,8 +121,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		leftBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent intent=new Intent(MainActivity.this,CityActivity.class);
-//				startActivity(intent);
+				setSelectPos(1);
 
 			}
 		});

@@ -60,6 +60,8 @@ public class HomeFragment extends Fragment {
     private String[] iconName;
     PullRefreshLayout swipeRefreshLayout;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +189,12 @@ public class HomeFragment extends Fragment {
                 data_list, R.layout.item0, from, to);
         listView.setAdapter(sim_adapter);
         listView.setDividerHeight(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mainActivity.setSelectPos(2);
+            }
+        });
     }
 
 

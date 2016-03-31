@@ -17,6 +17,10 @@ public class Constants {
 
     public final static int AC_TYPE_META2=1003;
 
+    public final static int AC_TYPE_GOOD=1004;
+
+
+
     public final static int AC_TYPE_ORDER_BEFORE=1004;
     public final static int AC_TYPE_ORDER_AFTER=1005;
 

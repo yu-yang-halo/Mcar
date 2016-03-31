@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:id="@+id/goodslistview"
+        android:background="#ffffff"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/relativeLayout8" />
 

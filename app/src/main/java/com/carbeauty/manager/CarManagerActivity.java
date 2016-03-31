@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.carbeauty.R;
 import com.carbeauty.adapter.CarInfoAdapter;
+import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.dialog.AcCarInfoDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -156,6 +157,7 @@ public class CarManagerActivity extends Activity{
             if(s!=null){
                 Toast.makeText(CarManagerActivity.this,s,Toast.LENGTH_SHORT).show();
             }else{
+                IDataHandler.getInstance().setCarInfos(carInfos);
                 if(type==1){
                   if(carInfoAdapter!=null){
                       carInfoAdapter.setCarInfos(carInfos);
