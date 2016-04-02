@@ -11,11 +11,12 @@
         android:layout_centerHorizontal="true">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:id="@+id/videoImageView"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/icon_video"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
@@ -24,11 +25,14 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Video 0"
+            android:lines="1"
+            android:ellipsize="end"
             android:id="@+id/nameTextView"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/videoImageView"
-            android:layout_toEndOf="@+id/videoImageView"
-            android:layout_marginLeft="88dp"
-            android:layout_marginStart="88dp" />
+            android:layout_marginLeft="60dp"
+            android:layout_marginStart="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 </RelativeLayout>

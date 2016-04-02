@@ -9,6 +9,17 @@ public class ShopInfo {
 	private String desc;
 	private String panorama;
 
+
+	private int kilometerDistance;
+
+	public int getKilometerDistance() {
+		return kilometerDistance;
+	}
+
+	public void setKilometerDistance(int kilometerDistance) {
+		this.kilometerDistance = kilometerDistance;
+	}
+
 	public int getShopId() {
 		return shopId;
 	}

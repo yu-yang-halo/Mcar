@@ -71,16 +71,9 @@ public class ShopVideoFragment extends Fragment{
         protected void onPostExecute(String s) {
             if(s==null){
                 List<Map<String,String>> data=new ArrayList<Map<String,String>>();
-//                for (CameraListType cameraListType:cameraListTypes){
-//                    Map<String,String> map=new HashMap<String,String>();
-//                    map.put("name",cameraListType.getName());
-//                    map.put("uid",cameraListType.getUid());
-//
-//                    data.add(map);
-//                }
-                for (int i=0;i<4;i++){
+                for (CameraListType cameraListType:cameraListTypes){
                     Map<String,String> map=new HashMap<String,String>();
-                    map.put("name","视频"+i);
+                    map.put("name",cameraListType.getName());
 
 
                     data.add(map);
@@ -104,7 +97,11 @@ public class ShopVideoFragment extends Fragment{
 //                                ,Toast.LENGTH_SHORT).show();
 
                         Intent intent=new Intent(getActivity(), VideoInfoActivity.class);
-                        intent.putExtra("Title","门店视频");
+                        intent.putExtra("Title",cameraListTypes.get(position).getName());
+                        intent.putExtra("uid",cameraListTypes.get(position).getUid());
+                        intent.putExtra("account",cameraListTypes.get(position).getAccount());
+                        intent.putExtra("password",cameraListTypes.get(position).getPassword());
+
                         getActivity().startActivity(intent);
                     }
                 });

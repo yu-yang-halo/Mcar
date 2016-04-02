@@ -18,6 +18,10 @@ import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.service.MD5Generator;
@@ -40,6 +44,7 @@ public class ShopInfoAdapter extends BaseAdapter {
         this.shopInfos=shopInfos;
         this.ctx=ctx;
         this.bdLocation=bdLocation;
+        this.shopInfos=filterShopInfosNear(shopInfos,bdLocation);
     }
     public void setSelectShopId(int selectShopId){
         this.selectShopId=selectShopId;
@@ -65,6 +70,36 @@ public class ShopInfoAdapter extends BaseAdapter {
         return shopInfos.get(position);
     }
 
+    private List<ShopInfo> filterShopInfosNear(List<ShopInfo> tmps,BDLocation location){
+        if(location==null){
+            return tmps;
+        }
+        List<ShopInfo> nearShopInfos=new ArrayList<ShopInfo>();
+        for (ShopInfo shopInfo:tmps){
+            LatLng latLng0=new LatLng(location.getLatitude(),location.getLongitude());
+            LatLng latLng1=new LatLng(shopInfo.getLatitude(),shopInfo.getLongitude());
+
+            int distance=(int)(DistanceUtil.getDistance(latLng0,latLng1)/1000);
+            shopInfo.setKilometerDistance(distance);
+            nearShopInfos.add(shopInfo);
+        }
+
+
+
+        Collections.sort(nearShopInfos, new Comparator<ShopInfo>() {
+            @Override
+            public int compare(ShopInfo lhs, ShopInfo rhs) {
+                return lhs.getKilometerDistance()-rhs.getKilometerDistance();
+            }
+        });
+
+
+        return nearShopInfos;
+
+    }
+
+
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -89,15 +124,7 @@ public class ShopInfoAdapter extends BaseAdapter {
         titleView.setText(shopInfos.get(position).getName());
         descriptionView.setText(shopInfos.get(position).getDesc());
 
-        if(bdLocation!=null){
-            LatLng latLng0=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
-            LatLng latLng1=new LatLng(shopInfos.get(position).getLatitude(),shopInfos.get(position).getLongitude());
-
-            double distance=DistanceUtil.getDistance(latLng0,latLng1);
-            distanceText.setText(""+(int)(distance/1000)+"公里");
-        }else{
-            distanceText.setText("");
-        }
+        distanceText.setText(shopInfos.get(position).getKilometerDistance()+"公里");
 
 
 

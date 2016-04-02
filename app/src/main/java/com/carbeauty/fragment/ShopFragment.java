@@ -102,6 +102,7 @@ public class ShopFragment extends Fragment{
             swipeRefreshLayout.setRefreshing(false);
             if(s==null){
                 textView.setVisibility(View.GONE);
+                shoplistView.setVisibility(View.VISIBLE);
                 ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity(),bdLocation);
                 shopInfoAdapter.setSelectShopId(userInfo.getShopId());
 
@@ -109,6 +110,7 @@ public class ShopFragment extends Fragment{
                 ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
 
             }else {
+                shoplistView.setVisibility(View.GONE);
                 textView.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
             }

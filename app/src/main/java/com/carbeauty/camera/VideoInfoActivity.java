@@ -156,7 +156,10 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
                 .setDimAmount(0.3f)
                 .show();
 
-        connectVideoToMonitor("Video", "PRAD13G9VNCB43AT111A", "admin", "admin");
+
+
+        connectVideoToMonitor("MyVideo", getIntent().getStringExtra("uid"),
+                getIntent().getStringExtra("account"), getIntent().getStringExtra("password"));
     }
 
 
@@ -168,7 +171,7 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
         }else{
             camera = new MyCamera(name, uid,account,pass);
         }
-
+        Camera.init();
         //8YM2LT63DMWXPBUG111A
         camera.registerIOTCListener(this);
         monitor.attachCamera(camera, 0);

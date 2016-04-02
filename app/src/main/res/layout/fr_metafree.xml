@@ -77,7 +77,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/upimage0"
                             android:layout_weight="1"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
 
                         <ImageView
@@ -85,7 +85,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/upimage1"
                             android:layout_weight="1"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                     </LinearLayout>
                     <LinearLayout
@@ -98,14 +98,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:id="@+id/upimage2"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:id="@+id/upimage3"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                     </LinearLayout>
 
@@ -170,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/upimage00"
                             android:layout_weight="1"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
 
                         <ImageView
@@ -178,7 +178,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/upimage11"
                             android:layout_weight="1"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                     </LinearLayout>
                     <LinearLayout
@@ -191,14 +191,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:id="@+id/upimage22"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:id="@+id/upimage33"
-                            android:background="@drawable/ad"
+                            android:background="@drawable/icon_default"
                             />
                     </LinearLayout>
 
