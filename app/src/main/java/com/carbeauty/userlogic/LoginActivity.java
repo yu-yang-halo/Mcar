@@ -150,19 +150,27 @@ public class LoginActivity extends Activity {
 			progressHUD.dismiss();
 			if(result==null){
 				ContentCacheUtils.cacheUsernamePass(ctx, loginName, password);
-				Intent intent=new Intent();
-				intent.setClass(LoginActivity.this, MainActivity.class);
-				startActivity(intent);
-				finish();
-
+				String typeStr=WSConnector.getInstance().getUserMap().get("type");
 				Set<String> tags=new HashSet<String>();
-				tags.add(loginName);
-				JPushInterface.setAliasAndTags(getApplicationContext(), null,tags, new TagAliasCallback() {
+				tags.add(typeStr);
+				JPushInterface.setAliasAndTags(getApplicationContext(), loginName, tags, new TagAliasCallback() {
 					@Override
 					public void gotResult(int i, String s, Set<String> set) {
 
 					}
 				});
+				Intent intent=new Intent();
+				if("3".equals(typeStr)){
+					intent.setClass(LoginActivity.this, MainActivity.class);
+				}else{
+					intent.setClass(LoginActivity.this, ConsoleActivity.class);
+				}
+				startActivity(intent);
+				finish();
+
+
+
+
 
 
 			}else{

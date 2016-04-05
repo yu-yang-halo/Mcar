@@ -6,6 +6,7 @@ public class UserInfo {
 	private String loginName;
 	private String realName;
 	private String password;
+
 	public UserInfo(int userId, String loginName, String realName,
 			String password, String email, String phone, String wechatId,
 			String regTime, int type, int shopId) {

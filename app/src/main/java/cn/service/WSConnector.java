@@ -84,7 +84,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class WSConnector {
 	private static String wsUrl = "";
 	//private static String IP1 = "liuzhi1212.gicp.net";
-	private static String IP1 = "192.168.188.31";
+	private static String IP1 = "112.124.106.131";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
@@ -314,14 +314,22 @@ public class WSConnector {
 			Element secTokenNode = element.getElementsByTagName("secToken") != null ? (Element) element
 					.getElementsByTagName("secToken").item(0) : null;
 
+			Element typeNode = element.getElementsByTagName("type") != null ? (Element) element
+					.getElementsByTagName("type").item(0) : null;
+
 			if (errCodeNode != null) {
 				int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 						.getNodeValue());
 				if (errorCode == ErrorCode.ACCEPT.getCode()) {
 					this.userMap.put("loginName", name);
 					this.userMap.put("password", password);
+
 					if (userIdNode != null) {
 						this.userMap.put("userId", userIdNode.getFirstChild()
+								.getNodeValue());
+					}
+					if (typeNode != null) {
+						this.userMap.put("type", typeNode.getFirstChild()
 								.getNodeValue());
 					}
 					if (shopIdNode != null) {
@@ -461,7 +469,7 @@ public class WSConnector {
 				+ this.userMap.get("secToken") + "&userId="
 				+ this.userMap.get("userId");
 		Logger.getLogger(this.getClass()).info(
-				"[updUser]  ws query = " + service);
+				"[getUserInfoById]  ws query = " + service);
 
 		Element root = getXMLNode(service);
 		if (root == null) {

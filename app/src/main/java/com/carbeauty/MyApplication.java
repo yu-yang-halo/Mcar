@@ -74,6 +74,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+
         initLocation();
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
@@ -105,6 +108,7 @@ public class MyApplication extends Application {
             @Override
             public void onActivityResumed(Activity activity) {
                 MyActivityManager.getInstance().setCurrentActivity(activity);
+                MyActivityManager.getInstance().setRunBackground(false);
             }
 
             @Override
@@ -114,7 +118,9 @@ public class MyApplication extends Application {
 
             @Override
             public void onActivityStopped(Activity activity) {
-
+                if(MyActivityManager.getInstance().getCurrentActivity()==activity){
+                    MyActivityManager.getInstance().setRunBackground(true);
+                }
             }
 
             @Override

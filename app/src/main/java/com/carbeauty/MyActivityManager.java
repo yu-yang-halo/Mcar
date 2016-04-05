@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 public class MyActivityManager {
     private static MyActivityManager sInstance = new MyActivityManager();
     private WeakReference<Activity> sCurrentActivityWeakRef;
+    private boolean runBackground=true;
 
 
     private MyActivityManager() {
@@ -33,5 +34,11 @@ public class MyActivityManager {
         sCurrentActivityWeakRef = new WeakReference<Activity>(activity);
     }
 
+    public boolean isRunBackground() {
+        return runBackground;
+    }
 
+    public void setRunBackground(boolean runBackground) {
+        this.runBackground = runBackground;
+    }
 }

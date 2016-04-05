@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -17,6 +18,7 @@ import com.carbeauty.adapter.DecorationAdapter;
 import com.carbeauty.adapter.MyHandlerCallback;
 import com.carbeauty.adapter.OilInfoAdapter;
 import com.carbeauty.adapter.OrderTimeAdapter;
+import com.carbeauty.alertDialog.WindowUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 
@@ -58,6 +60,7 @@ public class WashOilActivity extends HeaderActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_washoil);
+
         timeSegmentGroup = (SegmentedGroup) findViewById(R.id.segmented2);
         timeSegmentGroup.check(R.id.button21);
         timeSegmentGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -130,6 +133,12 @@ public class WashOilActivity extends HeaderActivity {
         OrderTimeAdapter orderTimeAdapter=new OrderTimeAdapter(orderStateTypes,this);
 
         gridView.setAdapter(orderTimeAdapter);
+
+        ViewGroup.LayoutParams layoutParams=gridView.getLayoutParams();
+
+        layoutParams.height=orderStateTypes.size()*WindowUtils.dip2px(this,30);
+
+        gridView.setLayoutParams(layoutParams);
 
     }
 

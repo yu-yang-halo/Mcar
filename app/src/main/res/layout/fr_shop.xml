@@ -3,35 +3,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.baoyz.widget.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:refreshColors="@array/scheme_colors">
-
-        <!-- ListView、ScrollView、RecyclerView、Other -->
-    <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="附近没有店铺"
-        android:id="@+id/textView"
-        android:textColor="@color/gray"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-    <ListView
-        android:id="@+id/shoplistView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ListView>
-</RelativeLayout>
-
-
-
-    </com.baoyz.widget.PullRefreshLayout>
+        android:clickable="true" />
 
 </RelativeLayout>
