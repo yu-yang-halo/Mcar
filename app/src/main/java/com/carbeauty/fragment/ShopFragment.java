@@ -219,10 +219,14 @@ public class ShopFragment extends Fragment{
             }
 
             if(s==null){
-                initMapData(userInfo.getShopId());
-                ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
 
-
+                if(shopID>0){
+                    initMapData(shopID);
+                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,shopID);
+                }else{
+                    initMapData(userInfo.getShopId());
+                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
+                }
 
             }else {
 

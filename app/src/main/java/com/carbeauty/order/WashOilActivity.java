@@ -133,10 +133,12 @@ public class WashOilActivity extends HeaderActivity {
         OrderTimeAdapter orderTimeAdapter=new OrderTimeAdapter(orderStateTypes,this);
 
         gridView.setAdapter(orderTimeAdapter);
+        int row=orderStateTypes.size()%6==0?orderStateTypes.size()/6:orderStateTypes.size()/6+1;
+        //System.out.println("height:" + row*WindowUtils.dip2px(this,30));
 
         ViewGroup.LayoutParams layoutParams=gridView.getLayoutParams();
 
-        layoutParams.height=orderStateTypes.size()*WindowUtils.dip2px(this,30);
+        layoutParams.height=row*WindowUtils.dip2px(this,30);
 
         gridView.setLayoutParams(layoutParams);
 
