@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -139,15 +140,14 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
             @Override
             public boolean onMarkerClick(final Marker marker) {
 
+                View popupView=LayoutInflater.from(getActivity()).inflate(R.layout.popup_dialog,null);
 
-                //创建InfoWindow展示的view
-                Button button = new Button(getActivity());
-                button.setBackgroundResource(R.drawable.btn_popup);
-                button.setText("点击选择 '" + marker.getTitle() + "' 店铺");
-                button.setTextSize(10);
-                button.setTextColor(getResources().getColor(R.color.white));
+                TextView nameText= (TextView) popupView.findViewById(R.id.nameTextView);
 
-                button.setOnClickListener(new View.OnClickListener() {
+                nameText.setText(marker.getTitle());
+
+
+                popupView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         marker.setIcon(BitmapDescriptorFactory
@@ -158,7 +158,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 //定义用于显示该InfoWindow的坐标点
 
 //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
-                InfoWindow mInfoWindow = new InfoWindow(button, marker.getPosition(), -90);
+                InfoWindow mInfoWindow = new InfoWindow(popupView, marker.getPosition(), -60);
 //显示InfoWindow
                 mBaiduMap.showInfoWindow(mInfoWindow);
                 return false;
