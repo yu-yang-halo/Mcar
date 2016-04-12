@@ -3,6 +3,7 @@ package cn.service.bean;
 public class OrderStateType {
 	private String orderTime;
 	private boolean  isFull;
+	private boolean  isinVaild;
 
 	public boolean isChecked() {
 		return checked;
@@ -31,6 +32,16 @@ public class OrderStateType {
 		this.orderTime = orderTime;
 		this.isFull = isFull;
 	}
+
+
+	public boolean isinVaild() {
+		return isinVaild;
+	}
+
+	public void setIsinVaild(boolean isinVaild) {
+		this.isinVaild = isinVaild;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderStateType [orderTime=" + orderTime + ", isFull=" + isFull

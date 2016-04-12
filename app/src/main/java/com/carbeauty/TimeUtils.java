@@ -20,6 +20,16 @@ public class TimeUtils {
     	
     	return simpleDateFormat.format(date);
     }
+	public static String createDateFormat2(String hhmm,int incre){
+		Date date=new Date();
+		date.setDate(date.getDate()+incre);
+		date.setHours(Integer.parseInt(hhmm.split(":")[0]));
+		date.setMinutes(Integer.parseInt(hhmm.split(":")[1]));
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+		return simpleDateFormat.format(date);
+	}
+
 	public static String getTime(int incre){
 		Date date=new Date();
 		date.setDate(date.getDate() + incre);

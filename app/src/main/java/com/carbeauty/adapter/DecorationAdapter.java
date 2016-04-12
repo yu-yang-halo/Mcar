@@ -69,9 +69,12 @@ public class DecorationAdapter extends BaseAdapter {
         }
         TextView itemName= (TextView) convertView.findViewById(R.id.itemName);
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
+        TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
+
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(decorationInfos.get(position).getName());
         itemPrice.setText(decorationInfos.get(position).getPrice() + "元");
+        itemDetail.setText(decorationInfos.get(position).getDesc());
 
         if(decoCollections.contains(decorationInfos.get(position))){
             itemBtn.setSelected(true);

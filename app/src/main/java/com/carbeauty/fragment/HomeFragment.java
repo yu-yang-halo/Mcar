@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
     private int[] icon = { R.drawable.homepage_gridview_8, R.drawable.homepage_gridview_6,
             R.drawable.homepage_gridview_7, R.drawable.homepage_gridview_3,
             R.drawable.homepage_gridview_4,
-            R.drawable.homepage_gridview_1};
+            R.drawable.homepage_gridview_1,R.drawable.default_icon_serve};
     private String[] iconName;
     PullRefreshLayout swipeRefreshLayout;
 
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
         iconName = new String[]{getString(R.string.hitem0),
                 getString(R.string.hitem1),getString(R.string.hitem2),
                 getString(R.string.hitem3),getString(R.string.hitem4),
-                getString(R.string.hitem5)};
+                getString(R.string.hitem5),"自助洗"};
 
         for(int i=0;i<icon.length;i++){
             Map<String, Object> map = new HashMap<String, Object>();
@@ -148,6 +148,8 @@ public class HomeFragment extends Fragment {
                         toLookShop(position);
                     } else if (position == 5) {
                         toGoods(position);
+                    }else if (position == 6) {
+                        Toast.makeText(getActivity(),"即将上线，敬请期待~",Toast.LENGTH_SHORT).show();
                     }
 
 

@@ -71,9 +71,11 @@ public class OilInfoAdapter extends BaseAdapter {
         }
         TextView itemName= (TextView) convertView.findViewById(R.id.itemName);
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
+        TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(oilInfos.get(position).getName());
         itemPrice.setText(oilInfos.get(position).getPrice()+"元");
+        itemDetail.setText(oilInfos.get(position).getDesc());
 
         if(oilInfoSet.contains(oilInfos.get(position))){
             itemBtn.setSelected(true);

@@ -68,10 +68,10 @@ public class WashOilActivity extends HeaderActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.button21) {
                     ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
-                    new GetDataList(TimeUtils.getTime(0)).execute();
+                    new GetDataList(0).execute();
                 } else if (checkedId == R.id.button22) {
                     ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 1);
-                    new GetDataList(TimeUtils.getTime(1)).execute();
+                    new GetDataList(1).execute();
                 }
             }
         });
@@ -124,7 +124,7 @@ public class WashOilActivity extends HeaderActivity {
         });
 
         ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
-        new GetDataList(null).execute();
+        new GetDataList(-1).execute();
 
     }
 
@@ -212,21 +212,16 @@ public class WashOilActivity extends HeaderActivity {
         List<OrderStateType> orderStateTypes;
         List<OilInfo> oilInfos;
         List<DecorationInfo> decorationInfos;
-        String time;
-        GetDataList(String time){
-            this.time=time;
+        int incr;
+        GetDataList(int incr){
+            this.incr=incr;
         }
         @Override
         protected String doInBackground(String... params) {
             try {
+                orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, incr);
 
-                if(time==null){
-                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, TimeUtils.getTime(0));
-                }else{
-                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, time);
-                }
-
-                if(time==null){
+                if(incr<0){
                     if(ac_type_value==Constants.AC_TYPE_OIL){
                         oilInfos=WSConnector.getInstance().getOilList(shopId);
                     }else  if(ac_type_value==Constants.AC_TYPE_WASH){
@@ -247,7 +242,7 @@ public class WashOilActivity extends HeaderActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             initGridView(orderStateTypes);
-            if(time==null){
+            if(incr<0){
                 if(ac_type_value==Constants.AC_TYPE_WASH){
                     initDecorationListView(decorationInfos);
                 }else  if(ac_type_value==Constants.AC_TYPE_OIL){

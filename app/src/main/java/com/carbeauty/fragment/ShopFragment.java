@@ -1,5 +1,6 @@
 package com.carbeauty.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -26,10 +28,13 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
+import com.carbeauty.adapter.ShopInfoAdapter;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
+import com.github.florent37.viewanimator.ViewAnimator;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.Iterator;
 import java.util.List;
 
 import cn.service.RegType;
@@ -41,10 +46,12 @@ import cn.service.bean.UserInfo;
 /**
  * Created by Administrator on 2016/3/6.
  */
-public class ShopFragment extends Fragment{
+public class ShopFragment extends Fragment implements MainActivity.IShowModeListenser {
     MapView bmapView;
     BaiduMap mBaiduMap;
     MainActivity mainActivity;
+    ListView listView;
+
 
     @Nullable
     @Override
@@ -52,11 +59,23 @@ public class ShopFragment extends Fragment{
         View v=inflater.inflate(R.layout.fr_shop, null);
         SDKInitializer.initialize(getActivity().getApplicationContext());
         bmapView= (MapView) v.findViewById(R.id.bmapView);
+        listView=(ListView)v.findViewById(R.id.listView);
+
+
+
         mBaiduMap = bmapView.getMap();
         //普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
         String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
+
+        updateMapStatus(lgtlatStr);
+
+        return v;
+    }
+
+
+    private void updateMapStatus(String lgtlatStr){
         if(lgtlatStr!=null){
             double lgt=Double.parseDouble(lgtlatStr.split(":")[0]);
             double lat=Double.parseDouble(lgtlatStr.split(":")[1]);
@@ -66,7 +85,7 @@ public class ShopFragment extends Fragment{
             //定义地图状态
             MapStatus mMapStatus = new MapStatus.Builder()
                     .target(cenpt)
-                    .zoom(13)
+                    .zoom(11)
                     .build();
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
 
@@ -76,15 +95,13 @@ public class ShopFragment extends Fragment{
             mBaiduMap.setMapStatus(mMapStatusUpdate);
 
         }
-
-
-        return v;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mainActivity= (MainActivity) context;
+        mainActivity.setiShowModeListenser(this);
     }
 
     @Override
@@ -126,7 +143,7 @@ public class ShopFragment extends Fragment{
                 //创建InfoWindow展示的view
                 Button button = new Button(getActivity());
                 button.setBackgroundResource(R.drawable.btn_popup);
-                button.setText("点击选择 '" + marker.getTitle()+"' 店铺");
+                button.setText("点击选择 '" + marker.getTitle() + "' 店铺");
                 button.setTextSize(10);
                 button.setTextColor(getResources().getColor(R.color.white));
 
@@ -157,11 +174,53 @@ public class ShopFragment extends Fragment{
         }
         mBaiduMap.clear();
         for (ShopInfo shopInfo: shopInfos){
+            int cityId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_CITY_ID,-1);
+
+            if(cityId!=shopInfo.getCityId()){
+                continue;
+            }
+
+            updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
+
             addPointToMap(shopInfo,(shopId==shopInfo.getShopId()));
         }
 
     }
 
+    private List<ShopInfo> filterShopInfoList(List<ShopInfo> shopInfos){
+
+        int cityId=ContentBox.getValueInt(getActivity(), ContentBox.KEY_CITY_ID, -1);
+        Iterator<ShopInfo> iterator=shopInfos.iterator();
+        while (iterator.hasNext()){
+            ShopInfo shopInfo=iterator.next();
+            if(cityId!=shopInfo.getCityId()){
+                iterator.remove();
+            }
+        }
+        return shopInfos;
+    }
+
+    private void initListView(int selectShopId){
+        List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
+        ShopInfoAdapter shopInfoAdapter=new ShopInfoAdapter(shopInfos,getActivity(),mainActivity.getLocation());
+        shopInfoAdapter.setSelectShopId(selectShopId);
+        listView.setAdapter(shopInfoAdapter);
+    }
+
+    @Override
+    public void onShowMode(int mode) {
+        new ShopInfosTask(-100).execute();
+        if(mode==0){
+            listView.setVisibility(View.VISIBLE);
+            bmapView.setVisibility(View.GONE);
+            ViewAnimator.animate(listView).fadeIn().duration(600).start();
+        }else{
+            listView.setVisibility(View.GONE);
+            bmapView.setVisibility(View.VISIBLE);
+            ViewAnimator.animate(bmapView).fadeIn().duration(600).start();
+        }
+
+    }
 
     class ShopInfosTask extends AsyncTask<String,String,String>{
 
@@ -199,6 +258,7 @@ public class ShopFragment extends Fragment{
                 }
 
                 shopInfos=WSConnector.getInstance().getShopList();
+                shopInfos=filterShopInfoList(shopInfos);
 
                 System.err.println(shopInfos);
                 IDataHandler.getInstance().setShopInfos(shopInfos);
@@ -213,18 +273,17 @@ public class ShopFragment extends Fragment{
         protected void onPostExecute(String s) {
             if(shopID>0){
                 progressHUD.dismiss();
-                if(s==null){
-                    mainActivity.setSelectPos(0);
-                }
             }
 
             if(s==null){
 
                 if(shopID>0){
                     initMapData(shopID);
+                    initListView(shopID);
                     ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,shopID);
                 }else{
                     initMapData(userInfo.getShopId());
+                    initListView(userInfo.getShopId());
                     ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
                 }
 

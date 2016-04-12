@@ -6,6 +6,8 @@
  */
 package cn.service;
 
+import com.carbeauty.TimeUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -2790,8 +2792,16 @@ public class WSConnector {
 		OrderStateType orderStateType=new OrderStateType(orderTime, isFull);
 		return orderStateType;
     }
-    public List<OrderStateType> getDayOrderStateList(int searchType,int shopId,String searchTime) throws WSException, UnsupportedEncodingException {
-    	String service = "";
+    public List<OrderStateType> getDayOrderStateList(int searchType,int shopId,int incr) throws WSException, UnsupportedEncodingException {
+		String searchTime="";
+		if(incr<=0){
+			incr=0;
+			searchTime=TimeUtils.getTime(0);
+		}else{
+			searchTime=TimeUtils.getTime(1);
+		}
+
+		String service = "";
 		service = WSConnector.wsUrl + "getDayOrderStateList?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&shopId="
@@ -2816,6 +2826,14 @@ public class WSConnector {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element element = (Element) (nodeList.item(i));
 					OrderStateType orderStateType =parseXmlToOrderStateType(element);
+
+
+
+					boolean isOverTime=TimeUtils.isOverTime(TimeUtils.createDateFormat2(orderStateType.getOrderTime(), incr));
+
+					orderStateType.setIsinVaild(isOverTime);
+
+
 					Logger.getLogger(this.getClass()).info(
 							"[OrderStateType]  orderStateType = "
 									+ orderStateType.toString());

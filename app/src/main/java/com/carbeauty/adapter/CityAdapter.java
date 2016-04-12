@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.carbeauty.R;
+import com.carbeauty.cache.ContentBox;
 
 import java.util.List;
 
@@ -57,6 +58,14 @@ public class CityAdapter extends BaseAdapter {
         }
         TextView titleView= (TextView) convertView.findViewById(R.id.title);
         titleView.setText(cityInfos.get(position).getName());
+
+        int cityId=ContentBox.getValueInt(ctx,ContentBox.KEY_CITY_ID,-1);
+
+        if(cityInfos.get(position).getCityId()==cityId){
+            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.button_focus_color));
+        }else{
+            convertView.setBackgroundColor(ctx.getResources().getColor(R.color.white));
+        }
 
 
         return convertView;

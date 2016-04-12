@@ -52,7 +52,14 @@ public class ShopMapFragment extends Fragment {
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
         initMapData();
-        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
+//        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT, null);
+//        updateMapStatus(lgtlatStr);
+
+        return v;
+
+    }
+
+    private void updateMapStatus(String lgtlatStr){
         if(lgtlatStr!=null){
             double lgt=Double.parseDouble(lgtlatStr.split(":")[0]);
             double lat=Double.parseDouble(lgtlatStr.split(":")[1]);
@@ -62,7 +69,7 @@ public class ShopMapFragment extends Fragment {
             //定义地图状态
             MapStatus mMapStatus = new MapStatus.Builder()
                     .target(cenpt)
-                    .zoom(10)
+                    .zoom(12)
                     .build();
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
 
@@ -72,9 +79,8 @@ public class ShopMapFragment extends Fragment {
             mBaiduMap.setMapStatus(mMapStatusUpdate);
 
         }
-        return v;
-
     }
+
     private void addPointToMap(ShopInfo shopInfo){
         //定义Maker坐标点
         LatLng point = new LatLng(shopInfo.getLatitude(), shopInfo.getLongitude());
@@ -90,7 +96,7 @@ public class ShopMapFragment extends Fragment {
                 .title(shopInfo.getName())
                 .extraInfo(bundle)
                 .icon(bitmap);
-
+        showDialog(bundle,point);
 
 //在地图上添加Marker，并显示
         mBaiduMap.addOverlay(option);
@@ -98,41 +104,44 @@ public class ShopMapFragment extends Fragment {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                //创建InfoWindow展示的view
 
-                View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
-                final String url=marker.getExtraInfo().getString("URL");
-                final String name=marker.getExtraInfo().getString("NAME");
-
-
-//创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
-                InfoWindow mInfoWindow = new InfoWindow(dialogMap, marker.getPosition(), -97);
-//显示InfoWindow
-                mBaiduMap.showInfoWindow(mInfoWindow);
-                Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
-                TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
-                Button photoRotoa= (Button) dialogMap.findViewById(R.id.photoRotoa);
-
-                contentView.setText( marker.getTitle());
-                closeBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mBaiduMap.hideInfoWindow();
-                    }
-                });
-                photoRotoa.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent=new Intent(getActivity(), PanoramaActivity.class);
-                        intent.putExtra("Title",name);
-                        intent.putExtra("URL",url);
-                        startActivity(intent);
-                    }
-                });
                 return false;
             }
         });
 
+    }
+    private void showDialog(Bundle bundle,LatLng position){
+        //创建InfoWindow展示的view
+
+        View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
+        final String url=bundle.getString("URL");
+        final String name=bundle.getString("NAME");
+
+
+//创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
+        InfoWindow mInfoWindow = new InfoWindow(dialogMap, position, -97);
+//显示InfoWindow
+        mBaiduMap.showInfoWindow(mInfoWindow);
+        Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
+        TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
+        Button photoRotoa= (Button) dialogMap.findViewById(R.id.photoRotoa);
+
+        contentView.setText(name);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // mBaiduMap.hideInfoWindow();
+            }
+        });
+        photoRotoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), PanoramaActivity.class);
+                intent.putExtra("Title",name);
+                intent.putExtra("URL",url);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initMapData(){
@@ -141,8 +150,13 @@ public class ShopMapFragment extends Fragment {
         if(shopInfos==null){
             return;
         }
+        int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
         for (ShopInfo shopInfo: shopInfos){
-            addPointToMap(shopInfo);
+            if(shopId==shopInfo.getShopId()){
+                updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
+                addPointToMap(shopInfo);
+            }
+
         }
 
     }
