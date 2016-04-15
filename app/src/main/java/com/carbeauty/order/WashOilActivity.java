@@ -129,6 +129,9 @@ public class WashOilActivity extends HeaderActivity {
     }
 
     private void initGridView(List<OrderStateType> orderStateTypes){
+        if(orderStateTypes==null){
+            return;
+        }
 
         OrderTimeAdapter orderTimeAdapter=new OrderTimeAdapter(orderStateTypes,this);
 

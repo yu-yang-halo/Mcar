@@ -158,21 +158,21 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		});
 
 
-		rightBtn.setText("列表模式");
+		rightBtn.setText("地图模式");
 
 		rightBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(v.isSelected()){
 					v.setSelected(false);
-					rightBtn.setText("列表模式");
+					rightBtn.setText("地图模式");
 					ViewAnimator.animate(rightBtn).flipVertical()
 							.duration(1000).start();
 
 					iShowModeListenser.onShowMode(0);
 				}else{
 					v.setSelected(true);
-					rightBtn.setText("地图模式");
+					rightBtn.setText("列表模式");
 					ViewAnimator.animate(rightBtn).flipVertical()
 							.duration(1000).start();
 

@@ -66,7 +66,7 @@ public enum ErrorCode {
 	TASK_NOT_EXIST(1042, "The scheduled task 不存在，请设置!"),//The scheduled task does not exist
 	OBJECT_ALREADY_EXIST(1043, "设备已经注册，不能再注册。"),
 	
-	DEVICE_NOT_ASSIGN_CLASS(1051,"The car has already exist"),
+	DEVICE_NOT_ASSIGN_CLASS(1051,"车牌已存在"),
 	CAN_NOT_FIND_STATION(1052,"can't find the station"),
 	COUPUN_EXIST(1053,"优惠券不可重复领取"),
 	COUPUN_HAS_EMPTY(1054,"优惠券已全部被领取"),

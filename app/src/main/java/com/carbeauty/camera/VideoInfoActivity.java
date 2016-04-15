@@ -148,6 +148,7 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
         rightBtn.setVisibility(View.GONE);
 
         monitor  = (Monitor) findViewById(R.id.monitor);
+        monitor.setPTZ(false);
 
         progressHUD= KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
