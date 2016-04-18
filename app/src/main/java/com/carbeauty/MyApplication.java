@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -21,6 +26,7 @@ import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
+import com.google.gson.Gson;
 import com.tutk.IOTC.Camera;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
@@ -28,6 +34,8 @@ import cn.jpush.android.api.JPushInterface;
 import cn.service.ErrorCode;
 import cn.service.IWSErrorCodeListener;
 import cn.service.WSConnector;
+import im.fir.sdk.FIR;
+import im.fir.sdk.VersionCheckCallback;
 
 /**
  * Created by Administrator on 2016/3/20.
@@ -78,12 +86,10 @@ public class MyApplication extends Application {
 
 
         initLocation();
-        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);     		// 初始化 JPush
 
+        enableJPUSH();
+        enableFIR();
 
-
-        setStyleBasic();
 
         WSConnector.getInstance().setWSErrorCodeListener(new IWSErrorCodeListener() {
             @Override
@@ -118,7 +124,7 @@ public class MyApplication extends Application {
 
             @Override
             public void onActivityStopped(Activity activity) {
-                if(MyActivityManager.getInstance().getCurrentActivity()==activity){
+                if (MyActivityManager.getInstance().getCurrentActivity() == activity) {
                     MyActivityManager.getInstance().setRunBackground(true);
                 }
             }
@@ -136,6 +142,17 @@ public class MyApplication extends Application {
 
     }
 
+
+    private void enableJPUSH(){
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
+
+        setStyleBasic();
+    }
+    private void enableFIR(){
+        FIR.init(this);
+
+    }
 
 
 
@@ -188,5 +205,11 @@ public class MyApplication extends Application {
     public BDLocation getMyLocation(){
        return bdLocation;
     }
+
+
+
+
+
+
 
 }

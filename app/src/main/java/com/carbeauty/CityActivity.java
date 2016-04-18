@@ -45,7 +45,7 @@ public class CityActivity extends HeaderActivity {
 
                 cityAdapter.notifyDataSetChanged();
                 getIntent().putExtra("cityName",cityInfoList.get(position).getName());
-                setResult(0, getIntent());
+                setResult(1, getIntent());
 
                 finish();
 

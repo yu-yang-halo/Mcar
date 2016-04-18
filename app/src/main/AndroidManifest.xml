@@ -43,6 +43,9 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="k9HSMU8RrEhnMGDjichxpnGz0GrHhb1G"/>
+        <meta-data android:value="09651885e14f236f42a74420831b5192"
+            android:name="BUG_HD_SDK_GENERAL_KEY" />
+
 
         <activity
             android:name=".LauncherActivity"
