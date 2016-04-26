@@ -63,11 +63,23 @@ public class MyReceiver extends BroadcastReceiver {
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
 
-        	//打开自定义的Activity
-			Intent i = new Intent(context, MessageActivity.class);
-			i.putExtra(MessageActivity.MESSAGE_CONTENT,intent.getStringExtra(JPushInterface.EXTRA_ALERT));
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(i);
+			if(!MyActivityManager.getInstance().isRunBackground()){
+				DialogManagerUtils.showMessage(MyActivityManager.getInstance().getCurrentActivity(), "新消息", intent.getStringExtra(JPushInterface.EXTRA_ALERT), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+
+			}else{
+				//打开自定义的Activity
+				Intent i = new Intent(context, LoginActivity.class);
+				i.putExtra(MessageActivity.MESSAGE_CONTENT,intent.getStringExtra(JPushInterface.EXTRA_ALERT));
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				context.startActivity(i);
+			}
+
+
 
 			//DialogManagerUtils.showMyToast(context, intent.getStringExtra(JPushInterface.EXTRA_ALERT));
 

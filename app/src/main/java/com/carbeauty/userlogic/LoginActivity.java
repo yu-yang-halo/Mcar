@@ -4,9 +4,11 @@ import com.carbeauty.FirVersion;
 import com.carbeauty.MainActivity;
 import com.carbeauty.MyActivityManager;
 import com.carbeauty.R;
+import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentCacheUtils;
 import com.carbeauty.dialog.AcCarInfoDialog;
 import com.carbeauty.dialog.IpConfigDialog;
+import com.carbeauty.message.MessageActivity;
 import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -156,6 +158,16 @@ public class LoginActivity extends Activity {
 			}
 		});
 
+
+		String message=getIntent().getStringExtra(MessageActivity.MESSAGE_CONTENT);
+        if(message!=null){
+			DialogManagerUtils.showMessage(this, "新消息", message, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+		}
 
 	}
 	
