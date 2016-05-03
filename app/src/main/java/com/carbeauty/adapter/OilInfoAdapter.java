@@ -77,6 +77,9 @@ public class OilInfoAdapter extends BaseAdapter {
         itemPrice.setText(oilInfos.get(position).getPrice()+"元");
         itemDetail.setText(oilInfos.get(position).getDesc());
 
+        View item2=convertView.findViewById(R.id.item2);
+
+
         if(oilInfoSet.contains(oilInfos.get(position))){
             itemBtn.setSelected(true);
         }else {
@@ -96,6 +99,11 @@ public class OilInfoAdapter extends BaseAdapter {
             }
         });
 
+        if(oilInfos.get(position).isExpand()){
+            item2.setVisibility(View.VISIBLE);
+        }else {
+            item2.setVisibility(View.GONE);
+        }
 
         return convertView;
     }

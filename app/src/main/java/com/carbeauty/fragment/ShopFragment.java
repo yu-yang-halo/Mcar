@@ -125,6 +125,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 
         final Bundle bundle=new Bundle();
         bundle.putInt("shopId",shopInfo.getShopId());
+        bundle.putString("desc", shopInfo.getDesc());
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
@@ -144,7 +145,11 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 
                 TextView nameText= (TextView) popupView.findViewById(R.id.nameTextView);
 
-                nameText.setText(marker.getTitle());
+
+                nameText.setText(marker.getTitle()
+                        +"\n"
+                        +marker.getExtraInfo().getString("desc")
+                        +"(点击绑定)");
 
 
                 popupView.setOnClickListener(new View.OnClickListener() {

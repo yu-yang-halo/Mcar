@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.carbeauty.DensityUtil;
 import com.carbeauty.R;
 
 import java.util.ArrayList;
@@ -69,7 +70,10 @@ public class DecorationAdapter extends BaseAdapter {
         }
         TextView itemName= (TextView) convertView.findViewById(R.id.itemName);
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
-        TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
+        final TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
+        View item2=convertView.findViewById(R.id.item2);
+
+
 
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(decorationInfos.get(position).getName());
@@ -81,14 +85,19 @@ public class DecorationAdapter extends BaseAdapter {
         }else {
             itemBtn.setSelected(false);
         }
+        if(decorationInfos.get(position).isExpand()){
+            item2.setVisibility(View.VISIBLE);
+        }else {
+            item2.setVisibility(View.GONE);
+        }
 
         itemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.isSelected()){
+                if (v.isSelected()) {
                     v.setSelected(false);
                     decoCollections.remove(decorationInfos.get(position));
-                }else {
+                } else {
                     v.setSelected(true);
                     decoCollections.add(decorationInfos.get(position));
                 }
@@ -98,6 +107,11 @@ public class DecorationAdapter extends BaseAdapter {
 
 
 
+
+
+
+
         return convertView;
     }
+
 }

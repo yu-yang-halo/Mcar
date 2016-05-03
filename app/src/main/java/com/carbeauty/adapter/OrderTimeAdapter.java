@@ -82,7 +82,7 @@ public class OrderTimeAdapter extends BaseAdapter {
 
         if(orderStateTypes.get(position).isinVaild()){
             timeBtn.setEnabled(false);
-            timeBtn.setBackgroundColor(ctx.getResources().getColor(R.color.red));
+            timeBtn.setBackgroundColor(ctx.getResources().getColor(R.color.gray1));
         }
 
         String mSelecterTime=ContentBox.getValueString(ctx,ContentBox.KEY_ORDER_TIME,null);

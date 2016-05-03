@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
+    android:layout_height="wrap_content"
+    android:minHeight="50dp"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@color/white"
     >
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="90dp"
+    android:layout_height="wrap_content"
+    android:minHeight="50dp"
     android:padding="5dp"
+    android:id="@+id/item1"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/white">
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +24,7 @@
         android:textColor="@color/gray"
         android:lines="1"
         android:ellipsize="end"
-        android:layout_above="@+id/itemPrice"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/itemPrice"
@@ -32,7 +37,10 @@
         android:text="Item price"
         android:id="@+id/itemPrice"
         android:textColor="@color/gray"
+        android:layout_marginRight="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_centerVertical="true"
+
         android:layout_toLeftOf="@+id/itemBtn"
         android:layout_toStartOf="@+id/itemBtn" />
 
@@ -41,26 +49,31 @@
         android:layout_height="40dp"
         android:id="@+id/itemBtn"
         android:background="@drawable/button_cart_color"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text=""
-        android:id="@+id/itemDetail"
-        android:lines="2"
-        android:ellipsize="end"
-        android:layout_marginTop="8dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/itemPrice"
-        android:layout_toStartOf="@+id/itemPrice"
-        android:layout_below="@+id/itemName" />
-</RelativeLayout>
 
+
+
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:id="@+id/item2"
+        android:layout_below="@id/item1"
+        android:minHeight="35dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/itemDetail"
+            android:lines="2"
+            android:ellipsize="end"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 </RelativeLayout>

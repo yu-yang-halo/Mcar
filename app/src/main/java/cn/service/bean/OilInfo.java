@@ -8,6 +8,16 @@ public class OilInfo {
 	private float price;
 	private int shopId;
 
+	private boolean isExpand;
+
+	public boolean isExpand() {
+		return isExpand;
+	}
+
+	public void setIsExpand(boolean isExpand) {
+		this.isExpand = isExpand;
+	}
+
 	public int getId() {
 		return id;
 	}

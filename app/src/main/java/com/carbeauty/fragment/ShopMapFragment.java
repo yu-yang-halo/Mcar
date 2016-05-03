@@ -1,5 +1,7 @@
 package com.carbeauty.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +26,10 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
@@ -110,7 +116,7 @@ public class ShopMapFragment extends Fragment {
         });
 
     }
-    private void showDialog(Bundle bundle,LatLng position){
+    private void showDialog(Bundle bundle, final LatLng position){
         //创建InfoWindow展示的view
 
         View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
@@ -125,21 +131,29 @@ public class ShopMapFragment extends Fragment {
         Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
         TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
         Button photoRotoa= (Button) dialogMap.findViewById(R.id.photoRotoa);
+        Button navigateBtn= (Button) dialogMap.findViewById(R.id.navigateBtn);
+
 
         contentView.setText(name);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
+        navigateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // mBaiduMap.hideInfoWindow();
+                MyApplication application= (MyApplication) getActivity().getApplication();
+
+                LatLng pos1=new LatLng( application.getMyLocation().getLatitude(), application.getMyLocation().getLongitude());
+
+                baiduNavigation(pos1,position);
             }
         });
         photoRotoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), PanoramaActivity.class);
-                intent.putExtra("Title",name);
-                intent.putExtra("URL",url);
+                Intent intent = new Intent(getActivity(), PanoramaActivity.class);
+                intent.putExtra("Title", name);
+                intent.putExtra("URL", url);
                 startActivity(intent);
+
+
             }
         });
     }
@@ -159,6 +173,41 @@ public class ShopMapFragment extends Fragment {
 
         }
 
+    }
+
+    private void baiduNavigation(LatLng pt1,LatLng pt2){
+        NaviParaOption para = new NaviParaOption();
+        para.startPoint(pt1);
+        para.startName("从这里开始");
+        para.endPoint(pt2);
+        para.endName("到这里结束");
+
+        try {
+
+            BaiduMapNavigation.openBaiduMapNavi(para, getActivity());
+
+        } catch (BaiduMapAppNotSupportNaviException e) {
+            e.printStackTrace();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("您尚未安装百度地图app或app版本过低，点击确认安装？");
+            builder.setTitle("提示");
+            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            });
+
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.create().show();
+        }
     }
 
 

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -56,10 +57,13 @@ public class WashOilActivity extends HeaderActivity {
 
     SegmentedGroup timeSegmentGroup;
 
+    private int oldPostion=-1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_washoil);
+
 
         timeSegmentGroup = (SegmentedGroup) findViewById(R.id.segmented2);
         timeSegmentGroup.check(R.id.button21);
@@ -187,7 +191,7 @@ public class WashOilActivity extends HeaderActivity {
         itemTotalPrice.setText(total+"元");
 
     }
-    private void initDecorationListView(List<DecorationInfo> decorationInfos){
+    private void initDecorationListView(final List<DecorationInfo> decorationInfos){
         decorationAdapter=new DecorationAdapter(decorationInfos,this);
         decorationAdapter.setMyHandlerCallback(new MyHandlerCallback() {
             @Override
@@ -196,8 +200,37 @@ public class WashOilActivity extends HeaderActivity {
             }
         });
         listView.setAdapter(decorationAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DecorationInfo data = decorationInfos.get(position);
+                if (oldPostion == position) {
+                    if (data.isExpand())  {
+                        oldPostion = -1;
+                    }
+                    data.setIsExpand(!data.isExpand());
+                }else{
+                    oldPostion = position;
+                    data.setIsExpand(true);
+                }
+
+                int totalHeight = 0;
+                for(int i=0;i<decorationAdapter.getCount();i++) {
+                    View viewItem = decorationAdapter.getView(i, null, listView);//这个很重要，那个展开的item的measureHeight比其他的大
+                    viewItem.measure(0, 0);
+                    totalHeight += viewItem.getMeasuredHeight();
+                }
+
+                ViewGroup.LayoutParams params = listView.getLayoutParams();
+                params.height = totalHeight
+                        + (listView.getDividerHeight() * (listView.getCount() - 1));
+                listView.setLayoutParams(params);
+                decorationAdapter.notifyDataSetChanged();
+            }
+        });
     }
-    private void initOilInfoListView(List<OilInfo> oilInfos){
+    private void initOilInfoListView(final List<OilInfo> oilInfos){
         oilInfoAdapter=new OilInfoAdapter(oilInfos,this);
         oilInfoAdapter.setMyHandlerCallback(new MyHandlerCallback() {
             @Override
@@ -206,7 +239,34 @@ public class WashOilActivity extends HeaderActivity {
             }
         });
         listView.setAdapter(oilInfoAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OilInfo data = oilInfos.get(position);
+                if (oldPostion == position) {
+                    if (data.isExpand()) {
+                        oldPostion = -1;
+                    }
+                    data.setIsExpand(!data.isExpand());
+                } else {
+                    oldPostion = position;
+                    data.setIsExpand(true);
+                }
 
+                int totalHeight = 0;
+                for (int i = 0; i < oilInfoAdapter.getCount(); i++) {
+                    View viewItem = oilInfoAdapter.getView(i, null, listView);//这个很重要，那个展开的item的measureHeight比其他的大
+                    viewItem.measure(0, 0);
+                    totalHeight += viewItem.getMeasuredHeight();
+                }
+
+                ViewGroup.LayoutParams params = listView.getLayoutParams();
+                params.height = totalHeight
+                        + (listView.getDividerHeight() * (listView.getCount() - 1));
+                listView.setLayoutParams(params);
+                oilInfoAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 

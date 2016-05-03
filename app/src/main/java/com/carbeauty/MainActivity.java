@@ -38,6 +38,8 @@ import java.util.List;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.CityInfo;
+import cn.service.bean.ShopInfo;
+import cn.service.bean.UserInfo;
 
 public class MainActivity extends FragmentActivity implements LocationUpdateListenser {
 	private Context mContext = this;
@@ -62,6 +64,8 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 	BDLocation bdLocation;
 	List<CityInfo> cityInfoList;
 	CityInfo currentCity;
+	UserInfo userInfo;
+	List<ShopInfo> shopInfos;
 	private IShowModeListenser iShowModeListenser;
 
 	public void setiShowModeListenser(IShowModeListenser iShowModeListenser) {
@@ -212,11 +216,15 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 	}
 
 	class GetCityTasks extends AsyncTask<String,String,String> {
-
+        private int cityId=-1;
 		@Override
 		protected String doInBackground(String... params) {
 			try {
 				cityInfoList= WSConnector.getInstance().getCityList();
+				shopInfos=WSConnector.getInstance().getShopList();
+				userInfo=WSConnector.getInstance().getUserInfoById();
+
+
 			} catch (WSException e) {
 				e.printStackTrace();
 			}
@@ -226,20 +234,32 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		@Override
 		protected void onPostExecute(String s) {
 			if(s==null&&cityInfoList!=null){
-				for(CityInfo cityInfo:cityInfoList){
-					if(cityInfo.getName().equals(bdLocation.getCity())
-							||bdLocation.getCity().equals(cityInfo.getName() + "市")){
-						currentCity=cityInfo;
-						currentCity.setName(bdLocation.getCity());
+
+				for (ShopInfo info: shopInfos){
+					if(info.getShopId()==userInfo.getShopId()){
+						cityId=info.getCityId();
 						break;
 					}
+				}
 
+
+
+
+				for(CityInfo cityInfo:cityInfoList){
+					if(cityInfo.getCityId()==cityId){
+						currentCity=cityInfo;
+						String cityName=cityInfo.getName().contains("市")?cityInfo.getName():(cityInfo.getName()+"市");
+
+						currentCity.setName(cityName);
+						break;
+					}
 				}
 				if(currentCity!=null){
 					leftBtn.setText(currentCity.getName());
 					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,currentCity.getCityId());
+				}else{
+					leftBtn.setText("选择城市");
 				}
-
 			}
 		}
 	}
