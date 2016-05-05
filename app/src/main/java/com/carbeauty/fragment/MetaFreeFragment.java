@@ -178,7 +178,7 @@ public class MetaFreeFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             for (String path:photos){
-                bitmaps.add(ImageUtils.convertToBitmap(path, 100,100));
+                bitmaps.add(ImageUtils.convertToBitmap(path));
             }
 
             return null;

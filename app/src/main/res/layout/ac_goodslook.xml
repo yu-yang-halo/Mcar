@@ -1,95 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whitecc">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:id="@+id/gImageView"
-        android:padding="5dp"
-        android:src="@drawable/icon_default"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Large Text"
-        android:id="@+id/gDesc"
-        android:ellipsize="end"
-        android:layout_below="@+id/gImageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:textSize="25sp"
-        android:text="20元"
-        android:id="@+id/gPrice"
-        android:gravity="center_vertical"
-        android:textColor="@color/red"
-        android:layout_below="@+id/gDesc"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_below="@+id/gPrice"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <TextView
-            android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnAddCart">
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="数量"
-            android:gravity="center"
-            android:id="@+id/textView22"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            >
 
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="-"
-            android:gravity="center"
-            android:id="@+id/btnRemove"
-            android:textSize="30sp"
-            android:layout_marginLeft="30dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/textView22"
-            android:layout_toEndOf="@+id/textView22" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:padding="10dp"
+                android:textSize="13sp"
+                android:text="Large Text"
+                android:background="@color/white"
+                android:id="@+id/gDesc"
+                android:ellipsize="end"
+                android:layout_below="@+id/convenientBanner"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-        <EditText
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/gCount"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:inputType="number"
-            android:layout_alignBottom="@+id/btnRemove"
-            android:layout_toRightOf="@+id/btnRemove"
-            android:layout_toEndOf="@+id/btnRemove" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:textSize="20sp"
+                android:text="￥ 20"
+                android:paddingLeft="20dp"
+                android:id="@+id/gPrice"
+                android:gravity="center_vertical"
+                android:textColor="@color/red"
+                android:layout_below="@+id/gDesc"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="+"
-            android:textSize="30sp"
-            android:id="@+id/btnAdd"
-            android:layout_alignBottom="@+id/gCount"
-            android:layout_toRightOf="@+id/gCount"
-            android:layout_toEndOf="@+id/gCount" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/relayout"
+                android:layout_below="@+id/gPrice"
+                android:background="@color/white"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="购买数量"
+                    android:gravity="center"
+                    android:id="@+id/textView22"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_delete"
+                    android:gravity="center"
+                    android:id="@+id/btnRemove"
+                    android:textSize="30sp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/gCount"
+                    android:layout_toStartOf="@+id/gCount" />
+
+                <EditText
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gCount"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:focusable="false"
+                    android:background="@drawable/btn_orderinit_product_num"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/btnAdd"
+                    android:layout_toStartOf="@+id/btnAdd" />
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_add"
+                    android:textSize="30sp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/btnAdd"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/relayout2"
+                android:layout_below="@+id/relayout"
+                android:background="@color/white"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="图文详情"
+                    android:gravity="center"
+                    android:id="@+id/textView22"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <Button
+                    android:layout_width="15dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/arrowBtn"
+                    android:background="@drawable/arrow_right"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp" />
+
+            </RelativeLayout>
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/relayout2"
+                android:visibility="gone"
+                android:id="@+id/webview">
+
+            </WebView>
+
+
+            <com.bigkoo.convenientbanner.ConvenientBanner
+                android:id="@+id/convenientBanner"
+                android:layout_width="280dp"
+                android:layout_height="160dp"
+                app:canLoop="true"
+
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+
+    </ScrollView>
 
     <Button
         android:layout_width="wrap_content"

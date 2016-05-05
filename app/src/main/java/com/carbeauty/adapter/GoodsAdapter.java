@@ -81,7 +81,9 @@ public class GoodsAdapter extends BaseAdapter {
         }
         @Override
         protected String doInBackground(String... params) {
-            String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "", goodInfos.get(position).getSrc());
+            String src=goodInfos.get(position).getSrc();
+
+            String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "",   src.split(",")[0]);
             bm= ImageUtils.convertNetToBitmap(url);
             return null;
         }

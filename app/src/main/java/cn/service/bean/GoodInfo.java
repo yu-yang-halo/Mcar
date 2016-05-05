@@ -58,8 +58,17 @@ public class GoodInfo {
 	private float price;
 	private String src;
 	private int shopId;
-	private int type;
 
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	private int type;
+	private String href;
 	public int getType() {
 		return type;
 	}
@@ -69,7 +78,7 @@ public class GoodInfo {
 	}
 
 	public GoodInfo(int id, String name, String desc, int isShow, int isChange,
-			float price, String src, int shopId,int type) {
+			float price, String src, int shopId,int type,String href) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -81,6 +90,7 @@ public class GoodInfo {
 		this.src = src;
 		this.shopId = shopId;
 		this.type=type;
+		this.href=href;
 	}
 	public int getShopId() {
 		return shopId;

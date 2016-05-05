@@ -102,9 +102,8 @@ public class SimpleCardFragment extends Fragment {
                 intent.putExtra("id",goodInfos.get(position).getId());
                 intent.putExtra("shopId",goodInfos.get(position).getShopId());
                 intent.putExtra("src",goodInfos.get(position).getSrc());
-
+                intent.putExtra("href",goodInfos.get(position).getHref());
                 startActivity(intent);
-
 
             }
         });

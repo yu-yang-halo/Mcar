@@ -1504,9 +1504,12 @@ public class WSConnector {
 				"shopId").item(0);
 		Element typeNode = (Element) element.getElementsByTagName(
 				"type").item(0);
+		Element hrefNode = (Element) element.getElementsByTagName(
+				"href").item(0);
+
 		int  id=-1,isShow=-1,isChange=-1,shopId=-1,type=-1;
 		float price=0;
-		String name="",desc="",src="";
+		String name="",desc="",src="",href="";
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
 		}
@@ -1535,8 +1538,11 @@ public class WSConnector {
 		if (srcNode != null && srcNode.getFirstChild() != null) {
 			src =srcNode.getFirstChild().getNodeValue();
 		}
+		if (hrefNode != null && hrefNode.getFirstChild() != null) {
+			href =hrefNode.getFirstChild().getNodeValue();
+		}
 		
-		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type);
+		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type,href);
 		return goodInfo;
 	}
 	public List<GoodInfo> getGoodsList(int shopId) throws WSException{

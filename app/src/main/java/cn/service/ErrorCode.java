@@ -70,6 +70,7 @@ public enum ErrorCode {
 	CAN_NOT_FIND_STATION(1052,"can't find the station"),
 	COUPUN_EXIST(1053,"优惠券不可重复领取"),
 	COUPUN_HAS_EMPTY(1054,"优惠券已全部被领取"),
+	USER_ALREADY_EXIST(1055, "用户已存在"),
 	REQ_TIME_OUT(1100, "网络慢。请稍后再试！"),
 	INTERNAL_CONN_ERROR(1101, "e联WS接口服务器连接错误"),
 	CODE_CACHE_NULL(1048, "Verification code cache is null"),
@@ -80,6 +81,7 @@ public enum ErrorCode {
 	DATAFORMAT_ERROR(2002,"时间数据格式化错误，请输入正确的时间格式"),
 	VEDIO_LOAD_FAIL(2003,"视频加载错误"),
 	DEVICE_LOCKED(2004,"设备已锁定，请按设备解锁"),
+
 	UNKNOWERRORCODE(10000,"未解析的errcode"),
 
 	NET_WORK_TIME_OUT(10001,"服务请求超时，请检查网络状态");
