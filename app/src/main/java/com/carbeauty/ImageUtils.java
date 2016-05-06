@@ -93,6 +93,39 @@ public class ImageUtils {
 
         return inSampleSize;
     }
+
+    public static  Bitmap convertNetToBitmap(String urlString,int w,int h){
+        URL url= null;
+        URLConnection connection= null;
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        // 设置为ture只获取图片大小
+        opts.inJustDecodeBounds = true;
+        opts.inPreferredConfig = Bitmap.Config.ALPHA_8;
+        opts.inSampleSize = getScaleSize(opts,w,h);
+        // 加载到内存
+        opts.inJustDecodeBounds = false;
+
+        try {
+            url = new URL(urlString);
+            connection = url.openConnection();
+            HttpURLConnection httpConnection=(HttpURLConnection)connection;
+            int responseCode=httpConnection.getResponseCode();
+            if (responseCode==HttpURLConnection.HTTP_OK){
+                InputStream stream=httpConnection.getInputStream();
+                Bitmap bitmap=BitmapFactory.decodeStream(stream,null,opts);
+                return bitmap;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return null;
+    }
     public static  Bitmap convertNetToBitmap(String urlString){
         URL url= null;
         URLConnection connection= null;

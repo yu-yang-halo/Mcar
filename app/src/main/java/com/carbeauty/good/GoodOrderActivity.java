@@ -1,8 +1,10 @@
 package com.carbeauty.good;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,39 +31,31 @@ import cn.service.WSException;
 /**
  * Created by Administrator on 2016/3/29.
  */
-public class GoodOrderActivity extends HeaderActivity {
+public class GoodOrderActivity extends FragmentActivity {
     ListView goodslistview;
-    EditText nametxt;
-    EditText phoneTxt;
-    EditText addressTxt;
+
+    ActionBar mActionbar;
 
     CheckBox checkAll;
     TextView totalPrice;
     Button createOrderButton;
     GoodLookAdapter goodLookAdapter;
-
+    Button rightBtn;
 
     String address;
     String name;
     String phone;
+
+    TextView addressDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_goodsorder);
         initCustomActionBar();
-        rightBtn.setVisibility(View.GONE);
+
 
         goodslistview= (ListView) findViewById(R.id.goodslistview);
-        nametxt= (EditText) findViewById(R.id.nametxt);
-        phoneTxt= (EditText) findViewById(R.id.phoneTxt);
-        addressTxt= (EditText) findViewById(R.id.addressTxt);
-
-
-        nametxt.setText(ContentBox.getValueString(GoodOrderActivity.this, "GOA_NAME", ""));
-        phoneTxt.setText(ContentBox.getValueString(GoodOrderActivity.this, "GOA_PHONE", ""));
-        addressTxt.setText(ContentBox.getValueString(GoodOrderActivity.this, "GOA_ADDRESS", ""));
-
 
 
 
@@ -70,7 +64,7 @@ public class GoodOrderActivity extends HeaderActivity {
 
         createOrderButton= (Button) findViewById(R.id.button2);
 
-
+        addressDescription= (TextView) findViewById(R.id.textView4);
 
         List<CartManager.MyCartClass> myCartClassList=CartManager.getInstance().getMyCartClassList();
 
@@ -92,9 +86,12 @@ public class GoodOrderActivity extends HeaderActivity {
             @Override
             public void onClick(View v) {
 
-                address=addressTxt.getText().toString();
-                name=nametxt.getText().toString();
-                phone=phoneTxt.getText().toString();
+
+
+                if(address.equals("")||name.equals("")||phone.equals("")){
+                    Toast.makeText(GoodOrderActivity.this,"请添加我的地址",Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if(goodLookAdapter.getCommitData().size()==0){
                     Toast.makeText(GoodOrderActivity.this,"请选择购买的商品",Toast.LENGTH_SHORT).show();
@@ -102,9 +99,7 @@ public class GoodOrderActivity extends HeaderActivity {
                     Toast.makeText(GoodOrderActivity.this,"地址/姓名/手机号不能为空",Toast.LENGTH_SHORT).show();
                 }else{
 
-                    ContentBox.loadString(GoodOrderActivity.this,"GOA_NAME",name);
-                    ContentBox.loadString(GoodOrderActivity.this,"GOA_PHONE",phone);
-                    ContentBox.loadString(GoodOrderActivity.this,"GOA_ADDRESS",address);
+
 
                     new CommitOrderTask(goodLookAdapter.getCommitData()).execute();
                 }
@@ -113,6 +108,18 @@ public class GoodOrderActivity extends HeaderActivity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        address=ContentBox.getValueString(GoodOrderActivity.this, "GOA_ADDRESS", "");
+        name=ContentBox.getValueString(GoodOrderActivity.this, "GOA_NAME", "");
+        phone=ContentBox.getValueString(GoodOrderActivity.this, "GOA_PHONE", "");
+        if(!address.equals("")&&!name.equals("")&&!phone.equals("")){
+            addressDescription.setText("地址:"+address+"\n收货人姓名:"+name+" 联系电话:"+phone);
+        }
 
     }
 
@@ -167,5 +174,45 @@ public class GoodOrderActivity extends HeaderActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    protected boolean initCustomActionBar() {
+        mActionbar = getActionBar();
+        if (mActionbar == null) {
+            return false;
+        }
+        mActionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        mActionbar.setDisplayShowCustomEnabled(true);
+        mActionbar.setCustomView(R.layout.header_home2);
+
+        Button rightBtn=(Button) mActionbar.getCustomView().findViewById(R.id.rightBtn);
+        Button leftBtn=(Button) mActionbar.getCustomView().findViewById(R.id.leftBtn);
+        leftBtn.setVisibility(View.VISIBLE);
+        rightBtn.setVisibility(View.VISIBLE);
+
+        TextView titleTxt=(TextView) mActionbar.getCustomView().findViewById(R.id.tv_tbb_title);
+        titleTxt.setText(getIntent().getStringExtra("Title"));
+
+        leftBtn.setText("返回");
+        leftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        rightBtn.setText("我的地址");
+        rightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GoodOrderActivity.this, MyAddressActivity.class);
+                intent.putExtra("Title", "我的地址");
+                startActivity(intent);
+            }
+        });
+
+
+
+        return true;
     }
 }

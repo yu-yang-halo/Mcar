@@ -1,5 +1,7 @@
 package cn.service.bean;
 
+import android.graphics.Bitmap;
+
 public class GoodInfo {
 
 	@Override
@@ -97,5 +99,15 @@ public class GoodInfo {
 	}
 	public void setShopId(int shopId) {
 		this.shopId = shopId;
+	}
+
+	private Bitmap bitmap;
+
+	public Bitmap getBitmap() {
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
 	}
 }

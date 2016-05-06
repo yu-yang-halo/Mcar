@@ -84,8 +84,11 @@ public class GoodLookAdapter extends BaseAdapter {
         nameTxt.setText(myCartClassList.get(position).getGoodInfo().getName());
         descTxt.setText(myCartClassList.get(position).getGoodInfo().getDesc());
         countTxt.setText("x"+myCartClassList.get(position).getCount());
-        priceTxt.setText(myCartClassList.get(position).getGoodInfo().getPrice()+"元");
-        showImageView.setImageBitmap(myCartClassList.get(position).getBitmap());
+        priceTxt.setText(myCartClassList.get(position).getGoodInfo().getPrice() + "元");
+        if(myCartClassList.get(position).getBitmap()!=null){
+            showImageView.setImageBitmap(myCartClassList.get(position).getBitmap());
+
+        }
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

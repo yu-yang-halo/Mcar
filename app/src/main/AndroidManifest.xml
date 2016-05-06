@@ -145,6 +145,8 @@
         <activity android:name=".good.GoodListShowActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".good.GoodLookActivity"
+        android:screenOrientation="portrait"></activity>
+        <activity android:name=".good.MyAddressActivity"
             android:screenOrientation="portrait"></activity>
 
         <activity android:name=".camera.VideoInfoActivity"

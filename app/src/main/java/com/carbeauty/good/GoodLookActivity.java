@@ -42,6 +42,8 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -77,8 +79,11 @@ public class GoodLookActivity extends FragmentActivity {
 
 
     ImageLoader imageLoader;
+
     List<String> localImages;
+
     RelativeLayout relayout2;
+    Bitmap[] cacheBitmaps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +111,10 @@ public class GoodLookActivity extends FragmentActivity {
 
 
         imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+
+
+
+
 
         webview= (WebView) findViewById(R.id.webview);
         webview.setWebViewClient(new WebViewClient() {
@@ -198,7 +206,7 @@ public class GoodLookActivity extends FragmentActivity {
                 String count = gCount.getText().toString();
 
                 if (CommonUtils.isNumeric(count)) {
-                    boolean isAddSuccess = CartManager.getInstance().addToCart(id, Integer.parseInt(count), bm,goodInfo);
+                    boolean isAddSuccess = CartManager.getInstance().addToCart(id, Integer.parseInt(count), bm, goodInfo);
 
                     if (isAddSuccess) {
                         ViewAnimator.animate(cartButton).bounce().duration(1500).start();
@@ -217,27 +225,18 @@ public class GoodLookActivity extends FragmentActivity {
         cartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CartManager.getInstance().getMyCartClassList().size()<=0){
-                    Toast.makeText(GoodLookActivity.this,"您的购物车还没有任何商品哦",Toast.LENGTH_SHORT).show();
-                }else{
-                    Intent intent=new Intent(GoodLookActivity.this,GoodOrderActivity.class);
-                    intent.putExtra("Title","我的购物车");
+                if (CartManager.getInstance().getMyCartClassList().size() <= 0) {
+                    Toast.makeText(GoodLookActivity.this, "您的购物车还没有任何商品哦", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(GoodLookActivity.this, GoodOrderActivity.class);
+                    intent.putExtra("Title", "我的购物车");
                     startActivity(intent);
 
                 }
             }
         });
 
-        String[] srcList=src.split(",");
-        localImages=new ArrayList<String>();
-        for (String srcPath:srcList){
-            String url= WSConnector.getGoodsURL(shopId + "", srcPath);
-            System.out.println("url "+url);
-            localImages.add(url);
-        }
-        if(localImages!=null&&localImages.size()>0){
-            initGoodBanner(localImages);
-        }
+
 
 
 
@@ -247,21 +246,34 @@ public class GoodLookActivity extends FragmentActivity {
         relayout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(v.getTag()==0){
-                   webview.setVisibility(View.VISIBLE);
-                   v.setTag(1);
-                   ViewAnimator.animate(arrowBtn).rotation(90).duration(300).start();
-               }else{
-                   v.setTag(0);
-                   webview.setVisibility(View.GONE);
-                   ViewAnimator.animate(arrowBtn).rotation(0).duration(300).start();
-               }
+                if (v.getTag() == 0) {
+                    webview.setVisibility(View.VISIBLE);
+                    v.setTag(1);
+                    ViewAnimator.animate(arrowBtn).rotation(90).duration(300).start();
+                } else {
+                    v.setTag(0);
+                    webview.setVisibility(View.GONE);
+                    ViewAnimator.animate(arrowBtn).rotation(0).duration(300).start();
+                }
             }
         });
 
+        String[] srcList=src.split(",");
+        cacheBitmaps=new Bitmap[srcList.length];
+
+        localImages=new ArrayList<String>();
+        for (String srcPath:srcList){
+            String imageUri= WSConnector.getGoodsURL(shopId + "", srcPath);
+            System.out.println("imageUri "+imageUri);
+            localImages.add(imageUri);
+        }
+
+        initGoodBanner(localImages);
 
 
     }
+
+
 
     private void initGoodBanner(List<String> localImages){
         banner.setPages(
@@ -285,33 +297,50 @@ public class GoodLookActivity extends FragmentActivity {
             return imageView;
         }
         @Override
-        public void UpdateUI(Context context, final int position, String url) {
+        public void UpdateUI(Context context, final int position, String imageURL) {
 
-
-            if(url==null){
+            if(cacheBitmaps[position]==null){
                 imageView.setImageResource(R.drawable.icon_default);
+                new ImageTask(imageURL,imageView,position).executeOnExecutor(Executors.newCachedThreadPool());
             }else{
-                imageLoader.loadImage(url, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        if(loadedImage==null){
-                            imageView.setImageResource(R.drawable.icon_default);
-                        }else{
-                            imageView.setImageBitmap(loadedImage);
-                        }
-                    if(position==0){
-                        bm=loadedImage;
-                    }
-
-                        System.out.println("loadedImage "+loadedImage);
-
-
-                    }
-                });
+                imageView.setImageBitmap(cacheBitmaps[position]);
             }
 
         }
     }
+
+    class ImageTask extends  AsyncTask<String,String,Bitmap>{
+        private String imageURL;
+        private ImageView imageView;
+        int position;
+        ImageTask(String imageURL,ImageView imageView,int position){
+            this.imageURL=imageURL;
+            this.imageView=imageView;
+            this.position=position;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            return  ImageUtils.convertNetToBitmap(imageURL,200,200);
+        }
+        @Override
+        protected void onPostExecute(Bitmap s) {
+              if(s!=null){
+                  imageView.setImageBitmap(s);
+                  cacheBitmaps[position]=s;
+              }
+            if(position==0){
+                bm=s;
+            }
+        }
+    }
+
 
 
     protected boolean initCustomActionBar() {

@@ -15,6 +15,7 @@ import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
 import cn.service.bean.GoodInfo;
@@ -53,22 +54,38 @@ public class GoodsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       if(convertView==null){
+        ItemHolder holder;
+        if(convertView==null){
             convertView= LayoutInflater.from(ctx).inflate(R.layout.grid_gooditem,null);
+            holder=new ItemHolder();
+            holder.goodName= (TextView) convertView.findViewById(R.id.goodName);
+            holder.goodDesc= (TextView) convertView.findViewById(R.id.goodDesc);
+            holder.goodPriceTxt= (TextView) convertView.findViewById(R.id.goodPriceTxt);
+            holder.goodImageView= (ImageView) convertView.findViewById(R.id.goodImageView);
+            convertView.setTag(holder);
+
+       }
+
+        holder= (ItemHolder) convertView.getTag();
+
+        holder.goodName.setText(goodInfos.get(position).getName());
+        holder.goodDesc.setText(goodInfos.get(position).getDesc());
+        holder.goodPriceTxt.setText(goodInfos.get(position).getPrice() + "元");
+
+        if(goodInfos.get(position).getBitmap()!=null){
+            holder.goodImageView.setImageBitmap(goodInfos.get(position).getBitmap());
+        }else{
+            new NetBitmapToImageViewTask(position,holder.goodImageView).executeOnExecutor(Executors.newCachedThreadPool());
         }
 
-        TextView goodName= (TextView) convertView.findViewById(R.id.goodName);
-        TextView goodDesc= (TextView) convertView.findViewById(R.id.goodDesc);
-        TextView goodPriceTxt= (TextView) convertView.findViewById(R.id.goodPriceTxt);
-        ImageView goodImageView= (ImageView) convertView.findViewById(R.id.goodImageView);
-        goodName.setText(goodInfos.get(position).getName());
-        goodDesc.setText(goodInfos.get(position).getDesc());
-        goodPriceTxt.setText(goodInfos.get(position).getPrice()+"元");
-
-        new NetBitmapToImageViewTask(position,goodImageView).execute();
-
-
         return convertView;
+
+    }
+    class ItemHolder{
+        TextView goodName;
+        TextView goodDesc;
+        TextView goodPriceTxt;
+        ImageView goodImageView;
 
     }
     class NetBitmapToImageViewTask extends AsyncTask<String,String,String>{
@@ -84,7 +101,7 @@ public class GoodsAdapter extends BaseAdapter {
             String src=goodInfos.get(position).getSrc();
 
             String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "",   src.split(",")[0]);
-            bm= ImageUtils.convertNetToBitmap(url);
+            bm= ImageUtils.convertNetToBitmap(url,100,100);
             return null;
         }
 
@@ -92,6 +109,7 @@ public class GoodsAdapter extends BaseAdapter {
         protected void onPostExecute(String s) {
             if(bm!=null){
                 goodImageView.setImageBitmap(bm);
+                goodInfos.get(position).setBitmap(bm);
             }
         }
     }
