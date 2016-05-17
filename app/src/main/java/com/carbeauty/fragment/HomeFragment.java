@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getActivity(), "请先选择店铺", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    if(carId<=0){
+                    if (carId <= 0) {
                         Toast.makeText(getActivity(), "为了不影响您的订单提交，请添加车牌信息", Toast.LENGTH_SHORT).show();
                     }
 
@@ -148,8 +148,10 @@ public class HomeFragment extends Fragment {
                         toLookShop(position);
                     } else if (position == 5) {
                         toGoods(position);
-                    }else if (position == 6) {
-                        Toast.makeText(getActivity(),"即将上线，敬请期待~",Toast.LENGTH_SHORT).show();
+                    } else if (position == 6) {
+                        Toast.makeText(getActivity(), "即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
+                    }else if(position==4){
+                        toWeb();
                     }
 
 
@@ -157,6 +159,12 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+    private void toWeb(){
+        Intent intent=new Intent(getActivity(),WebBroswerActivity.class);
+        intent.putExtra("URL", "http://j.autohome.com.cn/chexian-calculation.html");
+        intent.putExtra("Title","车险直销");
+        getActivity().startActivity(intent);
     }
     private void toMetalplate(int position){
         Intent intent=new Intent(getActivity(), MetalplateActivity.class);
@@ -190,7 +198,7 @@ public class HomeFragment extends Fragment {
         SimpleAdapter sim_adapter = new SimpleAdapter(getActivity(),
                 data_list, R.layout.item0, from, to);
         listView.setAdapter(sim_adapter);
-        listView.setDividerHeight(0);
+        listView.setDividerHeight(2);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

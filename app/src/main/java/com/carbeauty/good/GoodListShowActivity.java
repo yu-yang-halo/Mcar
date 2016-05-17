@@ -54,7 +54,6 @@ public class GoodListShowActivity extends HeaderActivity {
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
             swipeRefreshLayout.setRefreshing(true);
         }
 

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,7 @@ public class GoodLookActivity extends FragmentActivity {
 
     RelativeLayout relayout2;
     Bitmap[] cacheBitmaps;
+    ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +110,7 @@ public class GoodLookActivity extends FragmentActivity {
         btnAddCart= (Button) findViewById(R.id.btnAddCart);
         relayout2= (RelativeLayout) findViewById(R.id.relayout2);
         arrowBtn=(Button)findViewById(R.id.arrowBtn);
+        scrollView= (ScrollView) findViewById(R.id.scrollView);
 
 
         imageLoader = ImageLoader.getInstance();
@@ -250,10 +253,18 @@ public class GoodLookActivity extends FragmentActivity {
                     webview.setVisibility(View.VISIBLE);
                     v.setTag(1);
                     ViewAnimator.animate(arrowBtn).rotation(90).duration(300).start();
+                    scrollView.post(new Runnable() {
+                       @Override
+                        public void run() {
+                           scrollView.scrollTo(0, 600);
+                        }
+                    });
+
                 } else {
                     v.setTag(0);
                     webview.setVisibility(View.GONE);
                     ViewAnimator.animate(arrowBtn).rotation(0).duration(300).start();
+
                 }
             }
         });

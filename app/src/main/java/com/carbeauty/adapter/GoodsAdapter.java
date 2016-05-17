@@ -31,6 +31,10 @@ public class GoodsAdapter extends BaseAdapter {
          this.goodInfos=goodInfos;
     }
 
+    public void setGoodInfos(List<GoodInfo> goodInfos) {
+        this.goodInfos = goodInfos;
+    }
+
     @Override
     public int getCount() {
         if(goodInfos!=null){

@@ -1574,7 +1574,10 @@ public class WSConnector {
 					Logger.getLogger(this.getClass()).info(
 							"[GoodInfo]  goodInfo = "
 									+ goodInfo.toString());
-					goodInfos.add(goodInfo);
+					if(goodInfo.getIsShow()>0){
+						goodInfos.add(goodInfo);
+					}
+
 				}
 				return goodInfos;
 			}else{

@@ -2,6 +2,7 @@ package com.carbeauty.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +124,7 @@ public class ShopInfoAdapter extends BaseAdapter {
 
         titleView.setText(shopInfos.get(position).getName());
         descriptionView.setText(shopInfos.get(position).getDesc());
+        descriptionView.setMovementMethod(LinkMovementMethod.getInstance());
 
         distanceText.setText(shopInfos.get(position).getKilometerDistance()+"公里");
 

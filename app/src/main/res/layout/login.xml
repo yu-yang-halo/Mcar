@@ -57,6 +57,7 @@
         android:layout_height="wrap_content"
         android:text="IP配置"
         android:id="@+id/ipconfig"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

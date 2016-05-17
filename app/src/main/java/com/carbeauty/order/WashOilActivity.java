@@ -282,12 +282,20 @@ public class WashOilActivity extends HeaderActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, incr);
+
+                if(ac_type_value==Constants.AC_TYPE_OIL) {
+                    orderStateTypes = WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_OIL, shopId, incr);
+                }else  if(ac_type_value==Constants.AC_TYPE_WASH){
+                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, incr);
+                }
 
                 if(incr<0){
                     if(ac_type_value==Constants.AC_TYPE_OIL){
+
                         oilInfos=WSConnector.getInstance().getOilList(shopId);
+
                     }else  if(ac_type_value==Constants.AC_TYPE_WASH){
+
                         decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
                     }
                 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,9 @@ public class SimpleCardFragment extends Fragment {
     PullRefreshLayout  swipeRefreshLayout;
     GoodsType goodsType;
     List<GoodInfo> goodInfos;
-    GoodActivity goodActivity;
+    GoodsAdapter goodsAdapter;
+    int shopId;
+
     public static SimpleCardFragment getInstance(GoodsType goodsType, List<GoodInfo> goodInfos) {
         SimpleCardFragment sf = new SimpleCardFragment();
         sf.goodsType=goodsType;
@@ -63,6 +66,8 @@ public class SimpleCardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shopId= ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, 0);
+        Log.e("onCreate","fragment onCreate");
     }
 
     @Override
@@ -73,12 +78,39 @@ public class SimpleCardFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                new SimpleGoodsTask().execute();
             }
         });
 
         initGridView();
         return v;
+    }
+
+    class SimpleGoodsTask extends AsyncTask<String,String,String>{
+        List<GoodInfo> newgoodInfos;
+
+        @Override
+        protected void onPreExecute() {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                newgoodInfos= WSConnector.getInstance().getGoodsList(shopId);
+            } catch (WSException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            swipeRefreshLayout.setRefreshing(false);
+            filterMyGoodInfos(goodsType, newgoodInfos);
+            goodsAdapter.setGoodInfos(goodInfos);
+            goodsAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -87,7 +119,7 @@ public class SimpleCardFragment extends Fragment {
 
 
     private void initGridView(){
-        GoodsAdapter goodsAdapter=new GoodsAdapter(getActivity(),goodInfos);
+        goodsAdapter=new GoodsAdapter(getActivity(),goodInfos);
 
         goodGridView.setAdapter(goodsAdapter);
         goodGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

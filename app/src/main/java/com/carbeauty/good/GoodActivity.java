@@ -76,6 +76,7 @@ public class GoodActivity extends FragmentActivity {
     }
 
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
