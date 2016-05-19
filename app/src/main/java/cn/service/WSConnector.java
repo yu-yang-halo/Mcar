@@ -1343,7 +1343,8 @@ public class WSConnector {
 		service = WSConnector.wsUrl + "createCar?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&userId="+this.userMap.get("userId")
-				+"&type="+carInfo.getType()+"&number="+URLEncoder.encode(carInfo.getNumber(), "UTF-8");
+				+"&type="+carInfo.getType()+"&number="+URLEncoder.encode(carInfo.getNumber(), "UTF-8")+
+				"&model="+URLEncoder.encode(carInfo.getModel(), "UTF-8");
 		Logger.getLogger(this.getClass()).info(
 				"[createCar]  ws query = " + service);
 
@@ -1427,6 +1428,9 @@ public class WSConnector {
 				"type").item(0);
 		Element userIdNode = (Element) element.getElementsByTagName(
 				"userId").item(0);
+		Element modelNode= (Element) element.getElementsByTagName("model").item(0);
+
+
 		int  id=-1,type=-1,userId=-1;
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -1438,13 +1442,19 @@ public class WSConnector {
 			userId = Integer.parseInt(userIdNode.getFirstChild().getNodeValue());
 		}
 		String number="";
+		String model="";
 		if (numberNode != null && numberNode.getFirstChild() != null) {
 			number = numberNode.getFirstChild().getNodeValue();
 		}
+		if (modelNode != null && modelNode.getFirstChild() != null) {
+			model = modelNode.getFirstChild().getNodeValue();
+		}
+
+
 		//
 
 
-		CarInfo carInfo=new CarInfo(id, type, URLDecoder.decode(number,"UTF-8"), userId);
+		CarInfo carInfo=new CarInfo(id, type, URLDecoder.decode(number,"UTF-8"), userId,URLDecoder.decode(model,"UTF-8"));
 		return carInfo;
 	}
 	public List<CarInfo> getCarByUserId() throws WSException, UnsupportedEncodingException {

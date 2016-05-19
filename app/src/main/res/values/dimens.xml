@@ -6,4 +6,5 @@
     
     <dimen name="mfontSize">18sp</dimen>
 
+    <dimen name="defaultFontSize">18sp</dimen>
 </resources>

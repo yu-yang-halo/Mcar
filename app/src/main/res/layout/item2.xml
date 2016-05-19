@@ -10,13 +10,18 @@
         >
     <TextView
         android:id="@+id/title"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
         android:textColor="@color/black"
         android:paddingLeft="20dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
-        android:text="car" />
+        android:textSize="@dimen/defaultFontSize"
+        android:text="car"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/delCarBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="30dp"

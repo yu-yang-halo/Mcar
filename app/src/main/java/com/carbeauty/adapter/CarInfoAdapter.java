@@ -63,7 +63,7 @@ public class CarInfoAdapter extends BaseAdapter {
         }
         TextView titleView= (TextView) convertView.findViewById(R.id.title);
         Button delCarBtn= (Button) convertView.findViewById(R.id.delCarBtn);
-        titleView.setText(carInfos.get(position).getNumber());
+        titleView.setText(carInfos.get(position).getNumber()+"  型号:"+carInfos.get(position).getModel());
 
         delCarBtn.setOnClickListener(new View.OnClickListener() {
             @Override

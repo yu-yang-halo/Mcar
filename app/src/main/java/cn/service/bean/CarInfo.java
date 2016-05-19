@@ -6,13 +6,16 @@ public class CarInfo {
 	private int type;//
 	private String number;
 	private int userId;
+	private String model;
 
-	public CarInfo(int id, int type, String number, int userId) {
+
+	public CarInfo(int id, int type, String number, int userId,String model) {
 		super();
 		this.id = id;
 		this.type = type;
 		this.number = number;
 		this.userId = userId;
+		this.model=model;
 	}
 
 	@Override
@@ -51,5 +54,16 @@ public class CarInfo {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public String getModel() {
+		if(model==null){
+			return "";
+		}
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 }

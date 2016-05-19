@@ -18,8 +18,8 @@
         android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textColor="@color/font_gray0"
+        android:textSize="@dimen/defaultFontSize"
         android:text=""
         />
 </LinearLayout>

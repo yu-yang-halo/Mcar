@@ -3,27 +3,34 @@
     android:layout_height="200dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:id="@+id/editText2"
+        android:hint="车的型号"
+        android:layout_above="@+id/editText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="21dp" />
 
     <EditText
         android:layout_width="200dp"
         android:layout_height="35dp"
         android:id="@+id/editText"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
-        android:hint="例如：皖A 88888"/>
+        android:hint="例如：皖A 88888"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="取消"
         android:id="@+id/cancelBtn"
-        android:layout_marginTop="52dp"
-        android:layout_below="@+id/editText"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp" />
+        android:layout_marginBottom="10dp" />
 
     <Button
         android:layout_width="120dp"
@@ -35,5 +42,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="30dp"
         android:layout_marginEnd="30dp" />
+
+
 
 </RelativeLayout>

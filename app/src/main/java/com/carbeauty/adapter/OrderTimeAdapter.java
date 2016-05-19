@@ -74,16 +74,13 @@ public class OrderTimeAdapter extends BaseAdapter {
 
         timeBtn.setText(orderStateTypes.get(position).getOrderTime());
 
-        if(orderStateTypes.get(position).isFull()){
+        if(orderStateTypes.get(position).isFull()||orderStateTypes.get(position).isinVaild()){
             timeBtn.setEnabled(false);
+            timeBtn.setBackgroundColor(ctx.getResources().getColor(R.color.kprogresshud_grey_color));
         }else {
             timeBtn.setEnabled(true);
         }
 
-        if(orderStateTypes.get(position).isinVaild()){
-            timeBtn.setEnabled(false);
-            timeBtn.setBackgroundColor(ctx.getResources().getColor(R.color.gray1));
-        }
 
         String mSelecterTime=ContentBox.getValueString(ctx,ContentBox.KEY_ORDER_TIME,null);
         if(mSelecterTime!=null&&mSelecterTime.equals(orderStateTypes.get(position).getOrderTime())){

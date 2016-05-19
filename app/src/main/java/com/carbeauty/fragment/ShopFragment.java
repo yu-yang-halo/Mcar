@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.carbeauty.CommonUtils;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.adapter.ShopInfoAdapter;
@@ -86,7 +88,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
             //定义地图状态
             MapStatus mMapStatus = new MapStatus.Builder()
                     .target(cenpt)
-                    .zoom(11)
+                    .zoom(13)
                     .build();
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
 
@@ -143,16 +145,26 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 
                 View popupView=LayoutInflater.from(getActivity()).inflate(R.layout.popup_dialog,null);
 
-                TextView nameText= (TextView) popupView.findViewById(R.id.nameTextView);
+                final TextView nameText= (TextView) popupView.findViewById(R.id.nameTextView);
+
+                final RelativeLayout dialogView= (RelativeLayout) popupView.findViewById(R.id.dialogView);
+
+
 
 
                 nameText.setText(marker.getTitle()
-                        +"\n"
-                        +marker.getExtraInfo().getString("desc")
-                        +"(点击绑定)");
+                        + "\n"
+                        + marker.getExtraInfo().getString("desc")
+                        + "(点击绑定)");
+
+                nameText.measure(0, 0);
 
 
-                popupView.setOnClickListener(new View.OnClickListener() {
+                dialogView.setLayoutParams(new RelativeLayout.LayoutParams(nameText.getMeasuredWidth()+40, nameText.getMeasuredHeight()+40));
+
+
+
+                nameText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         marker.setIcon(BitmapDescriptorFactory

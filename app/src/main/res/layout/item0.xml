@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text=""
+        android:textSize="@dimen/defaultFontSize"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/image"
         android:layout_toEndOf="@+id/image"

@@ -52,7 +52,7 @@ public class CarManagerActivity extends Activity{
         initCustomActionBar();
 
 
-        new RefreshCarInfoTask(0,null).execute();
+        new RefreshCarInfoTask(0,null,null).execute();
 
 
     }
@@ -105,8 +105,10 @@ public class CarManagerActivity extends Activity{
         if(resultCode>0){
             if(data.getStringExtra("name").trim().equals("")){
                 Toast.makeText(this,"车牌号不能为空",Toast.LENGTH_SHORT).show();
+            }else if(data.getStringExtra("model").trim().equals("")){
+                Toast.makeText(this,"车型号不能为空",Toast.LENGTH_SHORT).show();
             }else{
-                new RefreshCarInfoTask(1,data.getStringExtra("name")).execute();
+                new RefreshCarInfoTask(1,data.getStringExtra("name"),data.getStringExtra("model")).execute();
             }
         }
 
@@ -116,11 +118,12 @@ public class CarManagerActivity extends Activity{
 
         int type;
         String carNumber;
-
+        String model;
         KProgressHUD progressHUD;
-        RefreshCarInfoTask(int type,String carNumber){
+        RefreshCarInfoTask(int type,String carNumber,String model){
             this.type=type;
             this.carNumber=carNumber;
+            this.model=model;
         }
 
         @Override
@@ -137,10 +140,10 @@ public class CarManagerActivity extends Activity{
         @Override
         protected String doInBackground(String... params) {
             try {
-            if(type==1){
-                CarInfo carInfo=new CarInfo(0,0,carNumber,0);
-                WSConnector.getInstance().createCar(carInfo);
-            }
+                if(type==1){
+                   CarInfo carInfo=new CarInfo(0,0,carNumber,0,model);
+                   WSConnector.getInstance().createCar(carInfo);
+                }
                 carInfos=WSConnector.getInstance().getCarByUserId();
             } catch (WSException e) {
                 return e.getErrorMsg();

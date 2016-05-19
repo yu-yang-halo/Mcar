@@ -149,8 +149,8 @@
 
             <com.bigkoo.convenientbanner.ConvenientBanner
                 android:id="@+id/convenientBanner"
-                android:layout_width="280dp"
-                android:layout_height="200dp"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
                 app:canLoop="true"
 
                 android:layout_alignParentTop="true"

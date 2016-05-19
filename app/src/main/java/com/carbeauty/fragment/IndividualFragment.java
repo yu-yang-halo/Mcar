@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -41,20 +42,32 @@ import cn.service.bean.UserInfo;
 public class IndividualFragment extends Fragment {
     ListView individualListView;
     TextView accountName;
-    TextView plateNumber;
-    Button btn_clk;
+    RelativeLayout layoutCoupon;
+    RelativeLayout layoutCar;
     PullRefreshLayout swipeRefreshLayout;
+
+    TextView numberTxt;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fr_individual,null);
         individualListView= (ListView) v.findViewById(R.id.individualListView);
-        accountName= (TextView) v.findViewById(R.id.accountName);
-        plateNumber= (TextView) v.findViewById(R.id.plateNumber);
-        btn_clk= (Button) v.findViewById(R.id.btn_clk);
+        accountName= (TextView) v.findViewById(R.id.userNameText);
+        layoutCoupon= (RelativeLayout) v.findViewById(R.id.layoutCoupon);
+        layoutCar= (RelativeLayout) v.findViewById(R.id.layoutCar);
+        numberTxt= (TextView) v.findViewById(R.id.textView50);
 
-        btn_clk.setOnClickListener(new View.OnClickListener() {
+        layoutCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), CouponActivity.class);
+                intent.putExtra("Title","我的优惠券");
+                startActivity(intent);
+            }
+        });
+
+        layoutCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(), CarManagerActivity.class);
@@ -84,9 +97,9 @@ public class IndividualFragment extends Fragment {
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         String[] individuals = new String[]{getString(R.string.individual0),getString(R.string.individual1),
-                getString(R.string.individual2),getString(R.string.individual3)};
+                getString(R.string.individual2)};
         int[] individualIcons=new int[]{R.drawable.my_icon_input,R.drawable.my_icon_set
-                ,R.drawable.my_icon_zixun,R.drawable.my_icon_message};
+                ,R.drawable.my_icon_zixun};
 
         for(int i=0;i<individualIcons.length;i++){
             Map<String, Object> map = new HashMap<String, Object>();
@@ -113,9 +126,6 @@ public class IndividualFragment extends Fragment {
                 }else if (position==2){
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
                     intent.putExtra("Title","我的预约");
-                }else if(position==3){
-                    intent=new Intent(getActivity(), CouponActivity.class);
-                    intent.putExtra("Title","我的优惠券");
                 }
                 startActivity(intent);
             }
@@ -158,19 +168,20 @@ public class IndividualFragment extends Fragment {
             }
 
             if(carInfos!=null&&carInfos.size()>0){
-                if(ContentBox.getValueInt(getActivity(),ContentBox.KEY_CAR_ID,-1)<=0){
+                if(ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, -1)<=0){
                     ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, carInfos.get(0).getId());
                 }
                 IDataHandler.getInstance().setCarInfos(carInfos);
+
                 if(carInfos.size()>1){
-                    plateNumber.setText(carInfos.get(0).getNumber()+" 更多");
+                    numberTxt.setText(carInfos.get(0).getNumber()+"..");
                 }else{
-                    plateNumber.setText(carInfos.get(0).getNumber()+"");
+                    numberTxt.setText(carInfos.get(0).getNumber());
                 }
 
-            }else{
-                plateNumber.setText("请添加车牌信息！");
+            } else {
                 ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
+                numberTxt.setText("请添加车牌");
             }
 
         }

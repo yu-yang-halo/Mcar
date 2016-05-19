@@ -1,5 +1,10 @@
 package com.carbeauty;
 
+import android.graphics.Rect;
+import android.text.TextPaint;
+import android.util.Log;
+import android.widget.TextView;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,5 +28,14 @@ public class CommonUtils {
             }
         }
         return true;
+    }
+    public static int[] getStringHeightWidth(TextView tv, String text){
+        Rect bounds = new Rect();
+        TextPaint paint=tv.getPaint();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int width = bounds.width();
+        int height=bounds.height();
+        Log.v("width height","w:"+width+" h:"+height);
+        return new int[]{width,height};
     }
 }

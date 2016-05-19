@@ -8,14 +8,14 @@
         android:layout_width="220dp"
         android:layout_height="60dp"
         android:layout_centerVertical="true"
-
         android:background="@drawable/icon_dialog_selector"
+        android:id="@+id/dialogView"
         android:layout_centerHorizontal="true">
 
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Medium Text"
 
