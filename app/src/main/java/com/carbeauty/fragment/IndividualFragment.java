@@ -24,6 +24,7 @@ import com.carbeauty.good.GoodListShowActivity;
 import com.carbeauty.manager.CarManagerActivity;
 import com.carbeauty.order.CouponActivity;
 import com.carbeauty.order.MyOrderActivity;
+import com.carbeauty.userlogic.LoginActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -57,6 +58,17 @@ public class IndividualFragment extends Fragment {
         layoutCoupon= (RelativeLayout) v.findViewById(R.id.layoutCoupon);
         layoutCar= (RelativeLayout) v.findViewById(R.id.layoutCar);
         numberTxt= (TextView) v.findViewById(R.id.textView50);
+
+        Button exitBtn= (Button) v.findViewById(R.id.exitBtn);
+
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
         layoutCoupon.setOnClickListener(new View.OnClickListener() {
             @Override

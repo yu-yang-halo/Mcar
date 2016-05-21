@@ -115,7 +115,7 @@ public class ShopInfoAdapter extends BaseAdapter {
         TextView descriptionView= (TextView) convertView.findViewById(R.id.description);
         CheckBox checkBox= (CheckBox) convertView.findViewById(R.id.checkBox);
         TextView distanceText= (TextView) convertView.findViewById(R.id.distanceText);
-
+        TextView textPhone= (TextView) convertView.findViewById(R.id.textPhone);
         if(selectShopId==shopInfos.get(position).getShopId()){
             checkBox.setChecked(true);
         }else{
@@ -124,7 +124,13 @@ public class ShopInfoAdapter extends BaseAdapter {
 
         titleView.setText(shopInfos.get(position).getName());
         descriptionView.setText(shopInfos.get(position).getDesc());
-        descriptionView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        String phoneStr=shopInfos.get(position).getPhone();
+        if(phoneStr!=null&&!phoneStr.trim().equals("")){
+            textPhone.setText("电话:"+phoneStr);
+        }
+
+
 
         distanceText.setText(shopInfos.get(position).getKilometerDistance()+"公里");
 
@@ -132,6 +138,12 @@ public class ShopInfoAdapter extends BaseAdapter {
 
 
         convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BindShopTask(shopInfos.get(position).getShopId()).execute();
+            }
+        });
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new BindShopTask(shopInfos.get(position).getShopId()).execute();
@@ -173,11 +185,11 @@ public class ShopInfoAdapter extends BaseAdapter {
             progressHUD.dismiss();
             if(s==null){
                 setSelectShopId(shopId);
-                notifyDataSetChanged();
                 ContentBox.loadInt(ctx, ContentBox.KEY_SHOP_ID, shopId);
              }else{
                 Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
              }
+             notifyDataSetChanged();
         }
 
         @Override

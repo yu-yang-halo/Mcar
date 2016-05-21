@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.11"
+        versionName "1.0.12"
     }
     buildTypes {
         release {
@@ -46,7 +46,7 @@ dependencies {
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/avioctrldefine.jar')
     compile files('libs/iotcamera.jar')
-    compile 'im.fir:fir-sdk:latest.integration@aar'
-    compile files('libs/gson-2.1.jar')
     compile files('libs/universal-image-loader-1.9.5.jar')
+    compile 'im.fir:fir-sdk:latest.integration@aar'
+    compile files('libs/gson-2.2.4.jar')
 }

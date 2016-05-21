@@ -14,7 +14,7 @@
         android:src="@drawable/udesk_im_default_user_avatar"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp" />
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -155,6 +155,17 @@
         android:textColor="@color/white"
         android:id="@+id/userNameText"
         android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:text="退出"
+        android:textColor="@drawable/btn_exit_tcolor_selector"
+        android:id="@+id/exitBtn"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_exit_bg"
+        android:layout_below="@+id/userNameText"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

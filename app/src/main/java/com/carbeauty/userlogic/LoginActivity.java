@@ -252,12 +252,6 @@ public class LoginActivity extends Activity {
 				}
 				startActivity(intent);
 				finish();
-
-
-
-
-
-
 			}else{
 				Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
 			}

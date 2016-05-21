@@ -559,6 +559,34 @@ public class WSConnector {
 
 		Element panoramaNode = (Element) element.getElementsByTagName(
 				"panorama").item(0);
+
+		Element openTimeNode = (Element) element.getElementsByTagName(
+				"openTime").item(0);
+		Element closeTimeNode = (Element) element.getElementsByTagName(
+				"closeTime").item(0);
+		Element oilPerNode = (Element) element.getElementsByTagName(
+				"oilPer").item(0);
+		Element decoPerNode = (Element) element.getElementsByTagName(
+				"decoPer").item(0);
+		Element metaPerNode = (Element) element.getElementsByTagName(
+				"metaPer").item(0);
+		Element phoneNode = (Element) element.getElementsByTagName(
+				"phone").item(0);
+
+
+		int oilPer=0,decoPer=0,metaPer=0;
+
+		if (oilPerNode != null && oilPerNode.getFirstChild() != null) {
+			oilPer = Integer.parseInt(oilPerNode.getFirstChild().getNodeValue());
+		}
+		if (decoPerNode != null && decoPerNode.getFirstChild() != null) {
+			decoPer = Integer.parseInt(decoPerNode.getFirstChild().getNodeValue());
+		}
+		if (metaPerNode != null && metaPerNode.getFirstChild() != null) {
+			metaPer = Integer.parseInt(metaPerNode.getFirstChild().getNodeValue());
+		}
+
+
 		int shopId =-1;
 		int cityId=-1;
 		
@@ -579,6 +607,20 @@ public class WSConnector {
 		String name = "";
 		String desc = "";
 		String panorama="";
+		String openTime="",closeTime="",phone="";
+
+		if (openTimeNode != null && openTimeNode.getFirstChild() != null) {
+			openTime = openTimeNode.getFirstChild().getNodeValue();
+		}
+		if (closeTimeNode != null && closeTimeNode.getFirstChild() != null) {
+			closeTime = closeTimeNode.getFirstChild().getNodeValue();
+		}
+		if (phoneNode != null && phoneNode.getFirstChild() != null) {
+			phone = phoneNode.getFirstChild().getNodeValue();
+		}
+
+
+
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
@@ -588,7 +630,8 @@ public class WSConnector {
 		if (panoramaNode != null && panoramaNode.getFirstChild() != null) {
 			panorama = panoramaNode.getFirstChild().getNodeValue();
 		}
-		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude, latitude, cityId, desc,panorama);
+		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude,
+				latitude, cityId, desc,panorama,openTime,closeTime,oilPer,decoPer,metaPer,phone);
 		
 		return shopInfo;
 	}
