@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
 
@@ -20,8 +21,7 @@ import cn.service.bean.CouponInfo;
  * Created by Administrator on 2016/3/26.
  */
 public class CouponAdapter extends BaseAdapter {
-    private static final int COUPON_TYPE_DISCOUNT=0;
-    private static final int COUPON_TYPE_PRICE=1;
+
     Context ctx;
     List<CouponInfo> couponInfos;
     public CouponAdapter( Context ctx,List<CouponInfo> couponInfos){
@@ -66,15 +66,19 @@ public class CouponAdapter extends BaseAdapter {
         couponDescTxt.setText(couponInfos.get(position).getDesc());
         couponEndtimeTxt.setText("有效期至"+TimeUtils.getShowTime(couponInfos.get(position).getEndTime(),"yyyy-MM-dd"));
 
-
         if(TimeUtils.isOverTime(couponInfos.get(position).getEndTime())){
             invailedImageView.setVisibility(View.VISIBLE);
+            invailedImageView.setImageResource(R.drawable.past);
+        }else if(couponInfos.get(position).getIsUsed()==1){
+
+            invailedImageView.setVisibility(View.VISIBLE);
+            invailedImageView.setImageResource(R.drawable.uesd);
         }else{
             invailedImageView.setVisibility(View.GONE);
         }
 
 
-        if(couponInfos.get(position).getType()==COUPON_TYPE_DISCOUNT) {
+        if(couponInfos.get(position).getType()== Constants.COUPON_TYPE_DISCOUNT) {
 
             rootView.setBackgroundResource(R.mipmap.coupon_bg0);
             couponNameTxt.setTextColor(ctx.getResources().getColor(R.color.font_gray0));

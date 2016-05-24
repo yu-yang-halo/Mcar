@@ -7,8 +7,9 @@
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:padding="10dp"
+    android:layout_height="55dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
     android:background="@color/white">
     <TextView
         android:layout_width="wrap_content"
@@ -16,7 +17,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Item name"
         android:id="@+id/itemName"
-        android:textColor="@color/gray"
+        android:textColor="@color/black_40"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -32,7 +33,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Item price"
         android:id="@+id/itemPrice"
-        android:textColor="@color/gray"
+        android:textColor="@color/black_40"
         android:layout_alignTop="@+id/itemName"
         android:layout_toLeftOf="@+id/itemBtn"
         android:layout_toStartOf="@+id/itemBtn"
@@ -40,8 +41,8 @@
         android:layout_marginEnd="34dp" />
 
     <Button
-        android:layout_width="35dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
         android:id="@+id/itemBtn"
         android:background="@mipmap/del"
         android:layout_centerVertical="true"

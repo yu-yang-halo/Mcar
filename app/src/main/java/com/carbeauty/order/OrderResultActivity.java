@@ -27,6 +27,7 @@ public class OrderResultActivity extends HeaderActivity{
     int ac_type_val;
     boolean order_is_ok;
     ListView resultListView;
+    TextView offerPriceTxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,10 @@ public class OrderResultActivity extends HeaderActivity{
         resultText= (TextView) findViewById(R.id.resultText);
         resultImageView= (ImageView) findViewById(R.id.resultImage);
 
+        offerPriceTxt= (TextView) findViewById(R.id.offerPriceTxt);
+
         resultListView= (ListView) findViewById(R.id.resultListView);
+
 
 
 
@@ -59,8 +63,18 @@ public class OrderResultActivity extends HeaderActivity{
         ac_type_val=this.getIntent().getIntExtra(Constants.AC_TYPE, 0);
         order_is_ok=this.getIntent().getBooleanExtra(Constants.ORDER_RESULT_IS_OK, false);
 
-        if(ac_type_val==Constants.AC_TYPE_GOOD){
+        float price=getIntent().getFloatExtra(Constants.OFFER_PRICE,-1);
 
+        if(order_is_ok){
+            if(price>=0){
+                offerPriceTxt.setText("您已支付" + price);
+            }
+        }else{
+            offerPriceTxt.setText("");
+        }
+
+
+        if(ac_type_val==Constants.AC_TYPE_GOOD){
             tvTitle.setText("订单详情");
             if(order_is_ok){
                 resultText.setText("提交成功\n请等待发货");
@@ -69,11 +83,8 @@ public class OrderResultActivity extends HeaderActivity{
                 resultText.setText("提交失败");
                 resultImageView.setVisibility(View.GONE);
             }
-
         }else{
             tvTitle.setText("预约详情");
-
-
             if(order_is_ok){
                 resultText.setText("预约成功\n请等待客服确认");
 

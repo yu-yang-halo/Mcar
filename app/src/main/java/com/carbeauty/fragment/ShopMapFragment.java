@@ -47,6 +47,7 @@ public class ShopMapFragment extends Fragment {
     MapView bmapView;
     BaiduMap mBaiduMap;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,8 +95,9 @@ public class ShopMapFragment extends Fragment {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.maker);
         Bundle bundle=new Bundle();
-        bundle.putString("URL", WSConnector.getPanoramaURL(shopInfo.getShopId()+"",shopInfo.getPanorama()));
-        bundle.putString("NAME",shopInfo.getName());
+        bundle.putString(PanoramaActivity.KEY_PANORAMA,shopInfo.getPanorama());
+        bundle.putString(PanoramaActivity.KEY_TITLE,shopInfo.getName());
+        bundle.putInt(PanoramaActivity.KEY_SHOPID, shopInfo.getShopId());
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
@@ -120,9 +122,9 @@ public class ShopMapFragment extends Fragment {
         //创建InfoWindow展示的view
 
         View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
-        final String url=bundle.getString("URL");
-        final String name=bundle.getString("NAME");
-
+        final String url=bundle.getString(PanoramaActivity.KEY_PANORAMA);
+        final String name=bundle.getString(PanoramaActivity.KEY_TITLE);
+        final int shopId=bundle.getInt(PanoramaActivity.KEY_SHOPID);
 
 //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
         InfoWindow mInfoWindow = new InfoWindow(dialogMap, position, -97);
@@ -149,8 +151,9 @@ public class ShopMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PanoramaActivity.class);
-                intent.putExtra("Title", name);
-                intent.putExtra("URL", url);
+                intent.putExtra(PanoramaActivity.KEY_TITLE, name);
+                intent.putExtra(PanoramaActivity.KEY_PANORAMA, url);
+                intent.putExtra(PanoramaActivity.KEY_SHOPID, shopId);
                 startActivity(intent);
 
 

@@ -115,6 +115,12 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 	}
 	public void setSelectPos(int position){
+		if(position==3){
+			mActionbar.hide();
+		}else{
+			mActionbar.show();
+		}
+
 		mTabLayout_1.setCurrentTab(position);
 		tvTitle.setText(mTitles2[position]);
 		if(position==0){
@@ -123,17 +129,23 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 			leftBtn.setVisibility(View.VISIBLE);
 			rightBtn.setVisibility(View.GONE);
 		}else if(position==1){
-
 			logoImageView.setVisibility(View.GONE);
 			tvTitle.setVisibility(View.VISIBLE);
 			leftBtn.setVisibility(View.GONE);
 			rightBtn.setVisibility(View.VISIBLE);
-		}else{
+		}else if(position==2){
 			logoImageView.setVisibility(View.GONE);
 			tvTitle.setVisibility(View.VISIBLE);
 			leftBtn.setVisibility(View.GONE);
 			rightBtn.setVisibility(View.GONE);
+		}else{
+			logoImageView.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.GONE);
+			leftBtn.setVisibility(View.GONE);
+			rightBtn.setVisibility(View.GONE);
 		}
+
+
 	}
 	private boolean initCustomActionBar() {
 		mActionbar = getActionBar();

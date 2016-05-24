@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whitecc">
+    android:background="#f3f4f6">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,10 +18,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
+                android:background="#f3f4f6"
                 android:padding="10dp"
                 android:textSize="13sp"
                 android:text="Large Text"
-                android:background="@color/white"
                 android:id="@+id/gDesc"
                 android:ellipsize="end"
                 android:layout_below="@+id/convenientBanner"
@@ -31,11 +31,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:background="@color/white"
                 android:textSize="20sp"
-                android:text="￥ 20"
-                android:paddingLeft="20dp"
+                android:text=""
+                android:paddingLeft="15dp"
                 android:id="@+id/gPrice"
                 android:gravity="center_vertical"
                 android:textColor="@color/red"
@@ -48,7 +48,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:id="@+id/relayout"
                 android:layout_below="@+id/gPrice"
                 android:background="@color/white"
@@ -106,7 +106,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:id="@+id/relayout2"
                 android:layout_below="@+id/relayout"
                 android:background="@color/white"
@@ -119,7 +119,6 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="图文详情"
                     android:gravity="center"
-                    android:id="@+id/textView22"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
@@ -139,7 +138,7 @@
             <WebView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:layout_below="@+id/relayout2"
                 android:visibility="gone"
                 android:id="@+id/webview">
@@ -150,9 +149,8 @@
             <com.bigkoo.convenientbanner.ConvenientBanner
                 android:id="@+id/convenientBanner"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="320dp"
                 app:canLoop="true"
-
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
 

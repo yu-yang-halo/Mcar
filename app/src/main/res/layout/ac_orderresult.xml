@@ -51,5 +51,14 @@
         android:layout_below="@+id/resultLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/backHomeBtn" />
+        android:layout_above="@+id/offerPriceTxt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text=""
+        android:id="@+id/offerPriceTxt"
+        android:layout_above="@+id/backHomeBtn"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -10,6 +10,7 @@ public class Constants {
 
     public final static String AC_TYPE="activity_task_type";
     public final static String ORDER_RESULT_IS_OK="order_result_is_ok";
+    public final static String OFFER_PRICE="offer_price";
 
     public final static int AC_TYPE_WASH=1000;
     public final static int AC_TYPE_OIL=1001;
@@ -37,5 +38,18 @@ public class Constants {
 
     public final static int SEARCH_SHOP=1;//搜索类型 按店搜索
     public final static int SEARCH_USER=2;//搜索类型 按用户搜索
+
+
+    /*
+        优惠券 type 和orderType
+     */
+    public static final int COUPON_TYPE_DISCOUNT=0;//折扣
+    public static final int COUPON_TYPE_PRICE=1;//价格
+    public static final int ORDER_TYPE_ALL=0;
+    public static final int ORDER_TYPE_DECO=1;
+    public static final int ORDER_TYPE_OIL=2;
+    public static final int ORDER_TYPE_META=3;
+
+
 
 }

@@ -63,14 +63,13 @@
             android:layout_alignStart="@+id/couponEndtimeTxt" />
 
         <ImageView
-            android:layout_width="160dp"
-            android:layout_height="150dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:id="@+id/invailedImageView"
-            android:background="@drawable/invailed"
-            android:layout_toRightOf="@+id/couponEndtimeTxt"
-            android:layout_marginLeft="-80dp"
-            android:layout_alignParentTop="true"
-         />
+            android:src="@drawable/past"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/couponNameTxt"
+            android:layout_toEndOf="@+id/couponNameTxt" />
     </RelativeLayout>
 
 </RelativeLayout>

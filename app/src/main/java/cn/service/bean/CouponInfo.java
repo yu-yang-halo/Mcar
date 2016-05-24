@@ -89,7 +89,7 @@ public class CouponInfo {
 	}
 
 	public float getPrice() {
-		return price;
+		return (int)price;
 	}
 
 	public void setPrice(float price) {

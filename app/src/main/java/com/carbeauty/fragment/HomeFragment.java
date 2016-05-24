@@ -159,6 +159,26 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+
+
+        int totalHeight = 0;
+        if(sim_adapter.getCount()>0){
+
+            int row=sim_adapter.getCount()%4==0?sim_adapter.getCount()/4:(sim_adapter.getCount()/4+1);
+
+
+            View viewItem = sim_adapter.getView(0, null, gridView);//这个很重要，那个展开的item的measureHeight比其他的大
+            viewItem.measure(0, 0);
+            totalHeight = viewItem.getMeasuredHeight()*row;
+        }
+
+        ViewGroup.LayoutParams params = gridView.getLayoutParams();
+        params.height = totalHeight;
+        gridView.setLayoutParams(params);
+       // sim_adapter.notifyDataSetChanged();
+
+
     }
     private void toWeb(){
         Intent intent=new Intent(getActivity(),WebBroswerActivity.class);
@@ -205,6 +225,21 @@ public class HomeFragment extends Fragment {
                 mainActivity.setSelectPos(2);
             }
         });
+
+
+        int totalHeight = 0;
+        for (int i = 0; i < sim_adapter.getCount(); i++) {
+            View viewItem = sim_adapter.getView(i, null, listView);//这个很重要，那个展开的item的measureHeight比其他的大
+            viewItem.measure(0, 0);
+            totalHeight += viewItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listView.getCount() - 1));
+        listView.setLayoutParams(params);
+       // sim_adapter.notifyDataSetChanged();
+
     }
 
 

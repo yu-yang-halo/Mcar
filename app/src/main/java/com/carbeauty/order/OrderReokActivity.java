@@ -1,13 +1,17 @@
 package com.carbeauty.order;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +25,13 @@ import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
+import cn.service.bean.CouponInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.MetaOrderInfo;
@@ -50,30 +56,91 @@ public class OrderReokActivity extends HeaderActivity {
 
     TextView promoTxt;
     TextView totalPriceTxt;
+    TextView promoDescTxt;
     Button  createOrderBtn;
     int shopId;
     int carId;
     private String orderTime;
     float totalPrice=0;
+    RelativeLayout offerRelayout;
+    RelativeLayout couponRelayout;
+    List<CouponInfo> couponInfos;
+
+    String[]  couponStrArrs;
+    int orderType=-2;
+
+    int selectIndex=-1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_orderreok);
-        shopId= ContentBox.getValueInt(this,ContentBox.KEY_SHOP_ID, 0);
-        carId=ContentBox.getValueInt(this, ContentBox.KEY_CAR_ID, 0);
 
+        offerRelayout= (RelativeLayout) findViewById(R.id.offerRelayout);
+        couponRelayout= (RelativeLayout) findViewById(R.id.couponRelayout);
+
+        promoDescTxt= (TextView) findViewById(R.id.textView52);
+
+        offerRelayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        couponRelayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(couponStrArrs==null||couponStrArrs.length<=0){
+                    Toast.makeText(OrderReokActivity.this,"没有可用的优惠券",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                new AlertDialog.Builder(OrderReokActivity.this)
+                        .setTitle("选择优惠券")
+                        .setSingleChoiceItems(couponStrArrs, -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.v("sel","choose which "+which);
+                                selectIndex=which;
+                            }
+                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v("sel","cancel which "+which);
+                        selectIndex=-1;
+                        initData();
+                    }
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v("sel","ok which "+which);
+                        initData();
+
+                    }
+                }).show();
+            }
+        });
+
+
+        shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
+        carId=ContentBox.getValueInt(this, ContentBox.KEY_CAR_ID, 0);
+        ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,
+                Constants.AC_TYPE_WASH);
+
+        if(ac_type_value==Constants.AC_TYPE_WASH){
+            orderType=Constants.ORDER_TYPE_DECO;
+        }else if(ac_type_value==Constants.AC_TYPE_OIL){
+            orderType=Constants.ORDER_TYPE_OIL;
+        }else{
+            orderType=Constants.ORDER_TYPE_META;
+        }
 
 
 
         initCustomActionBar();
         initView();
 
-
-
-
-
-        ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,
-                Constants.AC_TYPE_WASH);
         selItemListView= (ListView) findViewById(R.id.listView3);
         if(ac_type_value==Constants.AC_TYPE_WASH){
             decorationInfoSet= IDataHandler.getInstance().getDecorationInfoSet();
@@ -139,6 +206,58 @@ public class OrderReokActivity extends HeaderActivity {
 
         initData();
 
+        new DataRequestTask().execute();
+
+    }
+
+    class DataRequestTask extends AsyncTask<String,String,String>{
+        List<CouponInfo> allCoupons=new ArrayList<CouponInfo>();
+        @Override
+        protected void onPreExecute() {
+            //....
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                allCoupons= WSConnector.getInstance().getCouponList(shopId);
+            } catch (WSException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+             couponInfos=new ArrayList<CouponInfo>();
+
+             if(allCoupons!=null){
+                 for (CouponInfo info:allCoupons){
+                     if(!TimeUtils.isOverTime(info.getEndTime())&&(info.getIsUsed()!=1)){
+                         if(info.getOrderType()==Constants.ORDER_TYPE_ALL
+                                 ||info.getOrderType()==orderType){
+                             couponInfos.add(info);
+                         }
+                     }
+                 }
+
+                 couponStrArrs=new String[couponInfos.size()];
+                 for (int i=0;i<couponInfos.size();i++){
+                     CouponInfo info=couponInfos.get(i);
+                     String desc="";
+                     if(info.getType()==Constants.COUPON_TYPE_DISCOUNT){
+                         desc+=info.getDiscount()+"折优惠";
+                     }else{
+                         desc+="抵扣"+info.getPrice();
+                     }
+
+                     couponStrArrs[i]=desc;
+                 }
+
+             }
+        }
     }
 
     private void setListViewHeight(){
@@ -160,7 +279,6 @@ public class OrderReokActivity extends HeaderActivity {
         ViewGroup.LayoutParams params = selItemListView.getLayoutParams();
         params.height = totalHeight+(selItemListView.getDividerHeight()*(listAdapter.getCount()-1)) ;
 
-        ((ViewGroup.MarginLayoutParams)params).setMargins(10, 10, 10, 10);
         selItemListView.setLayoutParams(params);
 
     }
@@ -182,8 +300,37 @@ public class OrderReokActivity extends HeaderActivity {
                  totalPrice+=metalplateInfo.getPrice();
             }
         }
-        totalPriceTxt.setText(totalPrice+"元");
+
         promoTxt.setText("");
+
+
+        if(selectIndex>=0){
+             if(couponInfos.size()>selectIndex){
+
+                 CouponInfo couponInfo=couponInfos.get(selectIndex);
+                 if(couponInfo.getType()==Constants.COUPON_TYPE_DISCOUNT){
+                     promoDescTxt.setText(couponInfo.getDiscount()+"折优惠");
+                     float pr=(int)(totalPrice*couponInfo.getDiscount()/10);
+                     totalPriceTxt.setText("￥"+pr);
+                     promoTxt.setText("已优惠￥"+(int)(totalPrice-pr));
+                     totalPrice=(int)pr;
+                 }else{
+                     promoDescTxt.setText("优惠"+couponInfo.getPrice());
+                     totalPrice=(int)(totalPrice-couponInfo.getPrice());
+                     if(totalPrice<0){
+                         totalPrice=0;
+                     }
+                     totalPriceTxt.setText("￥"+totalPrice);
+                     promoTxt.setText("已优惠￥"+couponInfo.getPrice());
+                 }
+
+             }
+
+
+        }else{
+            totalPriceTxt.setText(totalPrice+"元");
+            promoDescTxt.setText("");
+        }
 
 
     }
@@ -241,11 +388,17 @@ public class OrderReokActivity extends HeaderActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            int couponId=0;
+            if(selectIndex>=0){
+                couponId=couponInfos.get(selectIndex).getId();
+            }
+
             if(ac_type_value==Constants.AC_TYPE_WASH){
+
 
                 DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
                         Constants.STATE_ORDER_UNFINISHED,
-                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,orderTime,null);
+                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,couponId,null,null,orderTime,null);
 
                 try {
                     decoOrderInfo=WSConnector.getInstance().createDecoOrder(decoOrderInfo);
@@ -262,7 +415,7 @@ public class OrderReokActivity extends HeaderActivity {
             }else  if(ac_type_value==Constants.AC_TYPE_OIL){
                 OilOrderInfo oilOrderInfo=new OilOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
                         Constants.STATE_ORDER_UNFINISHED,
-                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,0,null,null,orderTime,null);
+                        Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,couponId,null,null,orderTime,null);
 
                 try {
                     oilOrderInfo=WSConnector.getInstance().createOilOrder(oilOrderInfo);
@@ -280,7 +433,7 @@ public class OrderReokActivity extends HeaderActivity {
             }else if(ac_type_value==Constants.AC_TYPE_META){
                 MetaOrderInfo metaOrderInfo=new MetaOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
                         Constants.STATE_ORDER_UNFINISHED,Constants.PAY_STATE_UNFINISHED,0,
-                carId,shopId,0,totalPrice, 0,null,null, null,
+                carId,shopId,0,totalPrice, couponId,null,null, null,
                         null,
                        null);
 
@@ -317,6 +470,7 @@ public class OrderReokActivity extends HeaderActivity {
 
             intent.putExtra(Constants.AC_TYPE,ac_type_value);
             intent.putExtra(Constants.ORDER_RESULT_IS_OK,orderIsOk);
+            intent.putExtra(Constants.OFFER_PRICE,totalPrice);
             intent.putExtra("Title","");
             startActivity(intent);
             finish();

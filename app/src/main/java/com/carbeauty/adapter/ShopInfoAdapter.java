@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,6 +117,8 @@ public class ShopInfoAdapter extends BaseAdapter {
         CheckBox checkBox= (CheckBox) convertView.findViewById(R.id.checkBox);
         TextView distanceText= (TextView) convertView.findViewById(R.id.distanceText);
         TextView textPhone= (TextView) convertView.findViewById(R.id.textPhone);
+        ImageView phoneImageView= (ImageView) convertView.findViewById(R.id.imageView13);
+
         if(selectShopId==shopInfos.get(position).getShopId()){
             checkBox.setChecked(true);
         }else{
@@ -127,7 +130,11 @@ public class ShopInfoAdapter extends BaseAdapter {
 
         String phoneStr=shopInfos.get(position).getPhone();
         if(phoneStr!=null&&!phoneStr.trim().equals("")){
-            textPhone.setText("电话:"+phoneStr);
+            textPhone.setText(phoneStr);
+            phoneImageView.setVisibility(View.VISIBLE);
+        }else{
+            textPhone.setText("");
+            phoneImageView.setVisibility(View.GONE);
         }
 
 
