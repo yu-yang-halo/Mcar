@@ -18,6 +18,8 @@ public class ShopInfo {
 
 	private int kilometerDistance;
 
+	private String icon;
+
 	public int getKilometerDistance() {
 		return kilometerDistance;
 	}
@@ -74,9 +76,17 @@ public class ShopInfo {
 		this.desc = desc;
 	}
 
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 	public ShopInfo(int shopId, String name, float longitude, float latitude,
 			int cityId, String desc,String panorama,String openTime,String closeTime,
-					int oilPer,int decoPer,int metaPer,String phone) {
+					int oilPer,int decoPer,int metaPer,String phone,String icon) {
 		super();
 		this.shopId = shopId;
 		this.name = name;
@@ -85,12 +95,14 @@ public class ShopInfo {
 		this.cityId = cityId;
 		this.desc = desc;
 		this.panorama=panorama;
+
 		this.openTime=openTime;
 		this.closeTime=closeTime;
 		this.oilPer=oilPer;
 		this.decoPer=decoPer;
 		this.metaPer=metaPer;
 		this.phone=phone;
+		this.icon=icon;
 	}
 
 	public String getOpenTime() {

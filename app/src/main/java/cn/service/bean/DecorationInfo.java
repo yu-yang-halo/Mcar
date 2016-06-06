@@ -3,8 +3,8 @@ package cn.service.bean;
 public class DecorationInfo extends OilInfo {
 
 	public DecorationInfo(int id, String name, String desc, float price,
-			int shopId) {
-		super(id, name, desc, price, shopId);
+			int shopId,String src) {
+		super(id, name, desc, price, shopId,src);
 	}
 
 	@Override

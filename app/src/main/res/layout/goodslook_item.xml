@@ -21,10 +21,12 @@
             android:checked="false" />
 
         <TextView
-            android:layout_width="140dp"
+            android:layout_width="180dp"
             android:layout_height="30dp"
             android:gravity="center_vertical"
             android:textSize="14sp"
+            android:lines="1"
+            android:ellipsize="end"
             android:text="商品名称"
             android:id="@+id/textView44"
             android:layout_alignBottom="@+id/checkBox2"
@@ -43,11 +45,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
             android:text=""
-            android:lines="3"
-            android:gravity="left"
+            android:lines="5"
+            android:gravity="left|center"
             android:ellipsize="end"
+            android:layout_marginRight="2dp"
+            android:textColor="@color/font_gray0"
             android:id="@+id/textView45"
             android:layout_alignTop="@+id/imageView10"
             android:layout_alignBottom="@+id/imageView10"

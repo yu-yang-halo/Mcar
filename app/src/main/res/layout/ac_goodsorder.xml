@@ -76,7 +76,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="没有地址信息，请添加" />
+        android:text="点击添加地址信息" />
 
 
 </RelativeLayout>

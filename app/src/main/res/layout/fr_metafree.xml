@@ -19,7 +19,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="理陪专员电话 ： 15156098280"
+                    android:text="理陪专员电话 ： "
                     android:gravity="center_vertical"
                     android:id="@+id/textView16" />
             </LinearLayout>

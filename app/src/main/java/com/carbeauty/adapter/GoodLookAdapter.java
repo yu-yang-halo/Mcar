@@ -1,6 +1,8 @@
 package com.carbeauty.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.carbeauty.R;
 import com.carbeauty.cache.CartManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.service.WSConnector;
 
 /**
  * Created by Administrator on 2016/3/29.
@@ -24,9 +31,11 @@ public class GoodLookAdapter extends BaseAdapter {
     Context ctx;
     List<CartManager.MyCartClass> myCartClassList;
     TextView totalPriceTxt;
+    RequestQueue mQueue;
     public GoodLookAdapter(Context ctx,List<CartManager.MyCartClass> myCartClassList){
         this.ctx=ctx;
         this.myCartClassList=myCartClassList;
+        this.mQueue= Volley.newRequestQueue(ctx);
     }
     @Override
     public int getCount() {
@@ -85,16 +94,44 @@ public class GoodLookAdapter extends BaseAdapter {
         descTxt.setText(myCartClassList.get(position).getGoodInfo().getDesc());
         countTxt.setText("x"+myCartClassList.get(position).getCount());
         priceTxt.setText(myCartClassList.get(position).getGoodInfo().getPrice() + "元");
-        if(myCartClassList.get(position).getBitmap()!=null){
-            showImageView.setImageBitmap(myCartClassList.get(position).getBitmap());
 
-        }
+        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+        ImageLoader.ImageListener listener=ImageLoader.getImageListener(showImageView
+                , R.drawable.icon_default, R.drawable.icon_default);
+
+
+
+        imageLoader.get(myCartClassList.get(position).getImageURL(), listener);
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 myCartClassList.get(position).setCheckYN(isChecked);
-                totalPriceTxt.setText(getLastestNewPrice()+"元");
+                totalPriceTxt.setText(getLastestNewPrice() + "元");
+            }
+        });
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+               new AlertDialog.Builder(ctx).setTitle("提示").setMessage("是否删除该商品").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+
+                       myCartClassList.remove(position);
+                       notifyDataSetChanged();
+
+                   }
+               }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+
+                   }
+               }).show();
+
+
+                return true;
             }
         });
 

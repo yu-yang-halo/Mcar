@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -67,7 +68,7 @@ public class SimpleCardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId= ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, 0);
-        Log.e("onCreate","fragment onCreate");
+        Log.e("onCreate","fragment onCreate goodsType:"+goodsType.getName());
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SimpleCardFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new SimpleGoodsTask().execute();
+                new SimpleGoodsTask().executeOnExecutor(Executors.newCachedThreadPool());
             }
         });
 

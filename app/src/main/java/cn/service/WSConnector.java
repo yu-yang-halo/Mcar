@@ -102,7 +102,28 @@ public class WSConnector {
        http://ip:80/kele/upload/goods/店铺ID/图片名
        http://ip:80/kele/upload/promotion/图片名
        http://ip:80/kele/upload/panorama/店铺ID/图片名
+
+       http://112.124.106.131/kele/chexian.htm
+
+       /upload/panorama/" + this.getShopId()+"/icon/
+
+       /upload/server/deco/" + this.getId()
+        oil    meta
+
 	 */
+	public static String getDecoItemURL(int id,String imageName){
+		return REQUEST_HEAD+IP1+"/upload/server/deco/"+id+"/"+imageName;
+	}
+	public static String getOilItemURL(int id,String imageName){
+		return REQUEST_HEAD+IP1+"/upload/server/oil/"+id+"/"+imageName;
+	}
+	public static String getMetaItemURL(int id,String imageName){
+		return REQUEST_HEAD+IP1+"/upload/server/meta/"+id+"/"+imageName;
+	}
+
+	public static String getCheXianURL(){
+		return REQUEST_HEAD+IP1+"/kele/chexian.htm";
+	}
 
 	public static String getBannerURL(String imageName){
 		return REQUEST_HEAD+IP1+"/kele/upload/banner/"+imageName;
@@ -116,6 +137,9 @@ public class WSConnector {
 	}
 	public static String getPanoramaURL(String shopId,String imageName){
 		return REQUEST_HEAD+IP1+"/kele/upload/panorama/"+shopId+"/"+imageName;
+	}
+	public static String getShopPanoramaURL(String shopId,String imageName){
+		return REQUEST_HEAD+IP1+"/kele/upload/panorama/"+shopId+"/icon/"+imageName;
 	}
 
 	public Map<String, String> getUserMap() {
@@ -137,6 +161,8 @@ public class WSConnector {
 		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr +  "/car/services/carwsapi/";
 		return instance;
 	}
+
+
 
 
 
@@ -572,6 +598,8 @@ public class WSConnector {
 				"metaPer").item(0);
 		Element phoneNode = (Element) element.getElementsByTagName(
 				"phone").item(0);
+		Element iconNode = (Element) element.getElementsByTagName(
+				"icon").item(0);
 
 
 		int oilPer=0,decoPer=0,metaPer=0;
@@ -607,7 +635,7 @@ public class WSConnector {
 		String name = "";
 		String desc = "";
 		String panorama="";
-		String openTime="",closeTime="",phone="";
+		String openTime="",closeTime="",phone="",icon="";
 
 		if (openTimeNode != null && openTimeNode.getFirstChild() != null) {
 			openTime = openTimeNode.getFirstChild().getNodeValue();
@@ -630,8 +658,14 @@ public class WSConnector {
 		if (panoramaNode != null && panoramaNode.getFirstChild() != null) {
 			panorama = panoramaNode.getFirstChild().getNodeValue();
 		}
+
+		if (iconNode != null && iconNode.getFirstChild() != null) {
+			icon = iconNode.getFirstChild().getNodeValue();
+		}
+
+
 		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude,
-				latitude, cityId, desc,panorama,openTime,closeTime,oilPer,decoPer,metaPer,phone);
+				latitude, cityId, desc,panorama,openTime,closeTime,oilPer,decoPer,metaPer,phone,icon);
 		
 		return shopInfo;
 	}
@@ -691,6 +725,8 @@ public class WSConnector {
 				"price").item(0);
 		Element shopIdNode = (Element) element.getElementsByTagName("shopId")
 				.item(0);
+		Element srcNode=(Element) element.getElementsByTagName("src")
+				.item(0);
 		int shopId =-1;
 		int id=-1;
 
@@ -706,14 +742,18 @@ public class WSConnector {
 		}
 		String name = "";
 		String desc = "";
+		String src  = "";
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
 		if (descNode != null && descNode.getFirstChild() != null) {
 			desc = descNode.getFirstChild().getNodeValue();
 		}
+		if (srcNode != null && srcNode.getFirstChild() != null) {
+			src = srcNode.getFirstChild().getNodeValue();
+		}
 
-		DecorationInfo decorationInfo=new DecorationInfo(id, name, desc, price, shopId);
+		DecorationInfo decorationInfo=new DecorationInfo(id, name, desc, price, shopId,src);
 		return decorationInfo;
 	}
 	private  OilInfo  parseXmlToOilInfo(Element element){
@@ -727,6 +767,8 @@ public class WSConnector {
 				"price").item(0);
 		Element shopIdNode = (Element) element.getElementsByTagName("shopId")
 				.item(0);
+		Element srcNode = (Element) element.getElementsByTagName("src")
+				.item(0);
 		int shopId =-1;
 		int id=-1;
 		
@@ -742,14 +784,18 @@ public class WSConnector {
 		}
 		String name = "";
 		String desc = "";
+		String src  = "";
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
 		if (descNode != null && descNode.getFirstChild() != null) {
 			desc = descNode.getFirstChild().getNodeValue();
 		}
+		if (srcNode != null && srcNode.getFirstChild() != null) {
+			src = srcNode.getFirstChild().getNodeValue();
+		}
 		
-		OilInfo oilInfo=new OilInfo(id, name, desc, price, shopId);
+		OilInfo oilInfo=new OilInfo(id, name, desc, price, shopId,src);
 		return oilInfo;
 	}
 	public List<OilInfo> getOilList(int shopId) throws WSException{
@@ -802,6 +848,8 @@ public class WSConnector {
 				"price").item(0);
 		Element shopIdNode = (Element) element.getElementsByTagName("shopId")
 				.item(0);
+		Element srcNode = (Element) element.getElementsByTagName("src")
+				.item(0);
 		int shopId =-1;
 		int id=-1;
 
@@ -819,7 +867,8 @@ public class WSConnector {
 		}
 		String name = "";
 		String desc = "";
-		String number="";
+		String number= "";
+		String src   = "";
 		if (numberNode != null && numberNode.getFirstChild() != null) {
 			number = numberNode.getFirstChild().getNodeValue();
 		}
@@ -829,8 +878,11 @@ public class WSConnector {
 		if (descNode != null && descNode.getFirstChild() != null) {
 			desc = descNode.getFirstChild().getNodeValue();
 		}
+		if (srcNode != null && srcNode.getFirstChild() != null) {
+			src = srcNode.getFirstChild().getNodeValue();
+		}
 		
-		MetalplateInfo metalplateInfo=new MetalplateInfo(id, name, desc, price, shopId, number);
+		MetalplateInfo metalplateInfo=new MetalplateInfo(id, name, desc, price, shopId, number,src);
 		return metalplateInfo;
 	}
 	public List<MetalplateInfo> getMetalplateList(int shopId) throws WSException{
@@ -1559,12 +1611,20 @@ public class WSConnector {
 				"type").item(0);
 		Element hrefNode = (Element) element.getElementsByTagName(
 				"href").item(0);
+		Element isTopNode = (Element) element.getElementsByTagName(
+				"isTop").item(0);
+
 
 		int  id=-1,isShow=-1,isChange=-1,shopId=-1,type=-1;
 		float price=0;
+		boolean isTop=false;
 		String name="",desc="",src="",href="";
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+
+		if (isTopNode != null && isTopNode.getFirstChild() != null) {
+			isTop = Boolean.parseBoolean(isTopNode.getFirstChild().getNodeValue());
 		}
 		if (isShowNode != null && isShowNode.getFirstChild() != null) {
 			isShow = Integer.parseInt(isShowNode.getFirstChild().getNodeValue());
@@ -1595,7 +1655,7 @@ public class WSConnector {
 			href =hrefNode.getFirstChild().getNodeValue();
 		}
 		
-		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type,href);
+		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type,href,isTop);
 		return goodInfo;
 	}
 	public List<GoodInfo> getGoodsList(int shopId) throws WSException{

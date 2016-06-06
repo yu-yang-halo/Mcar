@@ -34,10 +34,10 @@
         android:layout_alignParentBottom="true" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
         android:id="@+id/logoImageView"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo3"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
     <TextView

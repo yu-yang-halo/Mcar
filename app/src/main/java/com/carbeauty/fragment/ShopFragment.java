@@ -160,7 +160,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                 nameText.measure(0, 0);
 
 
-                dialogView.setLayoutParams(new RelativeLayout.LayoutParams(nameText.getMeasuredWidth()+40, nameText.getMeasuredHeight()+40));
+                dialogView.setLayoutParams(new RelativeLayout.LayoutParams(nameText.getMeasuredWidth()+40, nameText.getMeasuredHeight()+60));
 
 
 

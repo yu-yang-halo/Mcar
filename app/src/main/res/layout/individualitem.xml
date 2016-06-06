@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="240dp"
+    android:layout_height="220dp"
     android:background="@drawable/view_bgcolor"
     android:layout_marginTop="10dp"
     tools:showIn="@layout/fr_individual">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:id="@+id/imageView"
         android:src="@drawable/udesk_im_default_user_avatar"
         android:layout_alignParentTop="true"
@@ -39,7 +39,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="#30000000"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -50,27 +50,29 @@
             android:layout_width="140dp"
             android:layout_height="match_parent"
             android:id="@+id/layoutCoupon"
+            android:layout_marginLeft="29dp"
+            android:layout_marginStart="29dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/white"
                 android:text="优惠券"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="-5dp"
                 android:id="@+id/textView15"
-                android:layout_alignParentTop="true"
+                android:layout_alignTop="@+id/imageView11"
                 android:layout_alignLeft="@+id/textView48"
                 android:layout_alignStart="@+id/textView48" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textColor="#a0ffffff"
                 android:text="口令红包"
                 android:layout_marginTop="7dp"
                 android:id="@+id/textView48"
@@ -79,8 +81,8 @@
                 android:layout_alignParentEnd="true" />
 
             <ImageView
-                android:layout_width="38dp"
-                android:layout_height="35dp"
+                android:layout_width="32dp"
+                android:layout_height="30dp"
                 android:id="@+id/imageView11"
                 android:background="@drawable/icon_personal_coupon"
                 android:layout_centerVertical="true"
@@ -98,7 +100,7 @@
             android:layout_marginBottom="15dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:background="#a0ffffff"
+            android:background="#40ffffff"
             android:orientation="horizontal"
             android:id="@+id/linearLayout7"></View>
 
@@ -107,26 +109,28 @@
             android:layout_height="match_parent"
             android:id="@+id/layoutCar"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            android:layout_toRightOf="@+id/linearLayout7"
+            android:layout_toEndOf="@+id/linearLayout7"
+            android:layout_marginLeft="28dp"
+            android:layout_marginStart="28dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/white"
                 android:text="我的车库"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="-5dp"
                 android:id="@+id/textView49"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignTop="@+id/imageView12"
+                android:layout_alignLeft="@+id/textView50"
+                android:layout_alignStart="@+id/textView50" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textColor="#a0ffffff"
                 android:text="皖A PS999.."
                 android:layout_marginTop="7dp"
                 android:id="@+id/textView50"
@@ -135,8 +139,8 @@
                 android:layout_alignParentEnd="true" />
 
             <ImageView
-                android:layout_width="34dp"
-                android:layout_height="35dp"
+                android:layout_width="32dp"
+                android:layout_height="30dp"
                 android:id="@+id/imageView12"
                 android:background="@drawable/icon_personal_car"
                 android:layout_centerVertical="true"
@@ -151,22 +155,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp"
         android:text="username"
-        android:textColor="@color/white"
+        android:layout_marginTop="15dp"
+        android:textColor="#c0ffffff"
         android:id="@+id/userNameText"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:text="退出"
+        android:layout_width="80dp"
+        android:layout_height="28dp"
+        android:text="退出应用"
+        android:layout_marginBottom="15dp"
+        android:textSize="13sp"
         android:textColor="@drawable/btn_exit_tcolor_selector"
         android:id="@+id/exitBtn"
-        android:layout_marginTop="10dp"
         android:background="@drawable/btn_exit_bg"
-        android:layout_below="@+id/userNameText"
+        android:layout_above="@+id/relativeLayout11"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

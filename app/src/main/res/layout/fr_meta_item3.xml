@@ -16,11 +16,13 @@
         android:layout_width="14dp"
         android:layout_height="156dp"
         android:text=""
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="22dp"
         android:id="@+id/btnbb"
         android:background="@drawable/skbottomcolor"
-        android:layout_alignBottom="@+id/imageView6"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="110dp" />
+        android:layout_above="@+id/btnb2"
+        android:layout_alignLeft="@+id/textView38"
+        android:layout_alignStart="@+id/textView38" />
 
     <Button
         android:layout_width="14dp"

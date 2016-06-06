@@ -57,8 +57,18 @@ public class GoodInfo {
 	private String desc;
 	private int isShow;
 	private int isChange;
+	private boolean isTop;
 	private float price;
 	private String src;
+
+	public boolean isTop() {
+		return isTop;
+	}
+
+	public void setIsTop(boolean isTop) {
+		this.isTop = isTop;
+	}
+
 	private int shopId;
 
 	public String getHref() {
@@ -80,7 +90,7 @@ public class GoodInfo {
 	}
 
 	public GoodInfo(int id, String name, String desc, int isShow, int isChange,
-			float price, String src, int shopId,int type,String href) {
+			float price, String src, int shopId,int type,String href,boolean isTop) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -93,6 +103,7 @@ public class GoodInfo {
 		this.shopId = shopId;
 		this.type=type;
 		this.href=href;
+		this.isTop=isTop;
 	}
 	public int getShopId() {
 		return shopId;

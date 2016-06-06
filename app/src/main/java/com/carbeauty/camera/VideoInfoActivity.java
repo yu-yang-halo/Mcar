@@ -1,6 +1,8 @@
 package com.carbeauty.camera;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
@@ -40,6 +42,7 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
     private int mVideoWidth=0;
     private int mVideoHeight=0;
     KProgressHUD progressHUD;
+    boolean isLandScreen=true;
     public VideoInfoActivity(){
 
     }
@@ -136,14 +139,31 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
     };
 
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        System.out.println(" newConfig" +newConfig);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(this.getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE){
+            Log.v("VideoInfoActivity","横屏");
+            isLandScreen=true;
+            setContentView(R.layout.videocamera_land);
+        }else{
+            Log.v("VideoInfoActivity","竖屏");
+            isLandScreen=false;
+            setContentView(R.layout.videocamera);
+        }
+
+
+
 
         Log.e("" + getClass(), "普顺达视频....");
-        setContentView(R.layout.videocamera);
+
         initCustomActionBar();
         rightBtn.setVisibility(View.GONE);
 
@@ -161,6 +181,12 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
 
         connectVideoToMonitor("MyVideo", getIntent().getStringExtra("uid"),
                 getIntent().getStringExtra("account"), getIntent().getStringExtra("password"));
+
+        if(isLandScreen){
+            mActionbar.hide();
+        }else{
+            mActionbar.show();
+        }
     }
 
 

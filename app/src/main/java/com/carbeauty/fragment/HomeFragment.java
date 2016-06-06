@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,23 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.baoyz.widget.PullRefreshLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.carbeauty.DensityUtil;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
+import com.carbeauty.adapter.BitmapCache;
+import com.carbeauty.adapter.HotGoodsAdapter;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.good.GoodActivity;
+import com.carbeauty.good.GoodLookActivity;
 import com.carbeauty.order.LookShopActivity;
 import com.carbeauty.order.MetalplateActivity;
 import com.carbeauty.order.WashOilActivity;
@@ -35,22 +43,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import com.carbeauty.Constants;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.BannerInfoType;
+import cn.service.bean.GoodInfo;
 
 public class HomeFragment extends Fragment {
     private ConvenientBanner banner;
     private GridView gridView;
     private ListView listView;
+    private GridView hotgridView;
     private MainActivity mainActivity;
-    List<Bitmap> localImages;
+    List<String> localImages;
+    RequestQueue mQueue;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-         mainActivity= (MainActivity) context;
+        mainActivity= (MainActivity) context;
+        Log.v("Home","onAttach...."+mainActivity);
+        mQueue= Volley.newRequestQueue(context);
     }
 
     private int[] icon = { R.drawable.homepage_gridview_8, R.drawable.homepage_gridview_6,
@@ -65,7 +79,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.v("Home","onCreate....");
 
     }
 
@@ -73,11 +87,14 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v("Home","onCreateView....");
         View v = inflater.inflate(R.layout.fr_home, null);
         banner= (ConvenientBanner) v.findViewById(R.id.convenientBanner);
+
+
         gridView = (GridView) v.findViewById(R.id.gridView);
         listView= (ListView) v.findViewById(R.id.listView);
-
+        hotgridView= (GridView) v.findViewById(R.id.hotgridView);
 
 
         initGridView();
@@ -87,19 +104,21 @@ public class HomeFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new GetBannerTask().execute();
+                sendAsyncNetRequest();
             }
         });
 
 
+        sendAsyncNetRequest();
         return v;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        new GetBannerTask().execute();
+    private void sendAsyncNetRequest(){
+
+        new GetBannerTask().executeOnExecutor(Executors.newCachedThreadPool());
+
     }
+
 
     private void initGridView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
@@ -180,9 +199,10 @@ public class HomeFragment extends Fragment {
 
 
     }
+
     private void toWeb(){
         Intent intent=new Intent(getActivity(),WebBroswerActivity.class);
-        intent.putExtra("URL", "http://j.autohome.com.cn/chexian-calculation.html");
+        intent.putExtra("URL", WSConnector.getCheXianURL());
         intent.putExtra("Title","车险直销");
         getActivity().startActivity(intent);
     }
@@ -222,7 +242,10 @@ public class HomeFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mainActivity.setSelectPos(2);
+                if(position==0){
+                    mainActivity.setSelectPos(2);
+                }
+
             }
         });
 
@@ -238,7 +261,7 @@ public class HomeFragment extends Fragment {
         params.height = totalHeight
                 + (listView.getDividerHeight() * (listView.getCount() - 1));
         listView.setLayoutParams(params);
-       // sim_adapter.notifyDataSetChanged();
+
 
     }
 
@@ -269,6 +292,68 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void initHotGridView(final List<GoodInfo> hotGoodInfos){
+
+        HotGoodsAdapter hotGoodsAdapter=new HotGoodsAdapter(getActivity(),hotGoodInfos);
+
+        hotgridView.setAdapter(hotGoodsAdapter);
+
+        hotgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getActivity(), GoodActivity.class);
+                intent.putExtra("Title", iconName[5]);
+                intent.putExtra("Type", hotGoodInfos.get(position).getType());
+                startActivity(intent);
+
+
+            }
+        });
+
+        int totalHeight = 0;
+        if(hotGoodsAdapter.getCount()>0){
+
+            int row=hotGoodsAdapter.getCount()%2==0?hotGoodsAdapter.getCount()/2:(hotGoodsAdapter.getCount()/2+1);
+
+            View viewItem = hotGoodsAdapter.getView(0, null, hotgridView);//这个很重要，那个展开的item的measureHeight比其他的大
+            viewItem.measure(0, 0);
+            totalHeight = viewItem.getMeasuredHeight()*row;
+        }
+
+        ViewGroup.LayoutParams params = hotgridView.getLayoutParams();
+        params.height = totalHeight;
+        hotgridView.setLayoutParams(params);
+
+    }
+
+    class GetGoodTopTask extends AsyncTask<String,String,String>{
+        List<GoodInfo> goodInfos;
+        List<GoodInfo> hotGoodInfos=new ArrayList<GoodInfo>();
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                goodInfos=WSConnector.getInstance().getGoodsList(-2);
+                if(goodInfos!=null&&goodInfos.size()>0){
+                    for (GoodInfo goodInfo:goodInfos){
+                        if(goodInfo.isTop()){
+                            hotGoodInfos.add(goodInfo);
+                        }
+                    }
+                }
+
+
+            } catch (WSException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            initHotGridView(hotGoodInfos);
+        }
+    }
+
     class GetBannerTask extends AsyncTask<String,String,String>{
         List<BannerInfoType> bannerInfoTypes;
 
@@ -281,14 +366,10 @@ public class HomeFragment extends Fragment {
         protected String doInBackground(String... params) {
             try {
                bannerInfoTypes=WSConnector.getInstance().getBannerList(3);
-               localImages=new ArrayList<Bitmap>();
+               localImages=new ArrayList<String>();
                for (BannerInfoType bannerInfoType:bannerInfoTypes){
-                   //String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
                    String url=WSConnector.getBannerURL(bannerInfoType.getImgName());
-                   Bitmap bm=ImageUtils.convertNetToBitmap(url);
-                   if(bm!=null){
-                       localImages.add(bm);
-                   }
+                   localImages.add(url);
 
                }
 
@@ -304,11 +385,13 @@ public class HomeFragment extends Fragment {
             super.onPostExecute(s);
             swipeRefreshLayout.setRefreshing(false);
             initBanner(bannerInfoTypes);
+            banner.startTurning(3000);
+            new GetGoodTopTask().executeOnExecutor(Executors.newCachedThreadPool());
         }
     }
 
 
-    public class LocalImageHolderView implements Holder<Bitmap> {
+    public class LocalImageHolderView implements Holder<String> {
         private ImageView imageView;
         @Override
         public View createView(Context context) {
@@ -317,8 +400,12 @@ public class HomeFragment extends Fragment {
             return imageView;
         }
         @Override
-        public void UpdateUI(Context context, final int position, Bitmap bm) {
-            imageView.setImageBitmap(bm);
+        public void UpdateUI(Context context, final int position, String imageURL) {
+            ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+            ImageLoader.ImageListener listener=ImageLoader.getImageListener(imageView
+                    , 0, 0);
+
+            imageLoader.get(imageURL, listener);
         }
     }
 

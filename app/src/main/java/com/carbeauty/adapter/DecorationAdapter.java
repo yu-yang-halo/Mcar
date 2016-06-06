@@ -1,21 +1,32 @@
 package com.carbeauty.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.carbeauty.DensityUtil;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
+import com.carbeauty.order.WashOilDetailActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
+import cn.service.WSConnector;
 import cn.service.bean.CarInfo;
 import cn.service.bean.DecorationInfo;
 
@@ -70,26 +81,25 @@ public class DecorationAdapter extends BaseAdapter {
         }
         TextView itemName= (TextView) convertView.findViewById(R.id.itemName);
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
-        final TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
-        View item2=convertView.findViewById(R.id.item2);
 
 
+        DecorationInfo decorationInfo=decorationInfos.get(position);
+        String src=decorationInfo.getSrc();
 
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(decorationInfos.get(position).getName());
         itemPrice.setText(decorationInfos.get(position).getPrice() + "元");
-        itemDetail.setText(decorationInfos.get(position).getDesc());
+
 
         if(decoCollections.contains(decorationInfos.get(position))){
             itemBtn.setSelected(true);
         }else {
             itemBtn.setSelected(false);
         }
-        if(decorationInfos.get(position).isExpand()){
-            item2.setVisibility(View.VISIBLE);
-        }else {
-            item2.setVisibility(View.GONE);
-        }
+
+
+
+
 
         itemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +121,18 @@ public class DecorationAdapter extends BaseAdapter {
 
 
 
+
         return convertView;
+    }
+
+    public void addOneItem(int pos){
+        if(pos>=0&&pos<decorationInfos.size()){
+            if(!decoCollections.contains(decorationInfos.get(pos))){
+                decoCollections.add(decorationInfos.get(pos));
+            }
+            notifyDataSetChanged();
+        }
+
     }
 
 }

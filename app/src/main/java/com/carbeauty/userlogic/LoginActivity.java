@@ -50,12 +50,15 @@ public class LoginActivity extends Activity {
 	EditText usernameEdit;
 	EditText passwordEdit;
 	Button registerBtn;
-	
+
+	TextView versionTxt;
+	PackageInfo packageInfo;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		initCustomActionBar();
+		versionTxt= (TextView) findViewById(R.id.versionTxt);
 		
 		usernameEdit=(EditText) findViewById(R.id.usernameEdit);
 		passwordEdit=(EditText) findViewById(R.id.passwordEdit);
@@ -95,7 +98,8 @@ public class LoginActivity extends Activity {
 
 			}
 		});
-
+		packageInfo = getVersionInfo(getApplicationContext());
+		versionTxt.setText("v" + packageInfo.versionName);
 
 		FIR.checkForUpdateInFIR("11044c8cac8c136a31cb0b8ab5bd5162", new VersionCheckCallback() {
 			@Override
@@ -103,7 +107,6 @@ public class LoginActivity extends Activity {
 				Gson gson = new Gson();
 				final FirVersion firVersion = gson.fromJson(versionJson, FirVersion.class);
 
-				PackageInfo packageInfo = getVersionInfo(getApplicationContext());
 
 				Log.i("fir", "check from fir.im success! "
 						+ "\n" + firVersion + " packageInfo " + packageInfo.versionName + " " + packageInfo.versionCode);
@@ -111,6 +114,7 @@ public class LoginActivity extends Activity {
 				if (firVersion.getBuild().equals(packageInfo.versionCode + "")
 						&& firVersion.getVersionShort().equals(packageInfo.versionName)) {
 					Log.i("fir", "版本号一致,无需更新");
+
 				} else {
 
 					if (!MyActivityManager.getInstance().isRunBackground()) {

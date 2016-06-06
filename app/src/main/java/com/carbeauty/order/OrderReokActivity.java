@@ -57,6 +57,7 @@ public class OrderReokActivity extends HeaderActivity {
     TextView promoTxt;
     TextView totalPriceTxt;
     TextView promoDescTxt;
+    TextView offerDescTxt;
     Button  createOrderBtn;
     int shopId;
     int carId;
@@ -67,9 +68,11 @@ public class OrderReokActivity extends HeaderActivity {
     List<CouponInfo> couponInfos;
 
     String[]  couponStrArrs;
+    String[]  offerStrArrs;
     int orderType=-2;
 
     int selectIndex=-1;
+    int offerIndex=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +84,39 @@ public class OrderReokActivity extends HeaderActivity {
 
         promoDescTxt= (TextView) findViewById(R.id.textView52);
 
+        offerDescTxt= (TextView) findViewById(R.id.textView51);
+
+        offerStrArrs=new String[]{"在线支付","到店支付"};
+
+        offerDescTxt.setText(offerStrArrs[offerIndex]);
+
+
         offerRelayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new AlertDialog.Builder(OrderReokActivity.this)
+                        .setTitle("支付方式")
+                        .setSingleChoiceItems(offerStrArrs, offerIndex, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.v("offer","choose which "+which);
+                                offerIndex=which;
 
+
+                            }
+                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v("offer", "cancel which " + which);
+
+                    }
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v("offer", "ok which " + which);
+                        offerDescTxt.setText(offerStrArrs[offerIndex]);
+                    }
+                }).show();
             }
         });
 

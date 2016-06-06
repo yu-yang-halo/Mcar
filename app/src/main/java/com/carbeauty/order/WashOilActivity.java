@@ -39,6 +39,9 @@ import info.hoang8f.android.segmented.SegmentedGroup;
  */
 public class WashOilActivity extends HeaderActivity {
 
+    public static  final int REQUEST_CODE_DECO=1009;
+    public static  final int REQUEST_CODE_OIL=1010;
+
 
     private int ac_type_value=0;
 
@@ -187,8 +190,8 @@ public class WashOilActivity extends HeaderActivity {
             }
             oilInfoAdapter.notifyDataSetChanged();
         }
-        itemNums.setText(data+"");
-        itemTotalPrice.setText(total+"元");
+        itemNums.setText(data + "");
+        itemTotalPrice.setText(total + "元");
 
     }
     private void initDecorationListView(final List<DecorationInfo> decorationInfos){
@@ -200,36 +203,51 @@ public class WashOilActivity extends HeaderActivity {
             }
         });
         listView.setAdapter(decorationAdapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DecorationInfo data = decorationInfos.get(position);
-                if (oldPostion == position) {
-                    if (data.isExpand())  {
-                        oldPostion = -1;
-                    }
-                    data.setIsExpand(!data.isExpand());
-                }else{
-                    oldPostion = position;
-                    data.setIsExpand(true);
+
+                if (decorationInfos.get(position).getSrc() == null || decorationInfos.get(position).getSrc().equals("")) {
+                    Toast.makeText(WashOilActivity.this,"暂无详情数据",Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                int totalHeight = 0;
-                for(int i=0;i<decorationAdapter.getCount();i++) {
-                    View viewItem = decorationAdapter.getView(i, null, listView);//这个很重要，那个展开的item的measureHeight比其他的大
-                    viewItem.measure(0, 0);
-                    totalHeight += viewItem.getMeasuredHeight();
-                }
+                Intent intent = new Intent(WashOilActivity.this, WashOilDetailActivity.class);
 
-                ViewGroup.LayoutParams params = listView.getLayoutParams();
-                params.height = totalHeight
-                        + (listView.getDividerHeight() * (listView.getCount() - 1));
-                listView.setLayoutParams(params);
-                decorationAdapter.notifyDataSetChanged();
+                intent.putExtra("src", decorationInfos.get(position).getSrc());
+                intent.putExtra("id", decorationInfos.get(position).getId());
+                intent.putExtra("desc", decorationInfos.get(position).getDesc());
+                intent.putExtra("pos", position);
+                intent.putExtra("Title", decorationInfos.get(position).getName());
+                intent.putExtra("requestCode", REQUEST_CODE_DECO);
+                startActivityForResult(intent, REQUEST_CODE_DECO);
+
             }
         });
+
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==100&&resultCode>0){
+            ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,resultCode);
+            rightBtn.setText(data.getStringExtra("number"));
+        }else if(requestCode==REQUEST_CODE_DECO){
+            if(data!=null){
+                decorationAdapter.addOneItem(data.getIntExtra("pos",-1));
+            }
+
+        }else if(requestCode==REQUEST_CODE_OIL){
+            if(data!=null){
+                oilInfoAdapter.addOneItem(data.getIntExtra("pos",-1));
+            }
+        }
+    }
+
+
+
+
+
+
     private void initOilInfoListView(final List<OilInfo> oilInfos){
         oilInfoAdapter=new OilInfoAdapter(oilInfos,this);
         oilInfoAdapter.setMyHandlerCallback(new MyHandlerCallback() {
@@ -242,29 +260,22 @@ public class WashOilActivity extends HeaderActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OilInfo data = oilInfos.get(position);
-                if (oldPostion == position) {
-                    if (data.isExpand()) {
-                        oldPostion = -1;
-                    }
-                    data.setIsExpand(!data.isExpand());
-                } else {
-                    oldPostion = position;
-                    data.setIsExpand(true);
+
+
+                if (oilInfos.get(position).getSrc() == null || oilInfos.get(position).getSrc().equals("")) {
+                    Toast.makeText(WashOilActivity.this,"暂无详情数据",Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                int totalHeight = 0;
-                for (int i = 0; i < oilInfoAdapter.getCount(); i++) {
-                    View viewItem = oilInfoAdapter.getView(i, null, listView);//这个很重要，那个展开的item的measureHeight比其他的大
-                    viewItem.measure(0, 0);
-                    totalHeight += viewItem.getMeasuredHeight();
-                }
+                Intent intent = new Intent(WashOilActivity.this, WashOilDetailActivity.class);
 
-                ViewGroup.LayoutParams params = listView.getLayoutParams();
-                params.height = totalHeight
-                        + (listView.getDividerHeight() * (listView.getCount() - 1));
-                listView.setLayoutParams(params);
-                oilInfoAdapter.notifyDataSetChanged();
+                intent.putExtra("src", oilInfos.get(position).getSrc());
+                intent.putExtra("id", oilInfos.get(position).getId());
+                intent.putExtra("desc", oilInfos.get(position).getDesc());
+                intent.putExtra("pos", position);
+                intent.putExtra("Title", oilInfos.get(position).getName());
+                intent.putExtra("requestCode", REQUEST_CODE_OIL);
+                startActivityForResult(intent, REQUEST_CODE_OIL);
             }
         });
     }
@@ -328,11 +339,5 @@ public class WashOilActivity extends HeaderActivity {
 
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==100&&resultCode>0){
-            ContentBox.loadInt(this,ContentBox.KEY_CAR_ID,resultCode);
-            rightBtn.setText(data.getStringExtra("number"));
-        }
-    }
+
 }

@@ -15,6 +15,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -22,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -91,68 +93,143 @@ public class ImageUtils {
             inSampleSize = heightRate < widthRate ? heightRate : widthRate;
         }
 
+        Log.v("inSampleSize", "inSampleSize is " + inSampleSize + " width:" + width + " height:" + height);
+
         return inSampleSize;
     }
 
-    public static  Bitmap convertNetToBitmap(String urlString,int w,int h){
-        URL url= null;
-        URLConnection connection= null;
-
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        // 设置为ture只获取图片大小
-        opts.inJustDecodeBounds = true;
-        opts.inPreferredConfig = Bitmap.Config.ALPHA_8;
-        opts.inSampleSize = getScaleSize(opts,w,h);
-        // 加载到内存
-        opts.inJustDecodeBounds = false;
-
+    public static Bitmap loadImageFromUrl(String url) {
+        URL m;
+        InputStream i = null;
+        BufferedInputStream bis = null;
+        ByteArrayOutputStream out =null;
+        byte[] data=null;
         try {
-            url = new URL(urlString);
-            connection = url.openConnection();
-            HttpURLConnection httpConnection=(HttpURLConnection)connection;
-            int responseCode=httpConnection.getResponseCode();
-            if (responseCode==HttpURLConnection.HTTP_OK){
-                InputStream stream=httpConnection.getInputStream();
-                Bitmap bitmap=BitmapFactory.decodeStream(stream,null,opts);
-                return bitmap;
+            m = new URL(url);
+            i = (InputStream) m.getContent();
+            bis = new BufferedInputStream(i,1024 * 8);
+            out = new ByteArrayOutputStream();
+            int len=0; byte[] buffer = new byte[1024];
+            while((len = bis.read(buffer)) != -1){
+                out.write(buffer, 0, len);
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }catch (IOException e) {
+            data = out.toByteArray();
+            out.close();
+            bis.close();
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
+        if(data==null){
+            return null;
+        }
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+        return bitmap;
+    }
 
+    private  static  Bitmap scaleNetImageToBitmap(String urlString,int w,int h){
+        /**
+         * 根据url下载图片在指定的文件
+         *
+         * @param urlStr
+         * @param file
+         * @return
+         */
+        FileOutputStream fos = null;
+        InputStream is = null;
+        Bitmap bitmap =null;
+
+        try
+        {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            is = new BufferedInputStream(conn.getInputStream());
+            is.mark(is.available());
+
+
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+
+            if(w!=0&&h!=0){
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(is, null, opts);
+                opts.inSampleSize =getScaleSize(opts,w,h);
+            }
+            opts.inJustDecodeBounds = false;
+
+            try{
+                // this gives error for larger images taken by camera
+                is.reset();
+                Log.v("reset", "scale normal  ->"+urlString);
+            } catch(IOException e){
+                is.close();
+                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                opts.inSampleSize = 1;
+                conn = (HttpURLConnection) url.openConnection();
+                is = new BufferedInputStream(conn.getInputStream());
+                Log.v("reset", "scale special   "+opts.inSampleSize+" ->"+urlString);
+            }
+            bitmap = BitmapFactory.decodeStream(is, null, opts);
+
+            Log.v("bitmap","init bitmap "+bitmap);
+
+            conn.disconnect();
+            return bitmap;
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (is != null)
+                    is.close();
+            } catch (IOException e)
+            {
+            }
+
+            try
+            {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException e)
+            {
+            }
+        }
 
         return null;
+
+    }
+
+    public static  Bitmap convertNetToBitmap(String urlString,int w,int h){
+        return scaleNetImageToBitmap(urlString,w,h);
     }
     public static  Bitmap convertNetToBitmap(String urlString){
-        URL url= null;
-        URLConnection connection= null;
+        return scaleNetImageToBitmap(urlString, 0, 0);
+    }
+    public static byte[] imageToByteArray(String imgPath) {
+        BufferedInputStream in;
         try {
-            url = new URL(urlString);
-            connection = url.openConnection();
-            HttpURLConnection httpConnection=(HttpURLConnection)connection;
-            int responseCode=httpConnection.getResponseCode();
-            if (responseCode==HttpURLConnection.HTTP_OK){
-                InputStream stream=httpConnection.getInputStream();
-                Bitmap bitmap=BitmapFactory.decodeStream(stream);
-                return bitmap;
+            in = new BufferedInputStream(new FileInputStream(imgPath));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int size = 0;
+            byte[] temp = new byte[1024];
+            while((size = in.read(temp))!=-1) {
+                out.write(temp, 0, size);
             }
-        } catch (MalformedURLException e) {
+            in.close();
+            return out.toByteArray();
+        } catch (IOException e) {
             e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-
-
-
-       return null;
     }
 
     public   static Bitmap convertToBitmap(String path){
         BitmapFactory.Options opts = new BitmapFactory.Options();
-        // 设置为ture只获取图片大小
+        // 设置为true只获取图片大小
         opts.inJustDecodeBounds = true;
         opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
         // 返回为空
@@ -163,6 +240,21 @@ public class ImageUtils {
 
         return BitmapFactory.decodeFile(path, opts);
     }
+
+    public   static Bitmap convertToBitmap(String path,int sampleSize){
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        // 设置为ture只获取图片大小
+        opts.inJustDecodeBounds = true;
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        // 返回为空
+        BitmapFactory.decodeFile(path, opts);
+        opts.inSampleSize = sampleSize;
+        // 加载到内存
+        opts.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(path, opts);
+    }
+
 
     /**
      * 将base64转换成bitmap图片 　　
@@ -188,14 +280,28 @@ public class ImageUtils {
         // 将Bitmap转换成字符串类型
         String base64ImageString=Base64.encodeToString(bitmap2Bytes(bm), Base64.DEFAULT);
 
-        System.out.println("image base64 length=" + base64ImageString.length());
-       return  Base64.encodeToString(bitmap2Bytes(bm),Base64.DEFAULT);
+        System.out.println("bm image base64 length=" + base64ImageString.length());
+        return  Base64.encodeToString(bitmap2Bytes(bm),Base64.DEFAULT);
     }
+
+    public static String bitmaptoString(String path) {
+        byte[] imageBytes=imageToByteArray(path);
+        // 将Bitmap转换成字符串类型
+        String base64ImageString=Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        System.out.println("path image base64 length=" + base64ImageString.length());
+        return  Base64.encodeToString(imageBytes,Base64.DEFAULT);
+    }
+
+
     public static byte[] bitmap2Bytes(Bitmap bm) {
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
          bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
          return baos.toByteArray();
     }
+
+
+
     public Bitmap Bytes2Bimap(byte[] b) {
         if (b.length != 0) {
             return BitmapFactory.decodeByteArray(b, 0, b.length);

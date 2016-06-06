@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -48,11 +50,15 @@ public class GoodActivity extends FragmentActivity {
     List<GoodsType> goodsTypes;
     ActionBar mActionbar;
     Button cartButton;
+    int type;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_goods);
         initCustomActionBar();
+
+        type=getIntent().getIntExtra("Type",-1);
+
 
         shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
 
@@ -71,7 +77,7 @@ public class GoodActivity extends FragmentActivity {
                 }
             }
         });
-        new GetGoodsTypeTask().execute();
+        new GetGoodsTypeTask().executeOnExecutor(Executors.newCachedThreadPool());
 
     }
 
@@ -85,8 +91,13 @@ public class GoodActivity extends FragmentActivity {
 
     private void initSlidTab( List<GoodInfo> goodInfos){
 
-        for (GoodsType goodsType : goodsTypes) {
-            mFragments.add(SimpleCardFragment.getInstance(goodsType,goodInfos));
+        int currentLab=0;
+
+        for (int i=0;i<goodsTypes.size();i++) {
+            if(goodsTypes.get(i).getId()==type){
+                currentLab=i;
+            }
+            mFragments.add(SimpleCardFragment.getInstance(goodsTypes.get(i),goodInfos));
         }
 
         View decorView = getWindow().getDecorView();
@@ -96,6 +107,8 @@ public class GoodActivity extends FragmentActivity {
         /** indicator圆角色块 */
         SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
         tabLayout_10.setViewPager(vp);
+        tabLayout_10.setCurrentTab(currentLab);
+
     }
     class GetGoodsTypeTask extends AsyncTask<String,String,String>{
         List<GoodInfo> goodInfos;
@@ -105,8 +118,6 @@ public class GoodActivity extends FragmentActivity {
             try {
                 goodsTypes= WSConnector.getInstance().getGoodsType();
                 goodInfos= WSConnector.getInstance().getGoodsList(shopId);
-
-
 
             } catch (WSException e) {
                return e.getErrorMsg();

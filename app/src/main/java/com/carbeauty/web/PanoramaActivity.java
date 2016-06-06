@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,8 +28,10 @@ import com.carbeauty.DensityUtil;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.order.HeaderActivity;
+import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +45,10 @@ import cn.service.bean.BannerInfoType;
 public class PanoramaActivity extends HeaderActivity {
     public static  final  String KEY_PANORAMA="key_panorama";
     public static  final  String KEY_TITLE="Title";
+    public static  final  String KEY_ADDRESS="address";
+    public static  final  String KEY_ICON="icon_name";
     public static  final  String KEY_SHOPID="key_shopId";
-    ConvenientBanner banner;
+    WebView webView;
     KProgressHUD progressHUD;
     String panorama;
     List<String> localImagePaths=new ArrayList<String>();
@@ -52,135 +59,108 @@ public class PanoramaActivity extends HeaderActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_panorama);
         initCustomActionBar();
-        banner= (ConvenientBanner)findViewById(R.id.convenientBanner);
+        webView= (WebView) findViewById(R.id.webView);
+        WebSettings setting = webView.getSettings();
+        setting.setJavaScriptEnabled(true);
+        setting.setDomStorageEnabled(true);
+        setting.setDefaultTextEncodingName("GBK");
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+        WebViewClient viewClient=new WebViewClient();
+
+        webView.setWebViewClient(viewClient);
+        progressHUD= KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("加载中...")
+                .setAnimationSpeed(3)
+                .setDimAmount(0.3f)
+                .show();
+
+
         panorama=getIntent().getStringExtra(KEY_PANORAMA);
         int shopId=getIntent().getIntExtra(KEY_SHOPID,0);
 
         for (String fileName : panorama.split(",")){
             String webPath=WSConnector.getPanoramaURL(shopId + "", fileName);
-            Log.v("URL", "URL:::" + webPath);
+
             localImagePaths.add(webPath);
         }
 
-        rightBtn.setVisibility(View.GONE);
+        WindowManager wm = (WindowManager) this
+                .getSystemService(Context.WINDOW_SERVICE);
 
-        new GetBannerTask2().execute();
-        banner.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (mActionbar.isShowing()) {
-                        mActionbar.hide();
-                    } else {
-                        mActionbar.show();
+        Point screenPoint=new Point();
+
+        wm.getDefaultDisplay().getSize(screenPoint);
+
+
+        int statusBarHeight =getStatusHeight(this);
+
+
+        final int webHeight=screenPoint.y-mActionbar.getCustomView().getLayoutParams().height-statusBarHeight;
+        System.out.println("height "+DensityUtil.px2dip(PanoramaActivity.this,statusBarHeight));
+
+
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            public void onProgressChanged(WebView view, int progress) {
+
+                if (progress == 100) {
+                    progressHUD.dismiss();
+                    if (localImagePaths != null && localImagePaths.size() > 0) {
+                        Gson gson = new Gson();
+                        String imageArrJSON = gson.toJson(localImagePaths);
+                        Log.v("URL", "imageArrJSON URL:::" + imageArrJSON);
+                        webView.loadUrl("javascript:loadImages(" + imageArrJSON + "," + DensityUtil.px2dip(PanoramaActivity.this, webHeight) + ")");
                     }
+
+
                 }
             }
+
+
         });
 
 
-
-        mActionbar.hide();
-
-    }
+        webView.setWebViewClient(viewClient);
+        webView.loadUrl("file:///android_asset/album/index.html");
 
 
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        orientation=newConfig.orientation;
-        Log.e("newConfig", newConfig.toString());
-        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
-            banner.post(new Runnable() {
-                @Override
-                public void run() {
-                    ViewGroup.LayoutParams params=banner.getLayoutParams();
+        rightBtn.setVisibility(View.GONE);
 
-                    params.height= ViewGroup.LayoutParams.MATCH_PARENT;
-                    params.width= ViewGroup.LayoutParams.MATCH_PARENT;
 
-                    banner.setLayoutParams(params);
-                }
-            });
-            mActionbar.hide();
-        }else{
-            banner.post(new Runnable() {
-                @Override
-                public void run() {
-                    ViewGroup.LayoutParams params=banner.getLayoutParams();
-
-                    params.height= DensityUtil.dip2px(PanoramaActivity.this,200);
-                    params.width= ViewGroup.LayoutParams.MATCH_PARENT;
-
-                    banner.setLayoutParams(params);
-                }
-            });
-            mActionbar.show();
-        }
 
     }
 
-    public class LocalImageHolderView implements Holder<Bitmap> {
-        private ImageView imageView;
-        @Override
-        public View createView(Context context) {
-            imageView = new ImageView(context);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            return imageView;
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
         }
-        @Override
-        public void UpdateUI(Context context, final int position, Bitmap bm) {
-            imageView.setImageBitmap(bm);
-        }
+        return result;
     }
+    /**
+     * 获得状态栏的高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getStatusHeight(Context context) {
 
-    class GetBannerTask2 extends AsyncTask<String,String,String> {
-
-        @Override
-        protected void onPreExecute() {
-            progressHUD=KProgressHUD.create(PanoramaActivity.this)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("加载中...")
-                    .setAnimationSpeed(1)
-                    .setDimAmount(0.3f)
-                    .show();
+        int statusHeight = -1;
+        try {
+            Class clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height")
+                    .get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        @Override
-        protected String doInBackground(String... params) {
-               for (String webPath:localImagePaths){
-
-                    Bitmap bm= ImageUtils.convertNetToBitmap(webPath);
-                    if(bm!=null){
-                        localImageBitmaps.add(bm);
-                    }
-
-                }
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            progressHUD.dismiss();
-            if(localImageBitmaps==null||localImageBitmaps.size()<=0){
-                return;
-            }
-            banner.setPages(
-                    new CBViewHolderCreator<LocalImageHolderView>() {
-                        @Override
-                        public LocalImageHolderView createHolder() {
-                            return new LocalImageHolderView();
-                        }
-                    }, localImageBitmaps)
-                    .setPageIndicator(new int[]{R.mipmap.ic_page_indicator, R.mipmap.ic_page_indicator_focused})
-                    .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
-
-        }
+        return statusHeight;
     }
-
 
 }

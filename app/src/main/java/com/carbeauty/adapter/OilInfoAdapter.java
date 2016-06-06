@@ -1,20 +1,28 @@
 package com.carbeauty.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.carbeauty.DensityUtil;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
+import cn.service.WSConnector;
 import cn.service.bean.DecorationInfo;
 import cn.service.bean.OilInfo;
 
@@ -71,13 +79,17 @@ public class OilInfoAdapter extends BaseAdapter {
         }
         TextView itemName= (TextView) convertView.findViewById(R.id.itemName);
         TextView itemPrice= (TextView) convertView.findViewById(R.id.itemPrice);
-        TextView itemDetail= (TextView) convertView.findViewById(R.id.itemDetail);
+
         Button itemBtn= (Button) convertView.findViewById(R.id.itemBtn);
         itemName.setText(oilInfos.get(position).getName());
         itemPrice.setText(oilInfos.get(position).getPrice()+"元");
-        itemDetail.setText(oilInfos.get(position).getDesc());
 
-        View item2=convertView.findViewById(R.id.item2);
+
+
+
+        OilInfo oilInfo=oilInfos.get(position);
+        String src=oilInfo.getSrc();
+
 
 
         if(oilInfoSet.contains(oilInfos.get(position))){
@@ -99,12 +111,19 @@ public class OilInfoAdapter extends BaseAdapter {
             }
         });
 
-        if(oilInfos.get(position).isExpand()){
-            item2.setVisibility(View.VISIBLE);
-        }else {
-            item2.setVisibility(View.GONE);
-        }
 
         return convertView;
     }
+    public void addOneItem(int pos){
+        if(pos>=0&&pos<oilInfos.size()){
+            if(!oilInfoSet.contains(oilInfos.get(pos))){
+                oilInfoSet.add(oilInfos.get(pos));
+            }
+            notifyDataSetChanged();
+        }
+
+    }
+
+
+
 }

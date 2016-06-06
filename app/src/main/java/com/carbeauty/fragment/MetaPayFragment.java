@@ -68,6 +68,7 @@ public class MetaPayFragment extends Fragment {
     private TextView textQQ;
     private TextView textk2;
     MyClickListenser myClickListenser;
+    LabelClickListenser labelClickListenser;
     private Map<Integer,Boolean> selectMap=new HashMap<Integer,Boolean>();
     private Map<Integer,Integer> dataMap  =new HashMap<Integer,Integer>();
     List<MetalplateInfo> metalplateInfos;
@@ -102,7 +103,7 @@ public class MetaPayFragment extends Fragment {
 
         shopId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID,-1);
         myClickListenser=new MyClickListenser();
-
+        labelClickListenser=new LabelClickListenser();
 
         return v;
     }
@@ -350,6 +351,71 @@ public class MetaPayFragment extends Fragment {
 
     }
 
+    class LabelClickListenser implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.textView23:
+                    btne1.performClick();
+                    break;
+                case R.id.textView24:
+                    btnf1.performClick();
+                    break;
+                case R.id.textView25:
+                    btnc1.performClick();
+                    break;
+                case R.id.textView26:
+                    btnj1.performClick();
+                    break;
+                case R.id.textView27:
+                    btnd1.performClick();
+                    break;
+                case R.id.textView28:
+                    btnf2.performClick();
+                    break;
+                case R.id.textView29:
+                    btne2.performClick();
+                    break;
+                case R.id.textView30:
+                    btnd2.performClick();
+                    break;
+                case R.id.textView31:
+                    btnj2.performClick();
+                    break;
+                case R.id.textView32:
+                    btnc2.performClick();
+                    break;
+                case R.id.textView33:
+                    btnaa.performClick();
+                    break;
+                case R.id.textView34:
+                    btna1.performClick();
+                    break;
+                case R.id.textView35:
+                    btna2.performClick();
+                    break;
+                case R.id.textView36:
+                    btnbb.performClick();
+                    break;
+                case R.id.textView37:
+                    btnb2.performClick();
+                    break;
+                case R.id.textView38:
+                    btnb1.performClick();
+                    break;
+                case R.id.textView39:
+                    btnii.performClick();
+                    break;
+                case R.id.textView40:
+                    btnhh.performClick();
+                    break;
+                case R.id.textView41:
+                    btngg.performClick();
+                    break;
+            }
+        }
+    }
 
     public class LocalMetaHolderView implements Holder<Integer> {
         View rootView;
@@ -368,17 +434,31 @@ public class MetaPayFragment extends Fragment {
             if (data==1){
                  View item0=LayoutInflater.from(context).inflate(R.layout.fr_meta_item0,null);
 
+                 TextView tve1= (TextView) item0.findViewById(R.id.textView23);
+                 TextView tvf1= (TextView) item0.findViewById(R.id.textView24);
+                 TextView tvc1= (TextView) item0.findViewById(R.id.textView25);
+                 TextView tvj1= (TextView) item0.findViewById(R.id.textView26);
+                 TextView tvd1= (TextView) item0.findViewById(R.id.textView27);
+
+
                  btne1= (Button) item0.findViewById(R.id.btne1);
                  btnf1= (Button) item0.findViewById(R.id.btnf1);
                  btnc1= (Button) item0.findViewById(R.id.btnc1);
                  btnd1= (Button) item0.findViewById(R.id.btnd1);
                  btnj1= (Button) item0.findViewById(R.id.btnj1);
 
+                 tve1.setOnClickListener(labelClickListenser);
+                 tvf1.setOnClickListener(labelClickListenser);
+                 tvc1.setOnClickListener(labelClickListenser);
+                 tvd1.setOnClickListener(labelClickListenser);
+                 tvj1.setOnClickListener(labelClickListenser);
+
+
                  btne1.setSelected((boolean)selectMap.get(R.id.btne1));
                  btnf1.setSelected((boolean)selectMap.get(R.id.btnf1));
                  btnc1.setSelected((boolean)selectMap.get(R.id.btnc1));
                  btnd1.setSelected((boolean)selectMap.get(R.id.btnd1));
-                 btnj1.setSelected((boolean)selectMap.get(R.id.btnj1));
+                 btnj1.setSelected((boolean) selectMap.get(R.id.btnj1));
 
                 btne1.setOnClickListener(myClickListenser);
                 btnf1.setOnClickListener(myClickListenser);
@@ -389,13 +469,25 @@ public class MetaPayFragment extends Fragment {
 
                  linearLayout.addView(item0,param);
              }else  if (data==2){
-                 View item1=LayoutInflater.from(context).inflate(R.layout.fr_meta_item1,null);
+                View item1=LayoutInflater.from(context).inflate(R.layout.fr_meta_item1,null);
+
+                TextView tvf2= (TextView) item1.findViewById(R.id.textView28);
+                TextView tve2= (TextView) item1.findViewById(R.id.textView29);
+                TextView tvd2= (TextView) item1.findViewById(R.id.textView30);
+                TextView tvj2= (TextView) item1.findViewById(R.id.textView31);
+                TextView tvc2= (TextView) item1.findViewById(R.id.textView32);
 
                 btnf2= (Button) item1.findViewById(R.id.btnf2);
                 btne2= (Button) item1.findViewById(R.id.btne2);
                 btnc2= (Button) item1.findViewById(R.id.btnc2);
                 btnd2= (Button) item1.findViewById(R.id.btnd2);
                 btnj2= (Button) item1.findViewById(R.id.btnj2);
+
+                tvf2.setOnClickListener(labelClickListenser);
+                tve2.setOnClickListener(labelClickListenser);
+                tvd2.setOnClickListener(labelClickListenser);
+                tvj2.setOnClickListener(labelClickListenser);
+                tvc2.setOnClickListener(labelClickListenser);
 
 
                 btnf2.setSelected((boolean)selectMap.get(R.id.btnf2));
@@ -415,9 +507,17 @@ public class MetaPayFragment extends Fragment {
              }else  if (data==3){
                 View item2=LayoutInflater.from(context).inflate(R.layout.fr_meta_item2,null);
 
+                TextView tvaa= (TextView) item2.findViewById(R.id.textView33);
+                TextView tva1= (TextView) item2.findViewById(R.id.textView34);
+                TextView tva2= (TextView) item2.findViewById(R.id.textView35);
+
                 btnaa= (Button) item2.findViewById(R.id.btnaa);
                 btna1= (Button) item2.findViewById(R.id.btna1);
                 btna2= (Button) item2.findViewById(R.id.btna2);
+
+                tvaa.setOnClickListener(labelClickListenser);
+                tva1.setOnClickListener(labelClickListenser);
+                tva2.setOnClickListener(labelClickListenser);
 
                 btnaa.setSelected((boolean)selectMap.get(R.id.btnaa));
                 btna1.setSelected((boolean)selectMap.get(R.id.btna1));
@@ -427,13 +527,23 @@ public class MetaPayFragment extends Fragment {
                 btna1.setOnClickListener(myClickListenser);
                 btna2.setOnClickListener(myClickListenser);
 
+
+
                 linearLayout.addView(item2,param);
             }else  if (data==4){
                 View item3=LayoutInflater.from(context).inflate(R.layout.fr_meta_item3,null);
+                TextView tvbb= (TextView) item3.findViewById(R.id.textView36);
+                TextView tvb2= (TextView) item3.findViewById(R.id.textView37);
+                TextView tvb1= (TextView) item3.findViewById(R.id.textView38);
 
                 btnbb= (Button) item3.findViewById(R.id.btnbb);
                 btnb1= (Button) item3.findViewById(R.id.btnb1);
                 btnb2= (Button) item3.findViewById(R.id.btnb2);
+
+
+                tvbb.setOnClickListener(labelClickListenser);
+                tvb2.setOnClickListener(labelClickListenser);
+                tvb1.setOnClickListener(labelClickListenser);
 
                 btnbb.setSelected((boolean)selectMap.get(R.id.btnbb));
                 btnb1.setSelected((boolean)selectMap.get(R.id.btnb1));
@@ -447,9 +557,21 @@ public class MetaPayFragment extends Fragment {
             }else  if (data==5){
                 View item4=LayoutInflater.from(context).inflate(R.layout.fr_meta_item4,null);
 
+
+                TextView tvii= (TextView) item4.findViewById(R.id.textView39);
+                TextView tvhh= (TextView) item4.findViewById(R.id.textView40);
+                TextView tvgg= (TextView) item4.findViewById(R.id.textView41);
+
+
                 btnii= (Button) item4.findViewById(R.id.btnii);
                 btnhh= (Button) item4.findViewById(R.id.btnhh);
                 btngg= (Button) item4.findViewById(R.id.btngg);
+
+
+                tvii.setOnClickListener(labelClickListenser);
+                tvhh.setOnClickListener(labelClickListenser);
+                tvgg.setOnClickListener(labelClickListenser);
+
 
                 btnii.setSelected((boolean)selectMap.get(R.id.btnii));
                 btnhh.setSelected((boolean)selectMap.get(R.id.btnhh));

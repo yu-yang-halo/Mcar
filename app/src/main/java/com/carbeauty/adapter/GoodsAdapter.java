@@ -1,9 +1,11 @@
 package com.carbeauty.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.carbeauty.ImageUtils;
+import com.carbeauty.MyActivityManager;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 
 import java.util.List;
@@ -25,10 +32,13 @@ import cn.service.bean.GoodInfo;
  */
 public class GoodsAdapter extends BaseAdapter {
     List<GoodInfo> goodInfos;
+    RequestQueue mQueue;
     Context ctx;
     public GoodsAdapter(Context ctx,List<GoodInfo> goodInfos){
          this.ctx=ctx;
          this.goodInfos=goodInfos;
+
+          mQueue = Volley.newRequestQueue(ctx);
     }
 
     public void setGoodInfos(List<GoodInfo> goodInfos) {
@@ -76,15 +86,24 @@ public class GoodsAdapter extends BaseAdapter {
         holder.goodDesc.setText(goodInfos.get(position).getDesc());
         holder.goodPriceTxt.setText(goodInfos.get(position).getPrice() + "元");
 
-        if(goodInfos.get(position).getBitmap()!=null){
-            holder.goodImageView.setImageBitmap(goodInfos.get(position).getBitmap());
-        }else{
-            new NetBitmapToImageViewTask(position,holder.goodImageView).executeOnExecutor(Executors.newCachedThreadPool());
-        }
+
+        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+        ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView
+                , R.drawable.icon_default, R.drawable.icon_default);
+
+
+        String src=goodInfos.get(position).getSrc();
+        String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "", src.split(",")[0]);
+
+        imageLoader.get(url, listener);
+
+
 
         return convertView;
 
     }
+
+
     class ItemHolder{
         TextView goodName;
         TextView goodDesc;
@@ -92,29 +111,5 @@ public class GoodsAdapter extends BaseAdapter {
         ImageView goodImageView;
 
     }
-    class NetBitmapToImageViewTask extends AsyncTask<String,String,String>{
-        private int position;
-        Bitmap bm;
-        ImageView goodImageView;
-        public NetBitmapToImageViewTask(int position,ImageView goodImageView){
-            this.position=position;
-            this.goodImageView=goodImageView;
-        }
-        @Override
-        protected String doInBackground(String... params) {
-            String src=goodInfos.get(position).getSrc();
 
-            String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "",   src.split(",")[0]);
-            bm= ImageUtils.convertNetToBitmap(url,100,100);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if(bm!=null){
-                goodImageView.setImageBitmap(bm);
-                goodInfos.get(position).setBitmap(bm);
-            }
-        }
-    }
 }

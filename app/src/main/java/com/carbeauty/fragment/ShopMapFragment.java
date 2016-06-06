@@ -3,6 +3,9 @@ package com.carbeauty.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,6 +32,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviParaOption;
+import com.carbeauty.ImageUtils;
 import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
@@ -46,7 +50,7 @@ import cn.service.bean.ShopInfo;
 public class ShopMapFragment extends Fragment {
     MapView bmapView;
     BaiduMap mBaiduMap;
-
+    Bitmap bm;
 
     @Nullable
     @Override
@@ -59,8 +63,6 @@ public class ShopMapFragment extends Fragment {
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
         initMapData();
-//        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT, null);
-//        updateMapStatus(lgtlatStr);
 
         return v;
 
@@ -97,7 +99,9 @@ public class ShopMapFragment extends Fragment {
         Bundle bundle=new Bundle();
         bundle.putString(PanoramaActivity.KEY_PANORAMA,shopInfo.getPanorama());
         bundle.putString(PanoramaActivity.KEY_TITLE,shopInfo.getName());
+        bundle.putString(PanoramaActivity.KEY_ADDRESS,shopInfo.getDesc());
         bundle.putInt(PanoramaActivity.KEY_SHOPID, shopInfo.getShopId());
+        bundle.putString(PanoramaActivity.KEY_ICON, shopInfo.getIcon());
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
@@ -118,24 +122,27 @@ public class ShopMapFragment extends Fragment {
         });
 
     }
-    private void showDialog(Bundle bundle, final LatLng position){
+    private void showDialog(final Bundle bundle, final LatLng position){
         //创建InfoWindow展示的view
 
         View dialogMap=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_map,null);
         final String url=bundle.getString(PanoramaActivity.KEY_PANORAMA);
         final String name=bundle.getString(PanoramaActivity.KEY_TITLE);
+        final String address=bundle.getString(PanoramaActivity.KEY_ADDRESS);
+        final String icon=bundle.getString(PanoramaActivity.KEY_ICON);
         final int shopId=bundle.getInt(PanoramaActivity.KEY_SHOPID);
 
-//创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
-        InfoWindow mInfoWindow = new InfoWindow(dialogMap, position, -97);
-//显示InfoWindow
-        mBaiduMap.showInfoWindow(mInfoWindow);
         Button closeBtn= (Button) dialogMap.findViewById(R.id.closeBtn);
         TextView contentView= (TextView) dialogMap.findViewById(R.id.contentView);
+        TextView addressView= (TextView) dialogMap.findViewById(R.id.textView5);
         Button photoRotoa= (Button) dialogMap.findViewById(R.id.photoRotoa);
         Button navigateBtn= (Button) dialogMap.findViewById(R.id.navigateBtn);
 
+        if(bm!=null){
+            photoRotoa.setBackgroundDrawable(new BitmapDrawable(getResources(),bm));
+        }
 
+        addressView.setText(address);
         contentView.setText(name);
         navigateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,14 +158,17 @@ public class ShopMapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PanoramaActivity.class);
-                intent.putExtra(PanoramaActivity.KEY_TITLE, name);
-                intent.putExtra(PanoramaActivity.KEY_PANORAMA, url);
-                intent.putExtra(PanoramaActivity.KEY_SHOPID, shopId);
+                intent.putExtras(bundle);
                 startActivity(intent);
 
 
             }
         });
+
+//创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
+        InfoWindow mInfoWindow = new InfoWindow(dialogMap, position, -97);
+//显示InfoWindow
+        mBaiduMap.showInfoWindow(mInfoWindow);
     }
 
     private void initMapData(){
@@ -170,11 +180,13 @@ public class ShopMapFragment extends Fragment {
         int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
         for (ShopInfo shopInfo: shopInfos){
             if(shopId==shopInfo.getShopId()){
-                updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
-                addPointToMap(shopInfo);
+
+                new NetTaskReq(shopInfo).execute();
+
             }
 
         }
+
 
     }
 
@@ -213,5 +225,22 @@ public class ShopMapFragment extends Fragment {
         }
     }
 
+    class NetTaskReq extends AsyncTask<String,String,String>{
+        ShopInfo shopInfo;
+        NetTaskReq(ShopInfo shopInfo){
+            this.shopInfo=shopInfo;
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            bm=ImageUtils.convertNetToBitmap(WSConnector.getShopPanoramaURL(String.valueOf(shopInfo.getShopId()),shopInfo.getIcon()));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
+            addPointToMap(shopInfo);
+        }
+    }
 
 }

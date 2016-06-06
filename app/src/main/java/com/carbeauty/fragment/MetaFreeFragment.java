@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,8 +53,8 @@ public class MetaFreeFragment extends Fragment {
     ImageView upimage22;
     ImageView upimage33;
 
-    List<Bitmap> typeBitmaps0;
-    List<Bitmap> typeBitmaps1;
+    List<String> typeBitmaps0;
+    List<String> typeBitmaps1;
 
     Button commitBtn;
 
@@ -169,7 +170,6 @@ public class MetaFreeFragment extends Fragment {
     class LoadOrUploadImage extends AsyncTask<String,String,String>{
         ArrayList<String> photos;
         int requestCode;
-        List<Bitmap> bitmaps=new ArrayList<Bitmap>();
         LoadOrUploadImage(ArrayList<String> photos,int requestCode){
             this.photos=photos;
             this.requestCode=requestCode;
@@ -177,8 +177,8 @@ public class MetaFreeFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            for (String path:photos){
-                bitmaps.add(ImageUtils.convertToBitmap(path));
+            if(photos==null){
+                return null;
             }
 
             return null;
@@ -186,44 +186,46 @@ public class MetaFreeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
-           if(bitmaps!=null&&bitmaps.size()>0){
+           if(photos!=null&&photos.size()>0){
 
                if(requestCode==TAKE_PHOTO_WITH_DATA0){
-                   typeBitmaps0=bitmaps;
+                   typeBitmaps0=photos;
                }else if(requestCode==TAKE_PHOTO_WITH_DATA1){
-                   typeBitmaps1=bitmaps;
+                   typeBitmaps1=photos;
                }
 
 
-               for (int i=0;i<bitmaps.size();i++){
+               for (int i=0;i<photos.size();i++){
+                   initImageView(i, photos.get(i));
 
-                   initImageView(i,new BitmapDrawable(getResources(),bitmaps.get(i)));
                }
 
 
            }
         }
 
-        private void initImageView(int index,Drawable drawable){
+        private void initImageView(int index,String path){
+            Bitmap bms=ImageUtils.convertToBitmap(path,200,200);
+            System.out.println("bms : "+bms);
             if(requestCode==TAKE_PHOTO_WITH_DATA0){
                   if(index==0){
-                      upimage0.setBackgroundDrawable(drawable);
+                      upimage0.setImageBitmap(bms);
                   }else if(index==1){
-                      upimage1.setBackgroundDrawable(drawable);
+                      upimage1.setImageBitmap(bms);
                   }else if(index==2){
-                      upimage2.setBackgroundDrawable(drawable);
+                      upimage2.setImageBitmap(bms);
                   }else if(index==3){
-                      upimage3.setBackgroundDrawable(drawable);
+                      upimage3.setImageBitmap(bms);
                   }
             }else if(requestCode==TAKE_PHOTO_WITH_DATA1){
                 if(index==0){
-                    upimage00.setBackgroundDrawable(drawable);
+                    upimage00.setImageBitmap(bms);
                 }else if(index==1){
-                    upimage11.setBackgroundDrawable(drawable);
+                    upimage11.setImageBitmap(bms);
                 }else if(index==2){
-                    upimage22.setBackgroundDrawable(drawable);
+                    upimage22.setImageBitmap(bms);
                 }else if(index==3){
-                    upimage33.setBackgroundDrawable(drawable);
+                    upimage33.setImageBitmap(bms);
                 }
             }
         }
@@ -241,10 +243,12 @@ public class MetaFreeFragment extends Fragment {
 
             progressHUD= KProgressHUD.create(getActivity())
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("预约中...")
+                    .setLabel("请耐心等待，图片上传中...")
                     .setAnimationSpeed(1)
                     .setDimAmount(0.3f)
                     .show();
+            progressHUD.setCancellable(false);
+
 
         }
 
@@ -259,26 +263,43 @@ public class MetaFreeFragment extends Fragment {
                     metaOrderInfo=WSConnector.getInstance().createMetaOrder(metaOrderInfo);
                     if(typeBitmaps0!=null&&typeBitmaps0.size()>0){
 
-                        for (Bitmap bm:typeBitmaps0){
+                        for (String path:typeBitmaps0){
+                            Bitmap bms=ImageUtils.convertToBitmap(path, 10);
+
                             try {
-                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bm));
+                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bms));
+
                             } catch (UnsupportedEncodingException e) {
                                 return e.getMessage();
                             }
 
+                            if(bms!=null&&!bms.isRecycled()){
+                                bms.recycle();
+                                bms=null;
+                                System.gc();
+                            }
+
                         }
+
 
                     }
                     if(typeBitmaps1!=null&&typeBitmaps1.size()>0){
 
-                        for (Bitmap bm:typeBitmaps1){
+                        for (String path:typeBitmaps1){
+                            Bitmap bms=ImageUtils.convertToBitmap(path, 10);
                             try {
-                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bm));
+                                WSConnector.getInstance().createMetaOrderImg(metaOrderInfo.getId(),ImageUtils.bitmaptoString(bms));
+
                             } catch (UnsupportedEncodingException e) {
                                 return e.getMessage();
                             }
-
+                            if(bms!=null&&!bms.isRecycled()){
+                                bms.recycle();
+                                bms=null;
+                                System.gc();
+                            }
                         }
+
 
                     }
 

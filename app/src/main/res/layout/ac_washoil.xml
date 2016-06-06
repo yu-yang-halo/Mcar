@@ -63,7 +63,7 @@
     </ListView>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="59dp"
+        android:layout_height="49dp"
         android:background="#fafafa"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -96,7 +96,7 @@
 
         <Button
             android:layout_width="80dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:text="预约"
             android:id="@+id/bOrderBtn"
             android:background="@drawable/btn_order_color"

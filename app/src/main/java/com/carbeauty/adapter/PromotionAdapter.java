@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.web.WebBroswerActivity;
+import com.carbeauty.web.WebBroswerPromotionActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.List;
@@ -65,52 +67,31 @@ public class PromotionAdapter extends BaseAdapter {
             convertView= LayoutInflater.from(ctx).inflate(R.layout.item1,null);
         }
         ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
+        Button  btnCoupon= (Button) convertView.findViewById(R.id.imageView16);
+
         imageView.setBackgroundDrawable(new BitmapDrawable(bitmaps.get(position)));
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new GetCouponTask(promotionInfoTypes.get(position).getId()).execute();
+                Intent intent=new Intent(ctx,WebBroswerPromotionActivity.class);
+
+                intent.putExtra("Title","优惠活动");
+                intent.putExtra("URL",promotionInfoTypes.get(position).getSrc());
+                intent.putExtra("promotionId",promotionInfoTypes.get(position).getId());
+
+                ctx.startActivity(intent);
+
+            }
+        });
+
+        btnCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
         return convertView;
     }
-    class GetCouponTask extends AsyncTask<String,String,String>{
-        int promotionId;
-        KProgressHUD progressHUD;
-        GetCouponTask(int promotionId){
-            this.promotionId=promotionId;
-        }
 
-        @Override
-        protected void onPreExecute() {
-            progressHUD= KProgressHUD.create(ctx)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("领取中...")
-                    .setAnimationSpeed(1)
-                    .setDimAmount(0.3f)
-                    .show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                WSConnector.getInstance().updCoupon(promotionId);
-            } catch (WSException e) {
-                return e.getErrorMsg();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            progressHUD.dismiss();
-            if(s==null){
-                Toast.makeText(ctx,"购物券领取成功",Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 }

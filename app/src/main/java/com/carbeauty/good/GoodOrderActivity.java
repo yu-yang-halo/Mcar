@@ -87,24 +87,28 @@ public class GoodOrderActivity extends FragmentActivity {
             public void onClick(View v) {
 
 
-
-                if(address.equals("")||name.equals("")||phone.equals("")){
-                    Toast.makeText(GoodOrderActivity.this,"请添加我的地址",Toast.LENGTH_SHORT).show();
+                if (address.equals("") || name.equals("") || phone.equals("")) {
+                    Toast.makeText(GoodOrderActivity.this, "请添加我的地址", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(goodLookAdapter.getCommitData().size()==0){
-                    Toast.makeText(GoodOrderActivity.this,"请选择购买的商品",Toast.LENGTH_SHORT).show();
-                }else if(name.trim().equals("")||address.trim().equals("")||phone.trim().equals("")){
-                    Toast.makeText(GoodOrderActivity.this,"地址/姓名/手机号不能为空",Toast.LENGTH_SHORT).show();
-                }else{
-
+                if (goodLookAdapter.getCommitData().size() == 0) {
+                    Toast.makeText(GoodOrderActivity.this, "请选择购买的商品", Toast.LENGTH_SHORT).show();
+                } else if (name.trim().equals("") || address.trim().equals("") || phone.trim().equals("")) {
+                    Toast.makeText(GoodOrderActivity.this, "地址/姓名/手机号不能为空", Toast.LENGTH_SHORT).show();
+                } else {
 
 
                     new CommitOrderTask(goodLookAdapter.getCommitData()).execute();
                 }
 
 
+            }
+        });
+        addressDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toAddress();
             }
         });
 
@@ -205,14 +209,19 @@ public class GoodOrderActivity extends FragmentActivity {
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GoodOrderActivity.this, MyAddressActivity.class);
-                intent.putExtra("Title", "我的地址");
-                startActivity(intent);
+                toAddress();
             }
         });
 
 
 
+
+
         return true;
+    }
+    private void toAddress(){
+        Intent intent = new Intent(GoodOrderActivity.this, MyAddressActivity.class);
+        intent.putExtra("Title", "我的地址");
+        startActivity(intent);
     }
 }

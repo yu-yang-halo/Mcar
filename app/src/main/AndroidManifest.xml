@@ -99,6 +99,15 @@
         <activity android:name=".web.WebBroswerActivity"
             android:screenOrientation="portrait">
 
+
+        </activity>
+        <activity android:name=".order.WashOilDetailActivity"
+                  android:screenOrientation="portrait" >
+
+        </activity>
+        <activity android:name=".web.WebBroswerPromotionActivity"
+            android:screenOrientation="portrait" >
+
         </activity>
         <activity android:name=".CityActivity"
             android:screenOrientation="portrait">
@@ -107,6 +116,10 @@
         <activity android:name=".message.MessageActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".good.GoodActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".good.GoodWebShowActivity"
             android:screenOrientation="portrait">
 
         </activity>
@@ -132,8 +145,7 @@
 
         </activity>
         <activity android:name=".web.PanoramaActivity"
-            android:screenOrientation="landscape"
-            android:configChanges="orientation|keyboardHidden">
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -151,7 +163,7 @@
             android:screenOrientation="portrait"></activity>
 
         <activity android:name=".camera.VideoInfoActivity"
-            android:screenOrientation="portrait"></activity>
+            android:configChanges="orientation|keyboardHidden"></activity>
 
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
         </service>

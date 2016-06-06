@@ -7,6 +7,7 @@ public class OilInfo {
 	private String desc;
 	private float price;
 	private int shopId;
+	private String src;
 
 	private boolean isExpand;
 
@@ -64,13 +65,21 @@ public class OilInfo {
 				+ ", price=" + price + ", shopId=" + shopId + "]";
 	}
 
-	public OilInfo(int id, String name, String desc, float price, int shopId) {
+	public OilInfo(int id, String name, String desc, float price, int shopId,String src) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.desc = desc;
 		this.price = price;
 		this.shopId = shopId;
+		this.src=src;
 	}
 
+	public String getSrc() {
+		return src;
+	}
+
+	public void setSrc(String src) {
+		this.src = src;
+	}
 }

@@ -18,7 +18,7 @@ public class CartManager {
         myCartClassList.clear();
     }
 
-    public boolean addToCart(int id,int count,Bitmap bm,GoodInfo goodInfo){
+    public boolean addToCart(int id,int count,String imageURL,GoodInfo goodInfo){
 
         int pos=-1;
 
@@ -35,7 +35,7 @@ public class CartManager {
                 return false;
             }
         }else{
-            MyCartClass mClass=new MyCartClass(id,count,bm);
+            MyCartClass mClass=new MyCartClass(id,count,imageURL);
             mClass.setGoodInfo(goodInfo);
             myCartClassList.add(mClass);
 
@@ -60,7 +60,7 @@ public class CartManager {
     public class MyCartClass{
         int id;
         int count;
-        Bitmap bitmap;
+        String imageURL;
         GoodInfo goodInfo;
         boolean checkYN;
 
@@ -76,12 +76,12 @@ public class CartManager {
             return count;
         }
 
-        public Bitmap getBitmap() {
-            return bitmap;
+        public String getImageURL() {
+            return imageURL;
         }
 
-        public void setBitmap(Bitmap bitmap) {
-            this.bitmap = bitmap;
+        public void setImageURL(String imageURL) {
+            this.imageURL = imageURL;
         }
 
         public void setCount(int count) {
@@ -96,10 +96,10 @@ public class CartManager {
             this.checkYN = checkYN;
         }
 
-        public MyCartClass(int id, int count, Bitmap bitmap) {
+        public MyCartClass(int id, int count, String imageURL) {
             this.id = id;
             this.count = count;
-            this.bitmap = bitmap;
+            this.imageURL = imageURL;
         }
 
         public GoodInfo getGoodInfo() {

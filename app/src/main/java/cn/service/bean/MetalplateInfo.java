@@ -3,8 +3,8 @@ package cn.service.bean;
 public class MetalplateInfo extends OilInfo {
     private String number;
 	public MetalplateInfo(int id, String name, String desc, float price,
-			int shopId,String number) {
-		super(id, name, desc, price, shopId);
+			int shopId,String number,String src) {
+		super(id, name, desc, price, shopId,src);
 		this.number=number;
 	}
 	public String getNumber() {
