@@ -89,7 +89,7 @@ public class GoodsAdapter extends BaseAdapter {
 
         ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView
-                , R.drawable.icon_default, R.drawable.icon_default);
+                , 0, 0);
 
 
         String src=goodInfos.get(position).getSrc();

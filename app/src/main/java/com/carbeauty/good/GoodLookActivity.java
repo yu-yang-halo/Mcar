@@ -291,7 +291,7 @@ public class GoodLookActivity extends CommonActivity {
         public void UpdateUI(Context context, final int position, String imageURL) {
             ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
             ImageLoader.ImageListener listener=ImageLoader.getImageListener(imageView
-                    , R.drawable.icon_default, R.drawable.icon_default);
+                    , 0,0);
 
             imageLoader.get(imageURL, listener);
 

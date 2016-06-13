@@ -24,6 +24,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.cache.ContentCacheUtils;
 import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
 import com.tutk.IOTC.Camera;
@@ -35,7 +36,9 @@ import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import cn.service.ErrorCode;
 import cn.service.IWSErrorCodeListener;
+import cn.service.MD5Generator;
 import cn.service.WSConnector;
+import cn.service.WSException;
 import im.fir.sdk.FIR;
 import im.fir.sdk.VersionCheckCallback;
 
@@ -53,18 +56,33 @@ public class MyApplication extends Application {
         @Override
         public void handleMessage(Message msg) {
             ErrorCode errorCode= ErrorCode.get(msg.what);
+
             if(errorCode==ErrorCode.PERMISSION_DENY){
 
-                DialogManagerUtils.showMessage(MyActivityManager.getInstance().getCurrentActivity(), "提示", "登录超时，请重新登录", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(MyActivityManager.getInstance().getCurrentActivity(), LoginActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                    }
-                });
+                final String[] usernamePassArr= ContentCacheUtils.getUsernamePass(getApplicationContext());
+                if(usernamePassArr!=null&&usernamePassArr.length==2){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                WSConnector.getInstance().appUserLogin(usernamePassArr[0],
+                                        MD5Generator.reverseMD5Value(usernamePassArr[1]), -1, "android", false);
 
-
+                            } catch (WSException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }else{
+                    DialogManagerUtils.showMessage(MyActivityManager.getInstance().getCurrentActivity(), "提示", "登录超时，请重新登录", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(MyActivityManager.getInstance().getCurrentActivity(), LoginActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                        }
+                    });
+                }
 
 
             }

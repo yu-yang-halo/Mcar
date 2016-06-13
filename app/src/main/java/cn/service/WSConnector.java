@@ -286,7 +286,6 @@ public class WSConnector {
 			try {
 				is.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

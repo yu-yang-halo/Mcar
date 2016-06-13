@@ -25,6 +25,7 @@
         android:background="@drawable/button_loc_bgcolor"
         android:gravity="left|center_vertical"
         android:paddingLeft="3dp"
+        android:layout_marginRight="-15dp"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:layout_alignParentRight="true"

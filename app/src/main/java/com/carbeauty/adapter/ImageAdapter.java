@@ -1,9 +1,12 @@
 package com.carbeauty.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -56,18 +59,55 @@ public class ImageAdapter extends BaseAdapter {
         if(convertView==null){
             convertView=LayoutInflater.from(ctx).inflate(R.layout.view_image,null);
             item_image= (ImageView) convertView.findViewById(R.id.item_image);
+            int screenWidth = getScreenWidth(ctx);
+            ViewGroup.LayoutParams lp = item_image.getLayoutParams();
+            lp.width = screenWidth;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            item_image.setLayoutParams(lp);
+
+            item_image.setMaxWidth(screenWidth);
+            item_image.setMaxHeight(screenWidth * 5);
+
+
             convertView.setTag(item_image);
         }
 
         item_image= (ImageView) convertView.getTag();
 
+
+
+
+
         ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(item_image
-                , R.drawable.icon_default, R.drawable.icon_default);
+                , 0, 0);
 
 
         imageLoader.get(paths.get(position), listener);
 
         return convertView;
+    }
+    //获取屏幕的宽度
+    public static int getScreenWidth(Context context) {
+        WindowManager manager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+
+        Point p=new Point();
+
+        display.getSize(p);
+
+        return p.x;
+    }
+    //获取屏幕的高度
+    public static int getScreenHeight(Context context) {
+        WindowManager manager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+
+        Point p=new Point();
+
+        display.getSize(p);
+        return p.y;
     }
 }

@@ -37,7 +37,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/imageView10"
-            android:src="@drawable/icon_default"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_below="@+id/checkBox2" />

@@ -97,7 +97,7 @@ public class GoodLookAdapter extends BaseAdapter {
 
         ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(showImageView
-                , R.drawable.icon_default, R.drawable.icon_default);
+                , 0, 0);
 
 
 
