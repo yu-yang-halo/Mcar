@@ -281,7 +281,7 @@ public class ImageUtils {
         String base64ImageString=Base64.encodeToString(bitmap2Bytes(bm), Base64.DEFAULT);
 
         System.out.println("bm image base64 length=" + base64ImageString.length());
-        return  Base64.encodeToString(bitmap2Bytes(bm),Base64.DEFAULT);
+        return  base64ImageString;
     }
 
     public static String bitmaptoString(String path) {

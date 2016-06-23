@@ -268,7 +268,8 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                 userInfo=WSConnector.getInstance().getUserInfoById();
                 if(shopID>0&&userInfo.getShopId()!=shopID){
                     userInfo.setShopId(shopID);
-                    WSConnector.getInstance().updUser(RegType.REGULAR_USER_TYPE.getVal(), userInfo);
+                    userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
+                    WSConnector.getInstance().updUser(userInfo);
                     String loginName=WSConnector.getInstance().getUserMap().get("loginName");
                     String password=WSConnector.getInstance().getUserMap().get("password");
                     WSConnector.getInstance().appUserLogin(loginName,password, -1, "android", false);

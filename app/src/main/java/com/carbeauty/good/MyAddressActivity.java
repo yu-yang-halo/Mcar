@@ -6,8 +6,13 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.carbeauty.R;
+import com.carbeauty.UserAddressManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.order.HeaderActivity;
+
+import cn.service.WSConnector;
+import cn.service.WSException;
+import cn.service.bean.UserInfo;
 
 /**
  * Created by Administrator on 2016/5/6.
@@ -26,10 +31,7 @@ public class MyAddressActivity extends HeaderActivity {
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentBox.loadString(MyAddressActivity.this,"GOA_NAME",nametxt.getText().toString());
-                ContentBox.loadString(MyAddressActivity.this,"GOA_PHONE",phoneTxt.getText().toString());
-                ContentBox.loadString(MyAddressActivity.this,"GOA_ADDRESS",addressTxt.getText().toString());
-                finish();
+               onBackPressed();
             }
         });
 
@@ -38,15 +40,31 @@ public class MyAddressActivity extends HeaderActivity {
         addressTxt= (EditText) findViewById(R.id.addressTxt);
 
 
-        nametxt.setText(ContentBox.getValueString(this, "GOA_NAME", ""));
-        phoneTxt.setText(ContentBox.getValueString(this, "GOA_PHONE", ""));
-        addressTxt.setText(ContentBox.getValueString(this, "GOA_ADDRESS", ""));
+        nametxt.setText(ContentBox.getValueString(this, UserAddressManager.KEY_NAME, ""));
+        phoneTxt.setText(ContentBox.getValueString(this, UserAddressManager.KEY_PHONE, ""));
+        addressTxt.setText(ContentBox.getValueString(this, UserAddressManager.KEY_ADDRESS, ""));
 
 
     }
 
     @Override
     public void onBackPressed() {
-       finish();
+        final String receivingInfo=UserAddressManager.cacheAddressToLocal(MyAddressActivity.this,addressTxt.getText().toString()
+                ,nametxt.getText().toString(),phoneTxt.getText().toString());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    UserInfo userInfo=WSConnector.getInstance().getUserInfoById();
+                    userInfo.setReceivingInfo(receivingInfo);
+                    WSConnector.getInstance().updUser(userInfo);
+                } catch (WSException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        finish();
     }
 }

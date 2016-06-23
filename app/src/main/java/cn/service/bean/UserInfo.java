@@ -7,9 +7,14 @@ public class UserInfo {
 	private String realName;
 	private String password;
 
+
+	private String head;
+	private String receivingInfo;
+
+
 	public UserInfo(int userId, String loginName, String realName,
 			String password, String email, String phone, String wechatId,
-			String regTime, int type, int shopId) {
+			String regTime, int type, int shopId,String receivingInfo) {
 		super();
 		this.userId = userId;
 		this.loginName = loginName;
@@ -21,6 +26,7 @@ public class UserInfo {
 		this.regTime = regTime;
 		this.type = type;
 		this.shopId = shopId;
+		this.receivingInfo=receivingInfo;
 	}
 
 	private String email;
@@ -111,11 +117,35 @@ public class UserInfo {
 
 	@Override
 	public String toString() {
-		return "UserInfo [userId=" + userId + ", loginName=" + loginName
-				+ ", realName=" + realName + ", password=" + password
-				+ ", email=" + email + ", phone=" + phone + ", wechatId="
-				+ wechatId + ", regTime=" + regTime + ", type=" + type
-				+ ", shopId=" + shopId + "]";
+		return "UserInfo{" +
+				"userId=" + userId +
+				", loginName='" + loginName + '\'' +
+				", realName='" + realName + '\'' +
+				", password='" + password + '\'' +
+				", head='" + head + '\'' +
+				", receivingInfo='" + receivingInfo + '\'' +
+				", email='" + email + '\'' +
+				", phone='" + phone + '\'' +
+				", wechatId='" + wechatId + '\'' +
+				", regTime='" + regTime + '\'' +
+				", type=" + type +
+				", shopId=" + shopId +
+				'}';
 	}
 
+	public String getHead() {
+		return head;
+	}
+
+	public void setHead(String head) {
+		this.head = head;
+	}
+
+	public String getReceivingInfo() {
+		return receivingInfo;
+	}
+
+	public void setReceivingInfo(String receivingInfo) {
+		this.receivingInfo = receivingInfo;
+	}
 }

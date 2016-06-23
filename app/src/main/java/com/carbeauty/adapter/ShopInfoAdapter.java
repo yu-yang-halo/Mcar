@@ -172,7 +172,8 @@ public class ShopInfoAdapter extends BaseAdapter {
                 UserInfo userInfo=WSConnector.getInstance().getUserInfoById();
                 if(shopId!=userInfo.getShopId()){
                     userInfo.setShopId(shopId);
-                    WSConnector.getInstance().updUser(RegType.REGULAR_USER_TYPE.getVal(), userInfo);
+                    userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
+                    WSConnector.getInstance().updUser(userInfo);
                     String loginName=WSConnector.getInstance().getUserMap().get("loginName");
                     String password=WSConnector.getInstance().getUserMap().get("password");
                     WSConnector.getInstance().appUserLogin(loginName,password, -1, "android", false);

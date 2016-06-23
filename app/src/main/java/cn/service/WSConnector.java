@@ -436,12 +436,12 @@ public class WSConnector {
      *  更新用户信息
      */
 	
-	public boolean updUser(int type,UserInfo userInfo) throws WSException{
+	public boolean updUser(UserInfo userInfo) throws WSException {
 		String service = "";
 		service = WSConnector.wsUrl + "updUser?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken") + "&userId="
-				+ this.userMap.get("userId")+"&type="+type;
+				+ this.userMap.get("userId")+"&type="+userInfo.getType();
 		if(userInfo!=null){
 			if(userInfo.getLoginName()!=null){
 				service+="&loginName="+userInfo.getLoginName();
@@ -463,6 +463,13 @@ public class WSConnector {
 			}
 			if(userInfo.getShopId()>0){
 				service+="&shopId="+userInfo.getShopId();
+			}
+			if(userInfo.getReceivingInfo()!=null){
+				try {
+					service+="&receivingInfo="+URLEncoder.encode(userInfo.getReceivingInfo(), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					service+="&receivingInfo="+userInfo.getReceivingInfo();
+				}
 			}
 		}
 	
@@ -523,13 +530,18 @@ public class WSConnector {
 				Element typeNode = root.getElementsByTagName("type") != null ? (Element) root
 						.getElementsByTagName("type").item(0) : null;	
 				Element shopIdNode = root.getElementsByTagName("shopId") != null ? (Element) root
-						.getElementsByTagName("shopId").item(0) : null;	
+						.getElementsByTagName("shopId").item(0) : null;
+
+				Element receivingInfoNode = root.getElementsByTagName("receivingInfo") != null ? (Element) root
+						.getElementsByTagName("receivingInfo").item(0) : null;
+
 				String loginName=null;
 				String realName=null;
 				String email=null;
 				String phone=null;
 				String wechatId=null;
 				String regTime=null;
+				String receivingInfo = null;
 				int type=-1;
 				int shopId=-1;
 				
@@ -556,9 +568,19 @@ public class WSConnector {
 				}	
 				if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
 					  shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
-				}	
+				}
+				if (receivingInfoNode != null && receivingInfoNode.getFirstChild() != null) {
+					receivingInfo = receivingInfoNode.getFirstChild().getNodeValue();
+
+					try {
+						receivingInfo=URLDecoder.decode(receivingInfo,"UTF-8");
+					} catch (UnsupportedEncodingException e) {
+
+					}
+				}
+
 				
-				UserInfo userInfo=new UserInfo(-1,loginName, realName, null, email, phone, wechatId, regTime, type, shopId);
+				UserInfo userInfo=new UserInfo(-1,loginName, realName, null, email, phone, wechatId, regTime, type, shopId,receivingInfo);
 				
 				return userInfo;
 

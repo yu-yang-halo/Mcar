@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
+import com.carbeauty.UserAddressManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.good.GoodListShowActivity;
@@ -177,6 +178,7 @@ public class IndividualFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
             if(userInfo!=null){
                 accountName.setText(userInfo.getLoginName());
+                UserAddressManager.cacheUserInfoToLocal(getActivity(),userInfo);
             }
 
             if(carInfos!=null&&carInfos.size()>0){
@@ -195,6 +197,8 @@ public class IndividualFragment extends Fragment {
                 ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
                 numberTxt.setText("请添加车牌");
             }
+
+
 
         }
     }

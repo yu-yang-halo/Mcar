@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.carbeauty.Constants;
 import com.carbeauty.R;
+import com.carbeauty.UserAddressManager;
 import com.carbeauty.adapter.GoodLookAdapter;
 import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
@@ -118,9 +119,9 @@ public class GoodOrderActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        address=ContentBox.getValueString(GoodOrderActivity.this, "GOA_ADDRESS", "");
-        name=ContentBox.getValueString(GoodOrderActivity.this, "GOA_NAME", "");
-        phone=ContentBox.getValueString(GoodOrderActivity.this, "GOA_PHONE", "");
+        address=ContentBox.getValueString(GoodOrderActivity.this, UserAddressManager.KEY_ADDRESS, "");
+        name=ContentBox.getValueString(GoodOrderActivity.this,  UserAddressManager.KEY_NAME, "");
+        phone=ContentBox.getValueString(GoodOrderActivity.this,  UserAddressManager.KEY_PHONE, "");
         if(!address.equals("")&&!name.equals("")&&!phone.equals("")){
             addressDescription.setText("地址:"+address+"\n收货人姓名:"+name+" 联系电话:"+phone);
         }

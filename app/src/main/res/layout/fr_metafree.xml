@@ -19,7 +19,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="理陪专员电话 ： "
+                    android:text="理陪专员电话 ：15395179056  曹经理 "
+                    android:autoLink="phone"
                     android:gravity="center_vertical"
                     android:id="@+id/textView16" />
             </LinearLayout>
