@@ -1,8 +1,12 @@
 package com.carbeauty;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.regex.Matcher;
@@ -37,5 +41,29 @@ public class CommonUtils {
         int height=bounds.height();
         Log.v("width height","w:"+width+" h:"+height);
         return new int[]{width,height};
+    }
+
+    //获取屏幕的宽度
+    public static int getScreenWidth(Context context) {
+        WindowManager manager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+
+        Point p=new Point();
+
+        display.getSize(p);
+
+        return p.x;
+    }
+    //获取屏幕的高度
+    public static int getScreenHeight(Context context) {
+        WindowManager manager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+
+        Point p=new Point();
+
+        display.getSize(p);
+        return p.y;
     }
 }

@@ -286,6 +286,8 @@ public class GoodLookActivity extends CommonActivity {
             imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setAdjustViewBounds(true);
+//            imageView.setMaxWidth(CommonUtils.getScreenWidth(context));
+//            imageView.setMaxHeight(CommonUtils.getScreenWidth(context) * 5);
             return imageView;
         }
         @Override
