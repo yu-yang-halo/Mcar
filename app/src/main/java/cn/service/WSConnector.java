@@ -1157,12 +1157,17 @@ public class WSConnector {
 	public boolean createGoodsOrder(String goodsInfo,int shopId,float price,
 									String address,String name,String phone) throws WSException {
 		String service = "";
-		service = WSConnector.wsUrl + "createGoodsOrder?senderId="
-				+ this.userMap.get("userId") + "&secToken="
-				+ this.userMap.get("secToken")
-				+"&userId="+this.userMap.get("userId")+"&goodsInfo="+goodsInfo
-				+"&shopId="+shopId+"&price="+price+"&address="+address
-				+"&name="+name+"&phone="+phone;
+		try {
+			service = WSConnector.wsUrl + "createGoodsOrder?senderId="
+                    + this.userMap.get("userId") + "&secToken="
+                    + this.userMap.get("secToken")
+                    +"&userId="+this.userMap.get("userId")+"&goodsInfo="+goodsInfo
+                    +"&shopId="+shopId+"&price="+price+"&address="+URLEncoder.encode(address, "UTF-8")
+                    +"&name="+URLEncoder.encode(name, "UTF-8")+"&phone="+phone;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 		Logger.getLogger(this.getClass()).info(
 				"[createGoodsOrder]  ws query = " + service);
 		Element root = getXMLNode(service);

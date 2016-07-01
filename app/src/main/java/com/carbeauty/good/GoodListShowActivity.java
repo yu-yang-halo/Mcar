@@ -36,6 +36,8 @@ public class GoodListShowActivity extends HeaderActivity {
 
         swipeRefreshLayout=(PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         goodlistView= (ListView) findViewById(R.id.goodlistView);
+
+        goodlistView.setDivider(getResources().getDrawable(R.drawable.dividecolor));
         goodlistView.setDividerHeight(20);
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override

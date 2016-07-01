@@ -25,6 +25,7 @@ import com.carbeauty.R;
 import com.carbeauty.ViewFindUtils;
 import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.manager.CarManagerActivity;
 import com.carbeauty.order.HeaderActivity;
 import com.flyco.tablayout.SlidingTabLayout;
 
@@ -68,7 +69,10 @@ public class GoodActivity extends FragmentActivity {
         cartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CartManager.getInstance().getMyCartClassList().size()<=0){
+                List<CartManager.MyCartClass> myCartClasses=CartManager.getInstance().getMyCartClassList(GoodActivity.this);
+
+                if(myCartClasses==null
+                        ||myCartClasses.size()<=0){
                     Toast.makeText(GoodActivity.this,"您的购物车还没有任何商品哦",Toast.LENGTH_SHORT).show();
                 }else{
                     Intent intent=new Intent(GoodActivity.this,GoodOrderActivity.class);
@@ -86,7 +90,7 @@ public class GoodActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        CartManager.getInstance().clearCartList();
+        //CartManager.getInstance().clearCartList();
     }
 
     private void initSlidTab( List<GoodInfo> goodInfos){

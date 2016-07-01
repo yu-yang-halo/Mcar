@@ -14,14 +14,18 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.UserAddressManager;
+import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.good.GoodListShowActivity;
+import com.carbeauty.good.GoodOrderActivity;
+import com.carbeauty.good.MyAddressActivity;
 import com.carbeauty.manager.CarManagerActivity;
 import com.carbeauty.order.CouponActivity;
 import com.carbeauty.order.MyOrderActivity;
@@ -110,9 +114,10 @@ public class IndividualFragment extends Fragment {
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         String[] individuals = new String[]{getString(R.string.individual0),getString(R.string.individual1),
-                getString(R.string.individual2)};
+                getString(R.string.individual2),getString(R.string.individual4),"我的购物车"};
         int[] individualIcons=new int[]{R.drawable.my_icon_input,R.drawable.my_icon_set
-                ,R.drawable.my_icon_zixun};
+                ,R.drawable.my_icon_zixun,R.drawable.my_icon_message,
+                 R.mipmap.icon_cart_item};
 
         for(int i=0;i<individualIcons.length;i++){
             Map<String, Object> map = new HashMap<String, Object>();
@@ -139,6 +144,22 @@ public class IndividualFragment extends Fragment {
                 }else if (position==2){
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
                     intent.putExtra("Title","我的预约");
+                }else if (position==3){
+                    intent=new Intent(getActivity(), MyAddressActivity.class);
+                    intent.putExtra("Title","收货地址");
+                }else if(position==4){
+                    List<CartManager.MyCartClass> myCartClasses=CartManager.getInstance().getMyCartClassList(getActivity());
+
+                    if(myCartClasses==null
+                            ||myCartClasses.size()<=0){
+                        Toast.makeText(getActivity(),"您的购物车还没有任何商品哦",Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        intent = new Intent(getActivity(), GoodOrderActivity.class);
+                        intent.putExtra("Title", "我的购物车");
+                    }
+
+
                 }
                 startActivity(intent);
             }

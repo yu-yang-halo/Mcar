@@ -24,4 +24,5 @@
     <string name="individual1">我的商品订单</string>
     <string name="individual2">我的预约</string>
     <string name="individual3">优惠券</string>
+    <string name="individual4">收货地址</string>
 </resources>

@@ -59,7 +59,19 @@ public class GoodInfo {
 	private int isChange;
 	private boolean isTop;
 	private float price;
+
+	public int getBuyNumber() {
+		return buyNumber;
+	}
+
+	public void setBuyNumber(int buyNumber) {
+		this.buyNumber = buyNumber;
+	}
+
 	private String src;
+
+	private int buyNumber;
+
 
 	public boolean isTop() {
 		return isTop;

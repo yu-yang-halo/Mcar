@@ -120,6 +120,7 @@ public class GoodLookAdapter extends BaseAdapter {
                    public void onClick(DialogInterface dialog, int which) {
 
                        myCartClassList.remove(position);
+                       CartManager.getInstance().cacheMyCartClassToDisk(ctx);
                        notifyDataSetChanged();
 
                    }
@@ -139,6 +140,9 @@ public class GoodLookAdapter extends BaseAdapter {
     }
 
     public void selectAll(boolean isAll){
+        if (myCartClassList==null){
+            return;
+        }
         for (int i=0;i<myCartClassList.size();i++){
             myCartClassList.get(i).setCheckYN(isAll);
         }
@@ -147,6 +151,9 @@ public class GoodLookAdapter extends BaseAdapter {
     }
 
     public float getLastestNewPrice(){
+        if (myCartClassList==null){
+            return 0;
+        }
         float totalPrice=0;
         for (int i=0;i<myCartClassList.size();i++){
             if(myCartClassList.get(i).isCheckYN()){
@@ -161,6 +168,9 @@ public class GoodLookAdapter extends BaseAdapter {
     }
 
     public List<CommitDataBean> getCommitData(){
+        if (myCartClassList==null){
+            return null;
+        }
         CommitDataBean commitDataBean0=new CommitDataBean();
         CommitDataBean commitDataBean1=new CommitDataBean();
 

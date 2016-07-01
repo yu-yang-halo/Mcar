@@ -244,7 +244,7 @@ public class GoodLookActivity extends CommonActivity {
 
         if (CommonUtils.isNumeric(count)) {
             boolean isAddSuccess = CartManager.getInstance().addToCart(id, Integer.parseInt(count),localImages.get(0), goodInfo);
-
+            CartManager.getInstance().cacheMyCartClassToDisk(this);
             if (isAddSuccess) {
                 ViewAnimator.animate(cartButton).bounce().duration(1500).start();
             }
@@ -255,7 +255,9 @@ public class GoodLookActivity extends CommonActivity {
 
     }
     protected void toCart(){
-        if (CartManager.getInstance().getMyCartClassList().size() <= 0) {
+        List<CartManager.MyCartClass> myCartClasses=CartManager.getInstance().getMyCartClassList(GoodLookActivity.this);
+
+        if (myCartClasses==null||myCartClasses.size() <= 0) {
             Toast.makeText(GoodLookActivity.this, "您的购物车还没有任何商品哦", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(GoodLookActivity.this, GoodOrderActivity.class);

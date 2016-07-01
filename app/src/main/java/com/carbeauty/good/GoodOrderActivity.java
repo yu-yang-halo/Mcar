@@ -24,6 +24,7 @@ import com.carbeauty.order.HeaderActivity;
 import com.carbeauty.order.OrderResultActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.Iterator;
 import java.util.List;
 
 import cn.service.WSConnector;
@@ -48,6 +49,7 @@ public class GoodOrderActivity extends FragmentActivity {
     String phone;
 
     TextView addressDescription;
+    List<CartManager.MyCartClass> myCartClassList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class GoodOrderActivity extends FragmentActivity {
 
         addressDescription= (TextView) findViewById(R.id.textView4);
 
-        List<CartManager.MyCartClass> myCartClassList=CartManager.getInstance().getMyCartClassList();
+        myCartClassList=CartManager.getInstance().getMyCartClassList(this);
 
         goodLookAdapter=new GoodLookAdapter(this,myCartClassList);
 
@@ -93,13 +95,11 @@ public class GoodOrderActivity extends FragmentActivity {
                     return;
                 }
 
-                if (goodLookAdapter.getCommitData().size() == 0) {
+                if (goodLookAdapter.getCommitData()==null||goodLookAdapter.getCommitData().size() == 0) {
                     Toast.makeText(GoodOrderActivity.this, "请选择购买的商品", Toast.LENGTH_SHORT).show();
                 } else if (name.trim().equals("") || address.trim().equals("") || phone.trim().equals("")) {
                     Toast.makeText(GoodOrderActivity.this, "地址/姓名/手机号不能为空", Toast.LENGTH_SHORT).show();
                 } else {
-
-
                     new CommitOrderTask(goodLookAdapter.getCommitData()).execute();
                 }
 
@@ -168,6 +168,16 @@ public class GoodOrderActivity extends FragmentActivity {
             progressHUD.dismiss();
             if(s==null){
                 orderIsOk=true;
+
+                Iterator<CartManager.MyCartClass> iterator=myCartClassList.iterator();
+                while (iterator.hasNext()){
+                    CartManager.MyCartClass myCartClass=iterator.next();
+                    if(myCartClass.isCheckYN()){
+                        iterator.remove();
+                    }
+                }
+
+                CartManager.getInstance().cacheMyCartClassToDisk(GoodOrderActivity.this);
             }else{
                 Toast.makeText(GoodOrderActivity.this,s,Toast.LENGTH_SHORT).show();
             }

@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.service.bean.GoodInfo;
@@ -53,49 +55,74 @@ public class GoodListShowAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ListView orderItemListView=null;
+
         if(convertView==null){
             convertView= LayoutInflater.from(ctx).inflate(R.layout.item_good_order,null);
+            orderItemListView= (ListView) convertView.findViewById(R.id.orderItem);
+            convertView.setTag(orderItemListView);
         }
-        TextView titleNameTxt= (TextView) convertView.findViewById(R.id.titleNameTxt);
-        TextView descTxt= (TextView) convertView.findViewById(R.id.descTxt);
-        TextView statusTxt= (TextView) convertView.findViewById(R.id.statusTxt);
-        TextView priceTxt= (TextView) convertView.findViewById(R.id.priceTxt);
-        TextView createTimeTxt= (TextView) convertView.findViewById(R.id.createTimeTxt);
-        ImageView descImageView= (ImageView) convertView.findViewById(R.id.descImageView);
-        Button delBtn= (Button) convertView.findViewById(R.id.delBtn);
+        orderItemListView= (ListView) convertView.getTag();
+        orderItemListView.setDividerHeight(1);
 
-        titleNameTxt.setText("");
-        statusTxt.setText("已完成");
-        descTxt.setText(getContent(goodsOrderListTypes.get(position).getGoodsInfo()));
-        priceTxt.setText("总价:￥"+goodsOrderListTypes.get(position).getPrice());
-        createTimeTxt.setText("创建时间:" + TimeUtils.getShowTime(goodsOrderListTypes.get(position).getCreateTime()));
+        String ginfos=goodsOrderListTypes.get(position).getGoodsInfo();
+
+        List<GoodInfo> goodInfos=getGoodInfosEachItem(ginfos);
+
+        GoodListDetailShowAdapter goodListDetailShowAdapter=new GoodListDetailShowAdapter(goodInfos,ctx);
+
+        orderItemListView.setAdapter(goodListDetailShowAdapter);
+
+
+
+        int totalHeight = 0;
+        int row=goodListDetailShowAdapter.getCount();
+
+
+        View viewItem = goodListDetailShowAdapter.getView(0, null, orderItemListView);//这个很重要，那个展开的item的measureHeight比其他的大
+        viewItem.measure(0, 0);
+        totalHeight = viewItem.getMeasuredHeight()*row;
+
+        ViewGroup.LayoutParams params = orderItemListView.getLayoutParams();
+        params.height = totalHeight;
+        orderItemListView.setLayoutParams(params);
+
+
+
 
         return convertView;
     }
 
-    private String getContent(String ginfos){
-        String content="";
+
+    private List<GoodInfo> getGoodInfosEachItem(String ginfos){
+        List<GoodInfo> goodInfos=new ArrayList<GoodInfo>();
         String[]  items=ginfos.split(",");
         for (int i=0;i<items.length;i++){
             String[] idCounts=items[i].split("\\+");
 
-            String name=findName(Integer.parseInt(idCounts[0]));
+            if(idCounts!=null&&idCounts.length==2){
+                GoodInfo goodInfo=findGoodInfo(Integer.parseInt(idCounts[0]));
+                if(goodInfo!=null){
+                    goodInfo.setBuyNumber(Integer.parseInt(idCounts[1]));
+                    goodInfos.add(goodInfo);
+                }
 
-            content+=name+"             x"+idCounts[1]+"\n";
+            }
+
 
 
         }
-        return content;
+        return goodInfos;
 
     }
-    private String findName(int id){
-        String name="";
+    private GoodInfo findGoodInfo(int id){
+        GoodInfo m_goodInfo=null;
         for (GoodInfo goodInfo:goodInfos){
             if(goodInfo.getId()==id){
-                name=goodInfo.getName();
+                m_goodInfo=goodInfo;
                 break;
             }
         }
-        return name;
+        return m_goodInfo;
     }
 }

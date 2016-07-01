@@ -1,6 +1,10 @@
 package com.carbeauty.cache;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +15,33 @@ import cn.service.bean.GoodInfo;
  * Created by Administrator on 2016/3/29.
  */
 public class CartManager {
+    private static  final  String KEY_CART_INFOS_JSON="key_json_cart_info";
     private List<MyCartClass> myCartClassList=new ArrayList<MyCartClass>();
 
-
-    public void clearCartList(){
-        myCartClassList.clear();
+    public void cacheMyCartClassToDisk(Context ctx){
+        Gson gson=new Gson();
+        String myCartClassJSON=gson.toJson(myCartClassList);
+        ContentBox.loadString(ctx,KEY_CART_INFOS_JSON,myCartClassJSON);
     }
+
+    public List<MyCartClass> getMyCartClassFromDisk(Context ctx){
+        String myCartClassJSON=ContentBox.getValueString(ctx,KEY_CART_INFOS_JSON,"");
+        if(myCartClassJSON!=""){
+            Gson gson=new Gson();
+            List<MyCartClass> myCartClasses=gson.fromJson(myCartClassJSON, new TypeToken<List<MyCartClass>>(){}.getType());
+            if(myCartClasses!=null){
+               this.myCartClassList=myCartClasses;
+            }
+
+            return  this.myCartClassList;
+        }
+        return null;
+    }
+
+
+//    public void clearCartList(){
+//        myCartClassList.clear();
+//    }
 
     public boolean addToCart(int id,int count,String imageURL,GoodInfo goodInfo){
 
@@ -40,13 +65,13 @@ public class CartManager {
             myCartClassList.add(mClass);
 
         }
-
         return true;
 
     }
 
-    public List<MyCartClass> getMyCartClassList() {
-        return myCartClassList;
+    public List<MyCartClass> getMyCartClassList(Context ctx) {
+
+        return getMyCartClassFromDisk(ctx);
     }
 
     private static CartManager instance=new CartManager();
