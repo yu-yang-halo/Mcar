@@ -23,10 +23,12 @@ import com.carbeauty.UserAddressManager;
 import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
+import com.carbeauty.cache.MessageManager;
 import com.carbeauty.good.GoodListShowActivity;
 import com.carbeauty.good.GoodOrderActivity;
 import com.carbeauty.good.MyAddressActivity;
 import com.carbeauty.manager.CarManagerActivity;
+import com.carbeauty.message.NewMsgActivity;
 import com.carbeauty.order.CouponActivity;
 import com.carbeauty.order.MyOrderActivity;
 import com.carbeauty.userlogic.LoginActivity;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -114,10 +117,10 @@ public class IndividualFragment extends Fragment {
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         String[] individuals = new String[]{getString(R.string.individual0),getString(R.string.individual1),
-                getString(R.string.individual2),getString(R.string.individual4),"我的购物车"};
+                getString(R.string.individual2),getString(R.string.individual4),"我的购物车","消息"};
         int[] individualIcons=new int[]{R.drawable.my_icon_input,R.drawable.my_icon_set
-                ,R.drawable.my_icon_zixun,R.drawable.my_icon_message,
-                 R.mipmap.icon_cart_item};
+                ,R.drawable.my_icon_zixun,R.drawable.my_icon_address,
+                 R.mipmap.icon_cart_item,R.drawable.my_icon_message};
 
         for(int i=0;i<individualIcons.length;i++){
             Map<String, Object> map = new HashMap<String, Object>();
@@ -160,6 +163,15 @@ public class IndividualFragment extends Fragment {
                     }
 
 
+                }else if(position==5){
+                    Stack<MessageManager.JPMessage> stack=MessageManager.getInstance().getMessageStack(getActivity());
+
+                    if(stack==null||stack.size()<=0){
+                        Toast.makeText(getActivity(),"暂时还没有最新消息",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    intent = new Intent(getActivity(), NewMsgActivity.class);
                 }
                 startActivity(intent);
             }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.carbeauty.MainActivity;
 import com.carbeauty.MyActivityManager;
 import com.carbeauty.alertDialog.DialogManagerUtils;
+import com.carbeauty.cache.MessageManager;
 import com.carbeauty.message.MessageActivity;
 import com.carbeauty.userlogic.LoginActivity;
 
@@ -34,7 +35,12 @@ public class MyReceiver extends BroadcastReceiver {
 	public void onReceive(final Context context, final Intent intent) {
         Bundle bundle = intent.getExtras();
 		Log.d(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
-		
+
+		String alertMessage=intent.getStringExtra(JPushInterface.EXTRA_ALERT);
+
+		MessageManager.getInstance().addJPMessage(context,new MessageManager.JPMessage(alertMessage));
+
+
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
             Log.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
@@ -78,9 +84,6 @@ public class MyReceiver extends BroadcastReceiver {
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				context.startActivity(i);
 			}
-
-
-
 			//DialogManagerUtils.showMyToast(context, intent.getStringExtra(JPushInterface.EXTRA_ALERT));
 
         } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
