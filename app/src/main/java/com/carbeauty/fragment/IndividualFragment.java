@@ -134,6 +134,20 @@ public class IndividualFragment extends Fragment {
                 data_list, R.layout.item01, from, to);
         individualListView.setAdapter(sim_adapter);
         individualListView.setDividerHeight(2);
+
+
+        int totalHeight = 0;
+        int row=sim_adapter.getCount();
+
+        View viewItem = sim_adapter.getView(0, null, individualListView);//这个很重要，那个展开的item的measureHeight比其他的大
+        viewItem.measure(0, 0);
+        totalHeight = viewItem.getMeasuredHeight()*row+(row-1)*individualListView.getDividerHeight();
+        ViewGroup.LayoutParams params = individualListView.getLayoutParams();
+        params.height = totalHeight;
+        individualListView.setLayoutParams(params);
+
+
+
         individualListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

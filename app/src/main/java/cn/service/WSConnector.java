@@ -7,6 +7,7 @@
 package cn.service;
 
 import com.carbeauty.TimeUtils;
+import com.pay.AlipayInfo;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -40,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.w3c.dom.DOMException;
@@ -48,6 +50,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import cn.service.bean.AlipayInfoType;
 import cn.service.bean.AssessInfoType;
 import cn.service.bean.BannerInfoType;
 import cn.service.bean.CameraListType;
@@ -85,7 +88,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	//private static String IP1 = "liuzhi1212.gicp.net";
+	//private static String IP1 = "112.124.106.131";
 	private static String IP1 = "112.124.106.131";
 	private static String portStr = "9000";
 	private static final String REQUEST_HEAD = "http://";
@@ -95,6 +98,10 @@ public class WSConnector {
 	private WSConnector() {
 		this.userMap = new LinkedHashMap<String, String>();
 		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr + "/car/services/carwsapi/";
+	}
+
+	public String getWsUrl(){
+		return wsUrl;
 	}
 
 	/*
@@ -735,6 +742,89 @@ public class WSConnector {
 		return null;
 		
 	}
+	public AlipayInfoType getAlipayByShopId(int shopId) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getAlipayByShopId?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&shopId="+shopId;
+		Logger.getLogger(this.getClass()).info(
+				"[getAlipayByShopId]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				NodeList nodeList = root.getElementsByTagName("alipayInfo");
+				Element element = (Element) (nodeList.item(0));
+				Element aliPidNode=element.getElementsByTagName("aliPid")!=null?(Element) root
+						.getElementsByTagName("aliPid").item(0) : null;
+				Element idNode=element.getElementsByTagName("id")!=null?(Element) root
+						.getElementsByTagName("id").item(0) : null;
+				Element aliKeyNode=element.getElementsByTagName("aliKey")!=null?(Element) root
+						.getElementsByTagName("aliKey").item(0) : null;
+				Element sellerEmailNode=element.getElementsByTagName("sellerEmail")!=null?(Element) root
+						.getElementsByTagName("sellerEmail").item(0) : null;
+				if(aliPidNode==null||aliKeyNode==null||sellerEmailNode==null||idNode==null){
+					return null;
+				}
+				String alipid=aliPidNode.getFirstChild().getNodeValue();
+				String aliKey=aliKeyNode.getFirstChild().getNodeValue();
+				String sellerEmail=sellerEmailNode.getFirstChild().getNodeValue();
+				int id=Integer.parseInt(idNode.getFirstChild().getNodeValue());
+				AlipayInfoType alipayInfoType=new AlipayInfoType(id,alipid,aliKey,sellerEmail);
+
+
+				return alipayInfoType;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+	}
+	public String signContent(int shopId,String content) throws WSException {
+		String service = "";
+		try {
+			service = WSConnector.wsUrl + "signContent?senderId="
+                    + this.userMap.get("userId") + "&secToken="
+                    + this.userMap.get("secToken")+"&shopId="+shopId+"&content="+URLEncoder.encode(content,"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		Logger.getLogger(this.getClass()).info(
+				"[signContent]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				 Element signNode=root.getElementsByTagName("sign") != null ? (Element) root
+						.getElementsByTagName("sign").item(0) : null;
+
+
+				if(signNode!=null){
+					return  signNode.getFirstChild().getNodeValue();
+				}
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+	}
+
 	private  DecorationInfo  parseXmlToDecorationInfo(Element element){
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
@@ -1154,16 +1244,25 @@ public class WSConnector {
 	}
 
 
-	public boolean createGoodsOrder(String goodsInfo,int shopId,float price,
-									String address,String name,String phone) throws WSException {
+	public Map<String,Object> createGoodsOrder(String goodsInfo,int shopId,float price,
+									String address,String name,String phone,String desContent,int realShopId) throws WSException {
+		Map<String,Object> returnObject=new HashMap<String,Object>();
 		String service = "";
+
 		try {
 			service = WSConnector.wsUrl + "createGoodsOrder?senderId="
                     + this.userMap.get("userId") + "&secToken="
                     + this.userMap.get("secToken")
                     +"&userId="+this.userMap.get("userId")+"&goodsInfo="+goodsInfo
                     +"&shopId="+shopId+"&price="+price+"&address="+URLEncoder.encode(address, "UTF-8")
-                    +"&name="+URLEncoder.encode(name, "UTF-8")+"&phone="+phone;
+                    +"&name="+URLEncoder.encode(name, "UTF-8")+"&phone="+phone+"&realShopId="+realShopId;
+
+			if(desContent!=null){
+				service+="&desContent="+desContent;
+			}
+
+
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -1176,17 +1275,35 @@ public class WSConnector {
 		}
 		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
 				.getElementsByTagName("errorCode").item(0) : null;
+		Element signNode = root.getElementsByTagName("sign") != null ? (Element) root
+				.getElementsByTagName("sign").item(0) : null;
+
+		Element idNode = root.getElementsByTagName("id") != null ? (Element) root
+				.getElementsByTagName("id").item(0) : null;
+
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
-		          return true;
+				if(idNode!=null){
+					String id=idNode.getFirstChild().getNodeValue();
+					returnObject.put("id",Integer.parseInt(id));
+					if(signNode!=null){
+						String out_trade_no=signNode.getFirstChild().getNodeValue();
+
+						returnObject.put("out_trade_no",out_trade_no);
+					}
+
+
+					return returnObject;
+				}
+
 			}else{
 				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
 
-		return false;
+		return null;
 
 	}
 
@@ -1739,7 +1856,11 @@ public class WSConnector {
 		if(oilOrderInfo.getCouponId()>0){
 			service+="&couponId="+oilOrderInfo.getCouponId();
 		}
-		
+		if(oilOrderInfo.getDesContent()!=null&&!"".equals(oilOrderInfo.getDesContent())){
+			service+="&desContent="+oilOrderInfo.getDesContent();
+		}
+
+
 		Logger.getLogger(this.getClass()).info(
 				"[createOilOrder]  ws query = " + service);
 
@@ -1753,6 +1874,10 @@ public class WSConnector {
 				.getElementsByTagName("id").item(0) : null;
 		Element createTimeNode = root.getElementsByTagName("createTime") != null ? (Element) root
 				.getElementsByTagName("createTime").item(0) : null;
+		Element signNode = root.getElementsByTagName("sign") != null ? (Element) root
+				.getElementsByTagName("sign").item(0) : null;
+
+
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
@@ -1762,8 +1887,16 @@ public class WSConnector {
 						.getNodeValue());
 				String createTime = createTimeNode.getFirstChild()
 						.getNodeValue();
+
+
 				oilOrderInfo.setId(id);
 				oilOrderInfo.setCreateTime(createTime);
+				if(signNode!=null){
+					String out_trade_no=signNode.getFirstChild().getNodeValue();
+					oilOrderInfo.setOut_trade_no(out_trade_no);
+
+				}
+
 				return oilOrderInfo;
 			}else{
 				throw new WSException(ErrorCode.get(errorCode));
@@ -2032,6 +2165,9 @@ public class WSConnector {
 				.getElementsByTagName("errorCode").item(0) : null;
 		Element idNode = root.getElementsByTagName("id") != null ? (Element) root
 				.getElementsByTagName("id").item(0) : null;
+		Element signNode = root.getElementsByTagName("sign") != null ? (Element) root
+				.getElementsByTagName("sign").item(0) : null;
+
 
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
@@ -2040,6 +2176,12 @@ public class WSConnector {
 				int id = Integer.parseInt(idNode.getFirstChild()
 						.getNodeValue());
 				metaOrderInfo.setId(id);
+				if(signNode!=null){
+					String out_trade_no=signNode.getFirstChild().getNodeValue();
+					metaOrderInfo.setOut_trade_no(out_trade_no);
+
+				}
+
 				return metaOrderInfo;
 			}else{
 				throw new WSException(ErrorCode.get(errorCode));
@@ -2514,6 +2656,9 @@ public class WSConnector {
 		if(decoOrderInfo.getCouponId()>0){
 			service+="&couponId="+decoOrderInfo.getCouponId();
 		}
+		if(decoOrderInfo.getDesContent()!=null&&!"".equals(decoOrderInfo.getDesContent())){
+			service+="&desContent="+decoOrderInfo.getDesContent();
+		}
 		
 		Logger.getLogger(this.getClass()).info(
 				"[createDecoOrder]  ws query = " + service);
@@ -2528,6 +2673,9 @@ public class WSConnector {
 				.getElementsByTagName("id").item(0) : null;
 		Element createTimeNode = root.getElementsByTagName("createTime") != null ? (Element) root
 				.getElementsByTagName("createTime").item(0) : null;
+		Element signNode = root.getElementsByTagName("sign") != null ? (Element) root
+				.getElementsByTagName("sign").item(0) : null;
+
 		if (errCodeNode != null) {
 			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
 					.getNodeValue());
@@ -2536,8 +2684,16 @@ public class WSConnector {
 						.getNodeValue());
 				String createTime = createTimeNode.getFirstChild()
 						.getNodeValue();
+
+
 				decoOrderInfo.setId(id);
 				decoOrderInfo.setCreateTime(createTime);
+				if(signNode!=null){
+				  String out_trade_no=signNode.getFirstChild().getNodeValue();
+				  System.out.println("out_trade_no:"+out_trade_no);
+				  decoOrderInfo.setOut_trade_no(out_trade_no);
+
+				}
 				return decoOrderInfo;
 			}else{
 				throw new WSException(ErrorCode.get(errorCode));

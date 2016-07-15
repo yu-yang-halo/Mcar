@@ -1,10 +1,14 @@
 package com.carbeauty.order;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.AlertDialog;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
 import com.carbeauty.adapter.DecorationDelAdapter;
@@ -29,8 +34,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.carbeauty.Constants;
+import com.pay.AlibabaPay;
+import com.pay.AlipayInfo;
+import com.pay.PayResult;
+
 import cn.service.WSConnector;
 import cn.service.WSException;
+import cn.service.bean.AlipayInfoType;
 import cn.service.bean.CouponInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DecorationInfo;
@@ -73,6 +83,48 @@ public class OrderReokActivity extends HeaderActivity {
 
     int selectIndex=-1;
     int offerIndex=0;
+    AlibabaPay alibabaPay;
+    private static final int SDK_PAY_FLAG = 1;
+
+
+    private Handler mHandler = new Handler() {
+        @SuppressWarnings("unused")
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    PayResult payResult = new PayResult((String) msg.obj);
+                    /**
+                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
+                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
+                     * docType=1) 建议商户依赖异步通知
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        Toast.makeText(OrderReokActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 判断resultStatus 为非"9000"则代表可能支付失败
+                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+                        if (TextUtils.equals(resultStatus, "8000")) {
+                            Toast.makeText(OrderReokActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+                            Toast.makeText(OrderReokActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        };
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,15 +296,18 @@ public class OrderReokActivity extends HeaderActivity {
 
     class DataRequestTask extends AsyncTask<String,String,String>{
         List<CouponInfo> allCoupons=new ArrayList<CouponInfo>();
+        AlipayInfoType alipayInfoType;
         @Override
         protected void onPreExecute() {
-            //....
         }
 
         @Override
         protected String doInBackground(String... params) {
             try {
                 allCoupons= WSConnector.getInstance().getCouponList(shopId);
+
+                alipayInfoType=WSConnector.getInstance().getAlipayByShopId(shopId);
+
             } catch (WSException e) {
                 e.printStackTrace();
             }
@@ -262,6 +317,13 @@ public class OrderReokActivity extends HeaderActivity {
 
         @Override
         protected void onPostExecute(String s) {
+             if(alipayInfoType!=null&&alipayInfoType.getAliPid()!=null&&alipayInfoType.getSellerEmail()!=null){
+                 alibabaPay=new AlibabaPay(alipayInfoType.getAliPid(),alipayInfoType.getSellerEmail());
+             }else{
+                 alibabaPay=null;
+             }
+
+
 
              couponInfos=new ArrayList<CouponInfo>();
 
@@ -381,19 +443,19 @@ public class OrderReokActivity extends HeaderActivity {
 
                 if(ac_type_value==Constants.AC_TYPE_WASH){
                     if(decorationInfoSet!=null&&decorationInfoSet.size()>0){
-                        new OrderCommitTask().execute();
+                        new OrderCommitTask(OrderReokActivity.this).execute();
                     }else{
                         Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }
                 }else  if(ac_type_value==Constants.AC_TYPE_OIL){
                     if(oilInfoSet!=null&&oilInfoSet.size()>0){
-                        new OrderCommitTask().execute();
+                        new OrderCommitTask(OrderReokActivity.this).execute();
                     }else{
                         Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }
                 }else  if(ac_type_value==Constants.AC_TYPE_META){
                     if(metalplateInfoSet!=null&&metalplateInfoSet.size()>0){
-                        new OrderCommitTask().execute();
+                        new OrderCommitTask(OrderReokActivity.this).execute();
                     }else{
                         Toast.makeText(OrderReokActivity.this,"请选择保养项目",Toast.LENGTH_SHORT).show();
                     }
@@ -404,12 +466,17 @@ public class OrderReokActivity extends HeaderActivity {
     }
 
     class OrderCommitTask extends AsyncTask<String,String,String>{
+        Activity ctx;
+        public OrderCommitTask(Activity ctx){
+            this.ctx=ctx;
+        }
         KProgressHUD progressHUD;
+        AlipayInfo alipayInfo;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressHUD= KProgressHUD.create(OrderReokActivity.this)
+            progressHUD= KProgressHUD.create(ctx)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("订单提交中...")
                     .setAnimationSpeed(1)
@@ -421,11 +488,14 @@ public class OrderReokActivity extends HeaderActivity {
         @Override
         protected String doInBackground(String... params) {
             int couponId=0;
+            String detail="";
             if(selectIndex>=0){
                 couponId=couponInfos.get(selectIndex).getId();
             }
 
             if(ac_type_value==Constants.AC_TYPE_WASH){
+
+
 
 
                 DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
@@ -435,11 +505,24 @@ public class OrderReokActivity extends HeaderActivity {
                 try {
                     decoOrderInfo=WSConnector.getInstance().createDecoOrder(decoOrderInfo);
 
-                    for (DecorationInfo decorationInfo :decorationInfoSet){
 
+
+                    for (DecorationInfo decorationInfo :decorationInfoSet){
+                        detail+=decorationInfo.getName()+"\n";
                         WSConnector.getInstance().createDecoOrderNumber(decorationInfo.getId(),decoOrderInfo.getId());
 
                     }
+
+                    alipayInfo=new AlipayInfo("洗车美容",detail,totalPrice+"",decoOrderInfo.getOut_trade_no());
+
+                    if(alibabaPay!=null){
+                        String sign=WSConnector.getInstance().signContent(shopId,alibabaPay.getOrderInfo(alipayInfo));
+                        alipayInfo.setSign(sign);
+
+                    }
+
+
+
 
                 } catch (WSException e) {
                     return e.getErrorMsg();
@@ -453,8 +536,14 @@ public class OrderReokActivity extends HeaderActivity {
                     oilOrderInfo=WSConnector.getInstance().createOilOrder(oilOrderInfo);
 
                     for (OilInfo oilInfo :oilInfoSet){
-
+                        detail+=oilInfo.getName()+"\n";
                         WSConnector.getInstance().createOilOrderNumber(oilOrderInfo.getId(),oilInfo.getId());
+
+                    }
+                    alipayInfo=new AlipayInfo("换油保养",detail,totalPrice+"",oilOrderInfo.getOut_trade_no());
+                    if(alibabaPay!=null){
+                        String sign=WSConnector.getInstance().signContent(shopId,alibabaPay.getOrderInfo(alipayInfo));
+                        alipayInfo.setSign(sign);
 
                     }
 
@@ -475,8 +564,10 @@ public class OrderReokActivity extends HeaderActivity {
                     for (MetalplateInfo metalplateInfo :metalplateInfoSet){
 
                         WSConnector.getInstance().createMetaOrderNumber(metaOrderInfo.getId(),metalplateInfo.getId(),metalplateInfo.getCount());
-
+                        detail+=metalplateInfo.getName()+"\n";
                     }
+                    alipayInfo=null;
+                    alibabaPay=null;
 
                 } catch (WSException e) {
                     return e.getErrorMsg();
@@ -493,19 +584,55 @@ public class OrderReokActivity extends HeaderActivity {
             progressHUD.dismiss();
             if(s==null){
                 orderIsOk=true;
-               // Toast.makeText(OrderReokActivity.this,"订单提交成功",Toast.LENGTH_SHORT).show();
             }else {
-                Toast.makeText(OrderReokActivity.this,s,Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
             }
 
-            Intent intent=new Intent(OrderReokActivity.this,OrderResultActivity.class);
+            if(offerIndex==0){
 
-            intent.putExtra(Constants.AC_TYPE,ac_type_value);
-            intent.putExtra(Constants.ORDER_RESULT_IS_OK,orderIsOk);
-            intent.putExtra(Constants.OFFER_PRICE,totalPrice);
-            intent.putExtra("Title","");
-            startActivity(intent);
-            finish();
+                if(alipayInfo!=null&&alibabaPay!=null&&alipayInfo.getSign()!=null){
+                   final String payinfo=alibabaPay.getPayInfoData(alipayInfo);
+
+                   Runnable payRunnable = new Runnable() {
+
+                       @Override
+                       public void run() {
+                           // 构造PayTask 对象
+                           PayTask alipay = new PayTask(ctx);
+                           // 调用支付接口，获取支付结果
+                           String result = alipay.pay(payinfo, true);
+
+                           Message msg = new Message();
+                           msg.what = SDK_PAY_FLAG;
+                           msg.obj = result;
+                           mHandler.sendMessage(msg);
+                       }
+                   };
+
+                   // 必须异步调用
+                   Thread payThread = new Thread(payRunnable);
+                   payThread.start();
+                }else{
+                    Toast.makeText(ctx,"在线支付错误,请重试",Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+
+            }else{
+
+                Intent intent=new Intent(OrderReokActivity.this,OrderResultActivity.class);
+
+                intent.putExtra(Constants.AC_TYPE,ac_type_value);
+                intent.putExtra(Constants.ORDER_RESULT_IS_OK,orderIsOk);
+                intent.putExtra(Constants.OFFER_PRICE,totalPrice);
+                intent.putExtra("Title","");
+                startActivity(intent);
+                finish();
+
+            }
+
 
 
         }
@@ -520,4 +647,7 @@ public class OrderReokActivity extends HeaderActivity {
             rightBtn.setText(data.getStringExtra("number"));
         }
     }
+
+
+
 }

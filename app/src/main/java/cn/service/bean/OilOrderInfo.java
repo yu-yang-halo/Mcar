@@ -16,6 +16,26 @@ public class OilOrderInfo {
 	private String createTime;
 	private String finishTime;
 	private String orderTime;
+
+	private String desContent;//传入待签名数据
+	private String out_trade_no;//系统返回的订单号
+
+	public String getOut_trade_no() {
+		return out_trade_no;
+	}
+
+	public void setOut_trade_no(String out_trade_no) {
+		this.out_trade_no = out_trade_no;
+	}
+
+	public String getDesContent() {
+		return desContent;
+	}
+
+	public void setDesContent(String desContent) {
+		this.desContent = desContent;
+	}
+
 	private List<OilOrderNumberInfo> oilOrderNumber;
 	public int getId() {
 		return id;

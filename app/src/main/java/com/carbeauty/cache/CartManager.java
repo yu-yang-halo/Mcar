@@ -23,7 +23,6 @@ public class CartManager {
         String myCartClassJSON=gson.toJson(myCartClassList);
         ContentBox.loadString(ctx,KEY_CART_INFOS_JSON,myCartClassJSON);
     }
-
     public List<MyCartClass> getMyCartClassFromDisk(Context ctx){
         String myCartClassJSON=ContentBox.getValueString(ctx,KEY_CART_INFOS_JSON,"");
         if(myCartClassJSON!=""){
@@ -32,16 +31,16 @@ public class CartManager {
             if(myCartClasses!=null){
                this.myCartClassList=myCartClasses;
             }
-
             return  this.myCartClassList;
         }
         return null;
     }
 
 
-//    public void clearCartList(){
-//        myCartClassList.clear();
-//    }
+    public void clearCartList(Context ctx){
+        myCartClassList.clear();
+        cacheMyCartClassToDisk(ctx);
+    }
 
     public boolean addToCart(int id,int count,String imageURL,GoodInfo goodInfo){
 

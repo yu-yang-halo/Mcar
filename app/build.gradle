@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.+'
     compile 'com.android.support:support-v4:23.1.1'
@@ -50,4 +50,5 @@ dependencies {
     compile files('libs/gson-2.2.4.jar')
     compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.6'
     compile files('libs/volley.jar')
+    compile files('libs/alipaySdk-20160516.jar')
 }

@@ -78,10 +78,11 @@ public class GoodListShowAdapter extends BaseAdapter {
         int totalHeight = 0;
         int row=goodListDetailShowAdapter.getCount();
 
-
-        View viewItem = goodListDetailShowAdapter.getView(0, null, orderItemListView);//这个很重要，那个展开的item的measureHeight比其他的大
-        viewItem.measure(0, 0);
-        totalHeight = viewItem.getMeasuredHeight()*row;
+        if(row>0){
+            View viewItem = goodListDetailShowAdapter.getView(0, null, orderItemListView);//这个很重要，那个展开的item的measureHeight比其他的大
+            viewItem.measure(0, 0);
+            totalHeight = viewItem.getMeasuredHeight()*row;
+        }
 
         ViewGroup.LayoutParams params = orderItemListView.getLayoutParams();
         params.height = totalHeight;
