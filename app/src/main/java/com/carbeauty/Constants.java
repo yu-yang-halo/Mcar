@@ -36,6 +36,15 @@ public class Constants {
     public final static int STATE_ORDER_WAIT=2;//等待客服确认
     public final static int STATE_ORDER_CANCEL=3;//取消
 
+
+    public final static int GOOD_STATE_ORDER_NO_DELIVE=0;//0未发货
+    public final static int GOOD_STATE_ORDER_DELIVE=1;//1已发货
+    public final static int GOOD_STATE_ORDER_NO_PAY=2;// 2 未支付
+    public final static int GOOD_STATE_ORDER_PAY=3;//3已支付
+    public final static int GOOD_STATE_ORDER_CANCEL=4;//取消
+
+
+
     public final static int SEARCH_SHOP=1;//搜索类型 按店搜索
     public final static int SEARCH_USER=2;//搜索类型 按用户搜索
 

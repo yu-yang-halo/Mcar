@@ -1096,9 +1096,13 @@ public class WSConnector {
 		Element processTimeNode = (Element) element.getElementsByTagName(
 				"processTime").item(0);
 
+		Element tradeNoNode = (Element) element.getElementsByTagName(
+				"tradeNo").item(0);
+
 		int id=0,userId=0,shopId=0,state=0;
 		float price=0;
-		String goodsInfo="",createTime="",address="",name="",phone="",processTime="";
+		String goodsInfo="",createTime="",address="",name="",phone="",
+				processTime="",tradeNo="";
 
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
@@ -1119,6 +1123,10 @@ public class WSConnector {
 		if (processTimeNode != null && processTimeNode.getFirstChild() != null) {
 			processTime = processTimeNode.getFirstChild().getNodeValue();
 		}
+		if (tradeNoNode != null && tradeNoNode.getFirstChild() != null) {
+			tradeNo = tradeNoNode.getFirstChild().getNodeValue();
+		}
+
 
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -1138,6 +1146,10 @@ public class WSConnector {
 
 
 		GoodsOrderListType goodsOrderListType=new GoodsOrderListType(id,goodsInfo,  createTime,  userId,  shopId,  price,  address,  name,  phone,  state,  processTime);
+
+
+		goodsOrderListType.setTradeNo(tradeNo);
+
 		return  goodsOrderListType;
 
 	}
@@ -1982,9 +1994,11 @@ public class WSConnector {
 				"price").item(0);
 		Element couponIdNode = (Element) element.getElementsByTagName(
 				"couponId").item(0);
+		Element tradeNoNode = (Element) element.getElementsByTagName(
+				"tradeNo").item(0);
 		int id=-1,type=-1,state=-1,payState=-1,userId=-1,carId=-1,shopId=-1,stationId=-1,couponId=-1;
 		float price=-1;
-		String createTime="",finishTime="";
+		String createTime="",finishTime="",tradeNo="";
 		
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -2022,6 +2036,9 @@ public class WSConnector {
 		if (finishTimeNode != null && finishTimeNode.getFirstChild() != null) {
 			finishTime = finishTimeNode.getFirstChild().getNodeValue();
 		}
+		if (tradeNoNode != null && tradeNoNode.getFirstChild() != null) {
+			tradeNo = tradeNoNode.getFirstChild().getNodeValue();
+		}
 		NodeList  nodeList=element.getElementsByTagName("oilOrderNumber");
 		List<OilOrderNumberInfo> oilOrderNumberInfos=new ArrayList<OilOrderInfo.OilOrderNumberInfo>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -2034,6 +2051,7 @@ public class WSConnector {
 		}
 		
 		OilOrderInfo oilOrderInfo=new OilOrderInfo(id, type, state, payState, userId, carId, shopId, stationId, price, couponId, createTime, finishTime, null, oilOrderNumberInfos);
+		oilOrderInfo.setOut_trade_no(tradeNo);
 		return oilOrderInfo;
 	}
 	private OilOrderNumberInfo parseXmlToOilOrderNumberInfo(Element element){
@@ -2271,6 +2289,36 @@ public class WSConnector {
 		}
 		return false;
 	}
+	/** good order cancel **/
+	public boolean updGoodsOrder(int id,int state) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "updGoodsOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&id="+id+"&state="+state
+				+"&expressName=android&expressWaybill=android";
+
+		Logger.getLogger(this.getClass()).info(
+				"[delMetaOrder]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return false;
+
+	}
+
 	private MetaOrderInfo parseXmlToMetaOrderInfo(Element element){
 		Element idNode = (Element) element.getElementsByTagName(
 				"id").item(0);
@@ -2296,9 +2344,11 @@ public class WSConnector {
 				"price").item(0);
 		Element couponIdNode = (Element) element.getElementsByTagName(
 				"couponId").item(0);
+		Element tradeNoNode = (Element) element.getElementsByTagName(
+				"tradeNo").item(0);
 		int id=-1,type=-1,state=-1,payState=-1,userId=-1,carId=-1,shopId=-1,stationId=-1,couponId=-1;
 		float price=-1;
-		String createTime="",finishTime="";
+		String createTime="",finishTime="",tradeNo="";
 		
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -2336,6 +2386,10 @@ public class WSConnector {
 		if (finishTimeNode != null && finishTimeNode.getFirstChild() != null) {
 			finishTime = finishTimeNode.getFirstChild().getNodeValue();
 		}
+		if (tradeNoNode != null && tradeNoNode.getFirstChild() != null) {
+			tradeNo = tradeNoNode.getFirstChild().getNodeValue();
+		}
+
 		NodeList  metaOrderNumberNodeList=element.getElementsByTagName("metaOrderNumber");
 		NodeList  metaOrderImgNodeList=element.getElementsByTagName("metaOrderImg");
 		List<MetaOrderNumber> metaOrderNumbers=new ArrayList<MetaOrderInfo.MetaOrderNumber>();
@@ -2361,6 +2415,7 @@ public class WSConnector {
 		
 		MetaOrderInfo metaOrderInfo=new MetaOrderInfo(id, type, state, payState, userId, carId, 
 				shopId, stationId, price, couponId, createTime, finishTime, null, metaOrderNumbers, metaOrderImgs);
+		metaOrderInfo.setOut_trade_no(tradeNo);
 		return metaOrderInfo;
 	}
 	private MetaOrderNumber parseXmlToMetaOrderNumber(Element element){
@@ -2779,9 +2834,13 @@ public class WSConnector {
 				"price").item(0);
 		Element couponIdNode = (Element) element.getElementsByTagName(
 				"couponId").item(0);
+		Element tradeNoNode = (Element) element.getElementsByTagName(
+				"tradeNo").item(0);
+
+
 		int id=-1,type=-1,state=-1,payState=-1,userId=-1,carId=-1,shopId=-1,stationId=-1,couponId=-1;
 		float price=-1;
-		String createTime="",finishTime="";
+		String createTime="",finishTime="",tradeNo="";
 		
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -2819,6 +2878,11 @@ public class WSConnector {
 		if (finishTimeNode != null && finishTimeNode.getFirstChild() != null) {
 			finishTime = finishTimeNode.getFirstChild().getNodeValue();
 		}
+		if (tradeNoNode != null && tradeNoNode.getFirstChild() != null) {
+			tradeNo = tradeNoNode.getFirstChild().getNodeValue();
+		}
+
+
 		NodeList  nodeList=element.getElementsByTagName("decoOrderNumber");
 		List<DecoOrderNumber> decoOrderNumbers=new ArrayList<DecoOrderInfo.DecoOrderNumber>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -2832,6 +2896,7 @@ public class WSConnector {
 		
 		DecoOrderInfo decoOrderInfo=new DecoOrderInfo(id, type, state, payState, userId, carId, shopId, stationId, price, couponId,
 				            createTime, finishTime, null, decoOrderNumbers);
+		decoOrderInfo.setOut_trade_no(tradeNo);
 		return decoOrderInfo;
 	}
     private DecoOrderNumber parseXmlToDecoOrderNumber(Element element){

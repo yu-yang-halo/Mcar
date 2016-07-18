@@ -32,13 +32,6 @@
                 android:id="@+id/titleNameTxt"
                 android:text="title" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#56bc94"
-                android:gravity="right|center_vertical"
-                android:id="@+id/statusTxt" />
         </LinearLayout>
 
         <ImageView
@@ -95,6 +88,29 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#56bc94"
+            android:gravity="right|center_vertical"
+            android:id="@+id/statusTxt"
+            android:layout_centerVertical="true"
+            android:layout_alignRight="@+id/linearLayout6"
+            android:layout_alignEnd="@+id/linearLayout6" />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="28dp"
+            android:text="继续支付"
+            android:id="@+id/button7"
+            android:textColor="#a6ff0000"
+            android:textSize="13sp"
+            android:background="@drawable/btn_border_cancel_bgcolor"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/delBtn"
+            android:layout_alignStart="@+id/delBtn" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -116,10 +116,9 @@ public class IndividualFragment extends Fragment {
 
     private void initListView(){
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
-        String[] individuals = new String[]{getString(R.string.individual0),getString(R.string.individual1),
-                getString(R.string.individual2),getString(R.string.individual4),"我的购物车","消息"};
+        String[] individuals = new String[]{getString(R.string.individual0),getString(R.string.individual1),getString(R.string.individual4),"我的购物车","消息"};
         int[] individualIcons=new int[]{R.drawable.my_icon_input,R.drawable.my_icon_set
-                ,R.drawable.my_icon_zixun,R.drawable.my_icon_address,
+                ,R.drawable.my_icon_address,
                  R.mipmap.icon_cart_item,R.drawable.my_icon_message};
 
         for(int i=0;i<individualIcons.length;i++){
@@ -159,12 +158,9 @@ public class IndividualFragment extends Fragment {
                     intent=new Intent(getActivity(), GoodListShowActivity.class);
                     intent.putExtra("Title","我的商品订单");
                 }else if (position==2){
-                    intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_BEFORE);
-                    intent.putExtra("Title","我的预约");
-                }else if (position==3){
                     intent=new Intent(getActivity(), MyAddressActivity.class);
                     intent.putExtra("Title","收货地址");
-                }else if(position==4){
+                }else if(position==3){
                     List<CartManager.MyCartClass> myCartClasses=CartManager.getInstance().getMyCartClassList(getActivity());
 
                     if(myCartClasses==null
@@ -177,7 +173,7 @@ public class IndividualFragment extends Fragment {
                     }
 
 
-                }else if(position==5){
+                }else if(position==4){
                     Stack<MessageManager.JPMessage> stack=MessageManager.getInstance().getMessageStack(getActivity());
 
                     if(stack==null||stack.size()<=0){

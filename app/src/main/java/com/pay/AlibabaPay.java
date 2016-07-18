@@ -114,7 +114,7 @@ public class AlibabaPay {
 
         // 商品金额
         orderInfo += "&total_fee=" + "\"" + alipayInfo.getPrice() + "\"";
-        String notify_url=WSConnector.getInstance().getWsUrl()+"alipayNotify";
+        String notify_url="http://112.124.106.131/kele/Notify_aliNotify";
 
         // 服务器异步通知页面路径
         orderInfo += "&notify_url=" + "\"" + notify_url + "\"";

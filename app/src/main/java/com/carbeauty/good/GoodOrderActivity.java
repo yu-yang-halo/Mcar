@@ -292,7 +292,7 @@ public class GoodOrderActivity extends FragmentActivity {
 
             System.out.println("out_trade_no ::: "+out_trade_no);
 
-            alipayInfo=new AlipayInfo("客乐养车坊商品","商品订单编号",goodLookAdapter.getLastestNewPrice()+"",out_trade_no);
+            alipayInfo=new AlipayInfo("客乐养车坊商品","商品订单",goodLookAdapter.getLastestNewPrice()+"",out_trade_no);
             if(alipayInfoType!=null&&alipayInfoType.getAliPid()!=null&&alipayInfoType.getSellerEmail()!=null){
                 alibabaPay=new AlibabaPay(alipayInfoType.getAliPid(),alipayInfoType.getSellerEmail());
             }

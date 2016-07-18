@@ -59,6 +59,7 @@
         android:id="@+id/ipconfig"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:visibility="gone"
         android:layout_alignParentEnd="true" />
 
     <TextView

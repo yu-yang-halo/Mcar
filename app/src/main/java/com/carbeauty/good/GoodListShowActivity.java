@@ -2,6 +2,10 @@ package com.carbeauty.good;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -9,10 +13,17 @@ import android.widget.Toast;
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
+import com.carbeauty.ViewFindUtils;
 import com.carbeauty.adapter.GoodListShowAdapter;
+import com.carbeauty.fragment.GoodListShowFragment;
+import com.carbeauty.fragment.MyOrderFragment;
 import com.carbeauty.order.HeaderActivity;
+import com.flyco.tablayout.SlidingTabLayout;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -23,8 +34,10 @@ import cn.service.bean.GoodsOrderListType;
  * Created by Administrator on 2016/3/30.
  */
 public class GoodListShowActivity extends HeaderActivity {
-    PullRefreshLayout  swipeRefreshLayout;
-    ListView goodlistView;
+    /** 未发货--0  已发货--1  未支付--2  已支付--3  取消--4**/
+    private static final String[] titles=new String[]{"未发货","已发货","未支付","已支付"};
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
+    private WeakReference<GoodListShowFragment> weakReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,30 +46,65 @@ public class GoodListShowActivity extends HeaderActivity {
         initCustomActionBar();
         rightBtn.setVisibility(View.GONE);
 
-
-        swipeRefreshLayout=(PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        goodlistView= (ListView) findViewById(R.id.goodlistView);
-
-        goodlistView.setDivider(getResources().getDrawable(R.drawable.dividecolor));
-        goodlistView.setDividerHeight(20);
-        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new GetGoodOrderListTask().execute();
-            }
-        });
-
-        new GetGoodOrderListTask().execute();
+        new GetGoodOrderListTask(false).executeOnExecutor(Executors.newCachedThreadPool());
 
     }
+
+    public void setWeakReference(WeakReference<GoodListShowFragment> weakReference) {
+        this.weakReference = weakReference;
+    }
+    public void reloadOrderList(){
+        new GetGoodOrderListTask(true).executeOnExecutor(Executors.newCachedThreadPool());
+    }
+
+    private void initSlidTab(List<GoodsOrderListType> goodsOrderListTypes, List<GoodInfo> goodInfos){
+
+        int currentLab=0;
+
+        for (int i=0;i<titles.length;i++) {
+            mFragments.add(GoodListShowFragment.getInstance(i,goodsOrderListTypes,goodInfos));
+        }
+
+        View decorView = getWindow().getDecorView();
+        ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
+        vp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        /** indicator圆角色块 */
+        SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
+        tabLayout_10.setViewPager(vp);
+        tabLayout_10.setCurrentTab(currentLab);
+
+
+    }
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+    }
+
 
     class GetGoodOrderListTask extends AsyncTask<String,String,String>{
         List<GoodsOrderListType> goodsOrderListTypes;
         List<GoodInfo> goodInfos;
 
-        @Override
-        protected void onPreExecute() {
-            swipeRefreshLayout.setRefreshing(true);
+        boolean isRefreshYN;
+        GetGoodOrderListTask(boolean isRefreshYN){
+            this.isRefreshYN=isRefreshYN;
         }
 
         @Override
@@ -73,11 +121,13 @@ public class GoodListShowActivity extends HeaderActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            swipeRefreshLayout.setRefreshing(false);
-            if(s==null){
-                GoodListShowAdapter goodListShowAdapter=new GoodListShowAdapter(GoodListShowActivity.this,goodsOrderListTypes,goodInfos);
 
-                goodlistView.setAdapter(goodListShowAdapter);
+            if(s==null){
+                if(!isRefreshYN){
+                    initSlidTab(goodsOrderListTypes,goodInfos);
+                }else{
+                    weakReference.get().refreshNewData(goodsOrderListTypes,goodInfos);
+                }
 
             }else{
                 Toast.makeText(GoodListShowActivity.this,s,Toast.LENGTH_SHORT).show();

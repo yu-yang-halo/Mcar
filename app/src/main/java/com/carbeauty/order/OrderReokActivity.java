@@ -521,9 +521,6 @@ public class OrderReokActivity extends HeaderActivity {
 
                     }
 
-
-
-
                 } catch (WSException e) {
                     return e.getErrorMsg();
                 }

@@ -2,21 +2,31 @@ package com.carbeauty.order;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ListView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
+import com.carbeauty.ViewFindUtils;
 import com.carbeauty.adapter.MyOrderAdapter;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.fragment.MyOrderFragment;
+import com.carbeauty.fragment.SimpleCardFragment;
+import com.flyco.tablayout.SlidingTabLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.DecoOrderInfo;
+import cn.service.bean.GoodInfo;
 import cn.service.bean.MetaOrderInfo;
 import cn.service.bean.OilOrderInfo;
 
@@ -24,10 +34,11 @@ import cn.service.bean.OilOrderInfo;
  * Created by Administrator on 2016/3/24.
  */
 public class MyOrderActivity extends HeaderActivity {
-    ListView orderlistView;
-    PullRefreshLayout swipeRefreshLayout;
     int ac_type_value;
     int shopId;
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
+    private static final String[] titles=new String[]{"待付款","已付款","待确认","已完成","已退款"};
+    private WeakReference<MyOrderFragment> weakReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,44 +49,66 @@ public class MyOrderActivity extends HeaderActivity {
         ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE, 0);
         shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
 
-        swipeRefreshLayout=(PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        orderlistView= (ListView) findViewById(R.id.orderlistView);
-        orderlistView.setDividerHeight(20);
-        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadOrderData();
-            }
-        });
 
-        loadOrderData();
+        new GetOrderListTask(false).execute();
 
     }
 
-    private void loadOrderData(){
-        if(ac_type_value==Constants.AC_TYPE_ORDER_BEFORE){
-            new GetOrderListTask(false).execute();
-        }else if(ac_type_value==Constants.AC_TYPE_ORDER_AFTER){
-            new GetOrderListTask(true).execute();
+    public void reloadOrderList(){
+        new GetOrderListTask(true).execute();
+    }
+
+    public void setWeakReference(WeakReference<MyOrderFragment> weakReference) {
+        this.weakReference = weakReference;
+    }
+
+    private void initSlidTab(List<CommonOrderBean> commonOrderBeans){
+
+        int currentLab=0;
+
+        for (int i=0;i<titles.length;i++) {
+            mFragments.add(MyOrderFragment.getInstance(i,commonOrderBeans));
         }
 
+        View decorView = getWindow().getDecorView();
+        ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
+        vp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        /** indicator圆角色块 */
+        SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
+        tabLayout_10.setViewPager(vp);
+        tabLayout_10.setCurrentTab(currentLab);
+
+
     }
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
 
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
 
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+    }
 
 
     class GetOrderListTask extends AsyncTask<String,String,String>{
 
         List<CommonOrderBean> commonOrderBeans=new ArrayList<>();
-        boolean filterFinishedOrder;
-        public  GetOrderListTask(boolean filterFinishedOrder){
-            this.filterFinishedOrder=filterFinishedOrder;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            swipeRefreshLayout.setRefreshing(true);
+        boolean isRefreshData;
+        GetOrderListTask(boolean isRefreshData){
+            this.isRefreshData=isRefreshData;
         }
 
         @Override
@@ -90,21 +123,6 @@ public class MyOrderActivity extends HeaderActivity {
 
                 if(metaOrderInfos!=null&&metaOrderInfos.size()>0){
                     for (MetaOrderInfo metaOrderInfo:metaOrderInfos){
-                        if(metaOrderInfo.getState()==Constants.STATE_ORDER_CANCEL){
-                            continue;
-                        }
-
-                        if(filterFinishedOrder){
-                            if(metaOrderInfo.getState()!=Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }else{
-                            if(metaOrderInfo.getState()==Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }
-
-
                         String desc="";
                         if(metaOrderInfo.getMetaOrderNumbers()!=null&&metaOrderInfo.getMetaOrderNumbers().size()>0){
                             desc="数量:"+metaOrderInfo.getMetaOrderNumbers().size();
@@ -118,6 +136,7 @@ public class MyOrderActivity extends HeaderActivity {
                                 metaOrderInfo.getPayState(),metaOrderInfo.getCreateTime(),
                                 "钣金喷漆",
                                  desc);
+                        commonOrderBean.setTradeNo(metaOrderInfo.getOut_trade_no());
 
                         commonOrderBeans.add(commonOrderBean);
                     }
@@ -125,18 +144,6 @@ public class MyOrderActivity extends HeaderActivity {
 
                 if(oilOrderInfos!=null&&oilOrderInfos.size()>0){
                     for (OilOrderInfo oilOrderInfo:oilOrderInfos){
-                        if(oilOrderInfo.getState()==Constants.STATE_ORDER_CANCEL){
-                            continue;
-                        }
-                        if(filterFinishedOrder){
-                            if(oilOrderInfo.getState()!=Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }else{
-                            if(oilOrderInfo.getState()==Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }
 
                         String desc="";
                         if(oilOrderInfo.getOilOrderNumber()!=null){
@@ -148,24 +155,13 @@ public class MyOrderActivity extends HeaderActivity {
                                 oilOrderInfo.getPayState(),oilOrderInfo.getCreateTime(),
                                 "换油保养",
                                 desc);
+                        commonOrderBean.setTradeNo(oilOrderInfo.getOut_trade_no());
                         commonOrderBeans.add(commonOrderBean);
                     }
                 }
 
                 if(decoOrderInfos!=null&&decoOrderInfos.size()>0){
                     for (DecoOrderInfo decoOrderInfo:decoOrderInfos){
-                        if(decoOrderInfo.getState()==Constants.STATE_ORDER_CANCEL){
-                            continue;
-                        }
-                        if(filterFinishedOrder){
-                            if(decoOrderInfo.getState()!=Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }else{
-                            if(decoOrderInfo.getState()==Constants.STATE_ORDER_FINISHED){
-                                continue;
-                            }
-                        }
                         String desc="";
                         if(decoOrderInfo.getDecoOrderNumbers()!=null){
                             desc="数量:"+decoOrderInfo.getDecoOrderNumbers().size();
@@ -176,6 +172,7 @@ public class MyOrderActivity extends HeaderActivity {
                                 decoOrderInfo.getPayState(),decoOrderInfo.getCreateTime(),
                                 "汽车美容",
                                 desc);
+                        commonOrderBean.setTradeNo(decoOrderInfo.getOut_trade_no());
                         commonOrderBeans.add(commonOrderBean);
                     }
                 }
@@ -191,10 +188,14 @@ public class MyOrderActivity extends HeaderActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            swipeRefreshLayout.setRefreshing(false);
+
             if(s==null){
-                MyOrderAdapter orderAdapter=new MyOrderAdapter(MyOrderActivity.this,commonOrderBeans);
-                orderlistView.setAdapter(orderAdapter);
+                if(!isRefreshData){
+                    initSlidTab(commonOrderBeans);
+                }else{
+                    weakReference.get().refreshNewData(commonOrderBeans);
+                }
+
             }
         }
     }
@@ -211,6 +212,15 @@ public class MyOrderActivity extends HeaderActivity {
         String title;
         String desc;
         int itemType;
+        String tradeNo;
+
+        public String getTradeNo() {
+            return tradeNo;
+        }
+
+        public void setTradeNo(String tradeNo) {
+            this.tradeNo = tradeNo;
+        }
 
         public int getItemType() {
             return itemType;

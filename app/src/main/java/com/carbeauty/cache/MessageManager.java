@@ -27,6 +27,10 @@ public class MessageManager {
 
     public void addJPMessage(Context ctx,JPMessage jpMessage){
 
+        if(jpMessage==null||jpMessage.getMsgContent()==null||jpMessage.getMsgContent().equals("")){
+            return;
+        }
+
        getMessageStack(ctx);
 
        messageStack.add(jpMessage);

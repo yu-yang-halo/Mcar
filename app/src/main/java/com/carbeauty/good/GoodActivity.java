@@ -2,7 +2,6 @@ package com.carbeauty.good;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,28 +11,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baoyz.widget.PullRefreshLayout;
-import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.ViewFindUtils;
 import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
-import com.carbeauty.manager.CarManagerActivity;
-import com.carbeauty.order.HeaderActivity;
+import com.carbeauty.fragment.SimpleCardFragment;
 import com.flyco.tablayout.SlidingTabLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import cn.service.WSConnector;
