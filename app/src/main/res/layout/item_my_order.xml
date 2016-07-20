@@ -22,7 +22,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/linearLayout6">
+            android:id="@+id/linearLayout6"
+            android:layout_toLeftOf="@+id/button7"
+            android:layout_toStartOf="@+id/button7">
 
             <TextView
                 android:layout_width="206dp"
@@ -97,8 +99,7 @@
             android:gravity="right|center_vertical"
             android:id="@+id/statusTxt"
             android:layout_centerVertical="true"
-            android:layout_alignRight="@+id/linearLayout6"
-            android:layout_alignEnd="@+id/linearLayout6" />
+           android:layout_alignParentRight="true" />
 
         <Button
             android:layout_width="80dp"
@@ -108,9 +109,9 @@
             android:textColor="#a6ff0000"
             android:textSize="13sp"
             android:background="@drawable/btn_border_cancel_bgcolor"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/delBtn"
-            android:layout_alignStart="@+id/delBtn" />
+            android:layout_alignTop="@+id/linearLayout6"
+            android:layout_alignParentRight="true"
+ />
     </RelativeLayout>
 
 </RelativeLayout>

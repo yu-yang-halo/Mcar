@@ -137,6 +137,7 @@ public class MyOrderActivity extends HeaderActivity {
                                 "钣金喷漆",
                                  desc);
                         commonOrderBean.setTradeNo(metaOrderInfo.getOut_trade_no());
+                        commonOrderBean.setShopId(metaOrderInfo.getShopId());
 
                         commonOrderBeans.add(commonOrderBean);
                     }
@@ -156,6 +157,7 @@ public class MyOrderActivity extends HeaderActivity {
                                 "换油保养",
                                 desc);
                         commonOrderBean.setTradeNo(oilOrderInfo.getOut_trade_no());
+                        commonOrderBean.setShopId(oilOrderInfo.getShopId());
                         commonOrderBeans.add(commonOrderBean);
                     }
                 }
@@ -173,6 +175,7 @@ public class MyOrderActivity extends HeaderActivity {
                                 "汽车美容",
                                 desc);
                         commonOrderBean.setTradeNo(decoOrderInfo.getOut_trade_no());
+                        commonOrderBean.setShopId(decoOrderInfo.getShopId());
                         commonOrderBeans.add(commonOrderBean);
                     }
                 }
@@ -211,8 +214,19 @@ public class MyOrderActivity extends HeaderActivity {
         String createTime;
         String title;
         String desc;
+
+        public int getShopId() {
+            return shopId;
+        }
+
+        public void setShopId(int shopId) {
+            this.shopId = shopId;
+        }
+
         int itemType;
         String tradeNo;
+        int shopId;
+
 
         public String getTradeNo() {
             return tradeNo;

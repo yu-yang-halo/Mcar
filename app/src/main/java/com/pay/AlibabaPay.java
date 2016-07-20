@@ -27,9 +27,9 @@ public class AlibabaPay {
 //    // 商户收款账号
 //    public static final String SELLER = "13395602277@163.com";
 //    // 商户私钥，pkcs8格式
-      public static final String RSA_PRIVATE = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAMjAuBP4DoulGyYfLOT+ZuRtPY5v75bIQSqTkxynvXyopaxisBnS87KBAHTM6Zv7waW5T5miTPMzJbERd+Lo3eTY9k9GOTcF6dNOnyMi82LQ26uedwmN2g8b6rRRvVui2IV6q2yHFMOn9ag1SXZfMnfgtz6WrGfW3t4CbmJpy+UZAgMBAAECgYAYIPm/BLCS3jxeH58gwucRC4Q7i36ri9QxTt1+szaWNhr7ljz+TZmW2eR5JWvqoJ7M0XIc0CIZlQsxthzHvB93PDplgnzhRRhzNJHfvJQm2H9b2ueyFkrDI32sT8b3WLO5OF/uQ298LRyJxPpgPOU4fHzbe4SxV1hvTXKiCbD8hQJBAP2FUCxs3XI87kNCWCClMEovD2W0ZIQjz7i0KP1DzUBlzxf7jCQRATQd+B/iVejcf08iOU3JwzRkEd5mCyMYEBcCQQDKt01EKkgoZyxQx3rAqOPjY6MSEVvyUSjbZyuSP2kFTT4qfXs0D5HQR+nA9sS08qO4s1gERdYyCb4SfB8bL0JPAkEAyP0I27+PLIM7zdzqKy9rAlUe2t3SFqShiOhj2q4HKjfMoFHP/8PvdVcRII361/r/f0g9r/r2JDH1rKCv0anBDwJAVkSfmyyrPJZ7o3zg3nCBWtmiIiRFDuA/FO/Y+QoHNXxjwk1YSxV9JjgUYEwj9iV0Szv3bwoRV4YR32f3DOiVvQJAF4pgw5rAf5FOMQgjVVWMm3DrpCbN1Q8Ak6NQzmhvjWvyAD7JMlTq5oNn9wSsvXnX/Xn83SZj3PkvQ2QfwSV/Ew==";
+ //     public static final String RSA_PRIVATE = "+B/+nA9sS08qO4s1gERdYyCb4SfB8bL0JPAkEAyP0I27+PLIM7zdzqKy9rAlUe2t3SFqShiOhj2q4HKjfMoFHP/8PvdVcRII361/r/f0g9r/r2JDH1rKCv0anBDwJAVkSfmyyrPJZ7o3zg3nCBWtmiIiRFDuA/FO/Y+QoHNXxjwk1YSxV9JjgUYEwj9iV0Szv3bwoRV4YR32f3DOiVvQJAF4pgw5rAf5FOMQgjVVWMm3DrpCbN1Q8Ak6NQzmhvjWvyAD7JMlTq5oNn9wSsvXnX/Xn83SZj3PkvQ2QfwSV/Ew==";
 //    // 支付宝公钥
-//    public static final String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
+//    public static final String RSA_PUBLIC = "///PrQEB/+ilIZwBC2AQ2UBVOrFXfFl75p6/";
 
     private  String PARTNER;
     private  String SELLER;
@@ -50,7 +50,6 @@ public class AlibabaPay {
          */
         String sign = alipayInfo.getSign();
 
-        System.out.println("sign is same:::"+sign(orderInfo).equals(sign));
 
 
         try {
@@ -79,9 +78,9 @@ public class AlibabaPay {
      * @param content
      *            待签名订单信息
      */
-    private String sign(String content) {
-        return SignUtils.sign(content, RSA_PRIVATE);
-    }
+//    private String sign(String content) {
+//        return SignUtils.sign(content, RSA_PRIVATE);
+//    }
 
     /**
      * get the sign type we use. 获取签名方式

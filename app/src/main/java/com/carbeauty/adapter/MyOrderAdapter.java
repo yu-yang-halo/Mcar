@@ -117,8 +117,10 @@ public class MyOrderAdapter  extends BaseAdapter {
             if(isOverTime){
                 statusTxt.setText("已过期");
                 delBtn.setVisibility(View.GONE);
+                payButton.setVisibility(View.GONE);
             }else{
                 delBtn.setVisibility(View.VISIBLE);
+                payButton.setVisibility(View.VISIBLE);
             }
         }else if(type==1){
             payButton.setVisibility(View.GONE);
@@ -171,12 +173,12 @@ public class MyOrderAdapter  extends BaseAdapter {
                             AlipayInfoType alipayInfoType= null;
                             Message msg = new Message();
                             try {
-                                alipayInfoType = WSConnector.getInstance().getAlipayByShopId(shopId);
+                                alipayInfoType = WSConnector.getInstance().getAlipayByShopId(bean.getShopId());
                                 AlibabaPay alibabaPay=new AlibabaPay(alipayInfoType.getAliPid(),alipayInfoType.getSellerEmail());
                                 AlipayInfo  alipayInfo=new AlipayInfo(bean.getTitle(),bean.getDesc(),bean.getPrice()+"",bean.getTradeNo());
 
                                 String content=alibabaPay.getOrderInfo(alipayInfo);
-                                String sign=WSConnector.getInstance().signContent(shopId,content);
+                                String sign=WSConnector.getInstance().signContent(bean.getShopId(),content);
                                 alipayInfo.setSign(sign);
 
                                 final String payinfo=alibabaPay.getPayInfoData(alipayInfo);
