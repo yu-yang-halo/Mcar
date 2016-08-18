@@ -243,12 +243,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==1314&&resultCode==1){
             String cityName=data.getStringExtra("cityName");
-			if(cityName.contains("市")){
-				leftBtn.setText(cityName);
-			}else{
-				leftBtn.setText(cityName+"市");
-			}
-
+			leftBtn.setText(cityName);
 			setSelectPos(1);
 		}
 	}
@@ -292,9 +287,8 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 				for(CityInfo cityInfo:cityInfoList){
 					if(cityInfo.getCityId()==cityId){
 						currentCity=cityInfo;
-						String cityName=cityInfo.getName().contains("市")?cityInfo.getName():(cityInfo.getName()+"市");
 
-						currentCity.setName(cityName);
+						currentCity.setName(cityInfo.getName());
 						break;
 					}
 				}
