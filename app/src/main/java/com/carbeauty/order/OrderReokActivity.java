@@ -153,8 +153,6 @@ public class OrderReokActivity extends HeaderActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.v("offer","choose which "+which);
                                 offerIndex=which;
-
-
                             }
                         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -494,11 +492,7 @@ public class OrderReokActivity extends HeaderActivity {
             }
 
             if(ac_type_value==Constants.AC_TYPE_WASH){
-
-
-
-
-                DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                DecoOrderInfo decoOrderInfo=new DecoOrderInfo(0,offerIndex,
                         Constants.STATE_ORDER_UNFINISHED,
                         Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,couponId,null,null,orderTime,null);
 
@@ -525,7 +519,7 @@ public class OrderReokActivity extends HeaderActivity {
                     return e.getErrorMsg();
                 }
             }else  if(ac_type_value==Constants.AC_TYPE_OIL){
-                OilOrderInfo oilOrderInfo=new OilOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                OilOrderInfo oilOrderInfo=new OilOrderInfo(0,offerIndex,
                         Constants.STATE_ORDER_UNFINISHED,
                         Constants.PAY_STATE_UNFINISHED,0,carId,shopId,0,totalPrice,couponId,null,null,orderTime,null);
 
@@ -549,7 +543,7 @@ public class OrderReokActivity extends HeaderActivity {
                 }
 
             }else if(ac_type_value==Constants.AC_TYPE_META){
-                MetaOrderInfo metaOrderInfo=new MetaOrderInfo(0,Constants.TYPE_PAY_TOSHOP,
+                MetaOrderInfo metaOrderInfo=new MetaOrderInfo(0,offerIndex,
                         Constants.STATE_ORDER_UNFINISHED,Constants.PAY_STATE_UNFINISHED,0,
                 carId,shopId,0,totalPrice, couponId,null,null, null,
                         null,
