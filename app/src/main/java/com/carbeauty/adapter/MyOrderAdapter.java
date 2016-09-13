@@ -20,6 +20,7 @@ import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
 import com.carbeauty.cache.ContentBox;
+import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.fragment.MyOrderFragment;
 import com.carbeauty.order.MyOrderActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -32,6 +33,7 @@ import java.util.List;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.AlipayInfoType;
+import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/3/24.
@@ -42,7 +44,7 @@ public class MyOrderAdapter  extends BaseAdapter {
     /** type  "待付款"--0,"已付款"--1,"待确认"--2,"已完成"--3,"已退款"--4  **/
     String[] statusArr=new String[]{"待付款","已付款","待确认","已完成","已退款"};
     int type;
-    int shopId;
+    //int shopId;
     private static final int SDK_PAY_FLAG = 1;
     MyOrderFragment fragment;
     public MyOrderAdapter(Context ctx,
@@ -52,7 +54,7 @@ public class MyOrderAdapter  extends BaseAdapter {
         this.ctx=ctx;
         this.commonOrderBeans=commonOrderBeans;
         this.type=type;
-        shopId= ContentBox.getValueInt(ctx, ContentBox.KEY_SHOP_ID, 0);
+        //shopId= ContentBox.getValueInt(ctx, ContentBox.KEY_SHOP_ID, 0);
         this.fragment=fragment;
     }
     public void setCommonOrderBeans(List<MyOrderActivity.CommonOrderBean> commonOrderBeans){
@@ -93,6 +95,8 @@ public class MyOrderAdapter  extends BaseAdapter {
         Button delBtn= (Button) convertView.findViewById(R.id.delBtn);
         Button payButton= (Button) convertView.findViewById(R.id.button7);
 
+        TextView shopNameTxt= (TextView) convertView.findViewById(R.id.textView58);
+
 
         titleNameTxt.setText(commonOrderBeans.get(position).getTitle());
 
@@ -104,6 +108,10 @@ public class MyOrderAdapter  extends BaseAdapter {
             descImageView.setBackgroundResource(R.drawable.homepage_gridview_7);
         }
 
+        ShopInfo mShopInfo= IDataHandler.getInstance().getShopInfo(commonOrderBeans.get(position).getShopId());
+        if(mShopInfo!=null){
+            shopNameTxt.setText("服务店铺:"+mShopInfo.getName());
+        }
 
         String status="";
 

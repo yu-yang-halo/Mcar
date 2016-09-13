@@ -48,6 +48,7 @@ import cn.service.bean.UserInfo;
 
 /**
  * Created by Administrator on 2016/3/6.
+ * 门店列表---地图模式和一般模式
  */
 public class ShopFragment extends Fragment implements MainActivity.IShowModeListenser {
     MapView bmapView;

@@ -1083,6 +1083,10 @@ public class WSConnector {
 				"userId").item(0);
 		Element shopIdNode = (Element) element.getElementsByTagName(
 				"shopId").item(0);
+
+		Element realShopIdNode=(Element) element.getElementsByTagName(
+				"realShopId").item(0);
+
 		Element priceNode = (Element) element.getElementsByTagName(
 				"price").item(0);
 		Element addressNode = (Element) element.getElementsByTagName(
@@ -1099,7 +1103,7 @@ public class WSConnector {
 		Element tradeNoNode = (Element) element.getElementsByTagName(
 				"tradeNo").item(0);
 
-		int id=0,userId=0,shopId=0,state=0;
+		int id=0,userId=0,shopId=-3,state=0,realShopId=-3;
 		float price=0;
 		String goodsInfo="",createTime="",address="",name="",phone="",
 				processTime="",tradeNo="";
@@ -1137,6 +1141,12 @@ public class WSConnector {
 		if (shopIdNode != null && shopIdNode.getFirstChild() != null) {
 			shopId = Integer.parseInt(shopIdNode.getFirstChild().getNodeValue());
 		}
+
+		if (realShopIdNode != null && realShopIdNode.getFirstChild() != null) {
+			realShopId = Integer.parseInt(realShopIdNode.getFirstChild().getNodeValue());
+		}
+
+
 		if (stateNode != null && stateNode.getFirstChild() != null) {
 			state = Integer.parseInt(stateNode.getFirstChild().getNodeValue());
 		}
@@ -1149,6 +1159,7 @@ public class WSConnector {
 
 
 		goodsOrderListType.setTradeNo(tradeNo);
+		goodsOrderListType.setRealShopId(realShopId);
 
 		return  goodsOrderListType;
 

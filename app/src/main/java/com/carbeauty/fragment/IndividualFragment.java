@@ -24,7 +24,7 @@ import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.cache.MessageManager;
-import com.carbeauty.good.GoodListShowActivity;
+import com.carbeauty.good.GoodOrderListShowActivity;
 import com.carbeauty.good.GoodOrderActivity;
 import com.carbeauty.good.MyAddressActivity;
 import com.carbeauty.manager.CarManagerActivity;
@@ -155,7 +155,7 @@ public class IndividualFragment extends Fragment {
                     intent.putExtra(Constants.AC_TYPE,Constants.AC_TYPE_ORDER_AFTER);
                     intent.putExtra("Title","我的订单");
                 }else if(position==1){
-                    intent=new Intent(getActivity(), GoodListShowActivity.class);
+                    intent=new Intent(getActivity(), GoodOrderListShowActivity.class);
                     intent.putExtra("Title","我的商品订单");
                 }else if (position==2){
                     intent=new Intent(getActivity(), MyAddressActivity.class);

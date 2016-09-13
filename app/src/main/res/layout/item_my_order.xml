@@ -112,6 +112,19 @@
             android:layout_alignTop="@+id/linearLayout6"
             android:layout_alignParentRight="true"
  />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#70000000"
+            android:text=""
+            android:id="@+id/textView58"
+            android:layout_above="@+id/createTimeTxt"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/statusTxt"
+            android:layout_toStartOf="@+id/statusTxt" />
     </RelativeLayout>
 
 </RelativeLayout>

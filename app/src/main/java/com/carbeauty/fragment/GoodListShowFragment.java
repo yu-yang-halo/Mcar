@@ -7,20 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
 import com.carbeauty.adapter.GoodListShowAdapter;
-import com.carbeauty.adapter.MyOrderAdapter;
-import com.carbeauty.good.GoodListShowActivity;
-import com.carbeauty.order.MyOrderActivity;
+import com.carbeauty.good.GoodOrderListShowActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +36,7 @@ public class GoodListShowFragment extends Fragment {
     PullRefreshLayout swipeRefreshLayout;
     List<GoodsOrderListType> goodsOrderListTypes;
     List<GoodInfo> goodInfos;
-    GoodListShowActivity activity;
+    GoodOrderListShowActivity activity;
     WeakReference<GoodListShowFragment> weakReference;
 
     /** type::: 未发货--0  已发货--1  未支付--2  已支付--3 已取消--4**/
@@ -100,7 +95,7 @@ public class GoodListShowFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activity= (GoodListShowActivity) context;
+        activity= (GoodOrderListShowActivity) context;
 
         weakReference=new WeakReference<GoodListShowFragment>(this);
 

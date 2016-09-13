@@ -16,6 +16,7 @@ public class GoodsOrderListType {
     private int  state;
     private String processTime;
     private String tradeNo;
+    private int realShopId;
 
     public String getTradeNo() {
         return tradeNo;
@@ -25,12 +26,21 @@ public class GoodsOrderListType {
         this.tradeNo = tradeNo;
     }
 
+    public int getRealShopId() {
+        return realShopId;
+    }
+
+    public void setRealShopId(int realShopId) {
+        this.realShopId = realShopId;
+    }
+
     public GoodsOrderListType(int id, String goodsInfo, String createTime, int userId, int shopId, float price, String address, String name, String phone, int state, String processTime) {
         this.id = id;
         this.goodsInfo = goodsInfo;
         this.createTime = createTime;
         this.userId = userId;
         this.shopId = shopId;
+
         this.price = price;
         this.address = address;
         this.name = name;

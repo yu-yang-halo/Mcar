@@ -20,6 +20,22 @@ public class IDataHandler {
     private List<MetalplateInfo> metalplateInfoSet;
     private List<ShopInfo> shopInfos;
 
+
+    public ShopInfo getShopInfo(int shopId){
+        ShopInfo m_shopIndo=null;
+
+        List<ShopInfo> shopInfos=this.getShopInfos();
+
+        for (ShopInfo shopInfo:shopInfos) {
+           if(shopInfo.getShopId() == shopId) {
+               m_shopIndo=shopInfo;
+           }
+        }
+
+        return m_shopIndo;
+
+    }
+
     public static IDataHandler getInstance(){
         if(instance==null){
             instance=new IDataHandler();

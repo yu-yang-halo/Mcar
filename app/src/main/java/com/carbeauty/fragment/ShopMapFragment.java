@@ -46,6 +46,7 @@ import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/3/17.
+ * 手机探店---地图显示
  */
 public class ShopMapFragment extends Fragment {
     MapView bmapView;

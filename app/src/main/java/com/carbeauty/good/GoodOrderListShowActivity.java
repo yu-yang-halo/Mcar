@@ -7,16 +7,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.ViewFindUtils;
-import com.carbeauty.adapter.GoodListShowAdapter;
 import com.carbeauty.fragment.GoodListShowFragment;
-import com.carbeauty.fragment.MyOrderFragment;
 import com.carbeauty.order.HeaderActivity;
 import com.flyco.tablayout.SlidingTabLayout;
 
@@ -33,7 +29,7 @@ import cn.service.bean.GoodsOrderListType;
 /**
  * Created by Administrator on 2016/3/30.
  */
-public class GoodListShowActivity extends HeaderActivity {
+public class GoodOrderListShowActivity extends HeaderActivity {
     /** 未发货--0  已发货--1  未支付--2  已支付--3  取消--4**/
     private static final String[] titles=new String[]{"未发货","已发货","未支付","已支付"};
     private ArrayList<Fragment> mFragments = new ArrayList<>();
@@ -130,7 +126,7 @@ public class GoodListShowActivity extends HeaderActivity {
                 }
 
             }else{
-                Toast.makeText(GoodListShowActivity.this,s,Toast.LENGTH_SHORT).show();
+                Toast.makeText(GoodOrderListShowActivity.this,s,Toast.LENGTH_SHORT).show();
             }
         }
     }

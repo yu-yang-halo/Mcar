@@ -34,6 +34,21 @@
             android:layout_toRightOf="@+id/textView55"
             android:layout_toEndOf="@+id/textView55" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#80000000"
+            android:text=""
+            android:padding="2dp"
+            android:gravity="right"
+            android:id="@+id/textView59"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/textView56"
+            android:layout_toEndOf="@+id/textView56" />
+
     </RelativeLayout>
     <ListView
         android:layout_width="match_parent"

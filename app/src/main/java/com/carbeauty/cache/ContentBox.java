@@ -14,7 +14,7 @@ public class ContentBox{
 	public static final String KEY_WAHT_DAY="key_what_day";
 	public static final String KEY_LONG_LAT="key_long_lat";
 	public static final String KEY_CITY_ID="key_city_id";
-	
+	public static final String KEY_USER_TYPE="key_user_type";
 	public static void loadString(Context ctx, String key,String value) {
          sp=ctx.getSharedPreferences(SharePreference_name, Context.MODE_PRIVATE);
          editor=sp.edit();

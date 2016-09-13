@@ -138,7 +138,18 @@ public class OrderReokActivity extends HeaderActivity {
 
         offerDescTxt= (TextView) findViewById(R.id.textView51);
 
-        offerStrArrs=new String[]{"在线支付","到店支付"};
+
+
+        int type=ContentBox.getValueInt(this,ContentBox.KEY_USER_TYPE,3);
+
+        if(type==5){
+            offerStrArrs=new String[]{"在线支付","到店支付"};
+            offerIndex=1;
+        }else{
+            offerStrArrs=new String[]{"在线支付"};
+            offerIndex=0;
+        }
+
 
         offerDescTxt.setText(offerStrArrs[offerIndex]);
 

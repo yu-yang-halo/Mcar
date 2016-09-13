@@ -272,6 +272,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 		@Override
 		protected void onPostExecute(String s) {
+			ContentBox.loadInt(MainActivity.this,ContentBox.KEY_USER_TYPE,userInfo.getType());
 			if(s==null&&cityInfoList!=null){
 
 				for (ShopInfo info: shopInfos){

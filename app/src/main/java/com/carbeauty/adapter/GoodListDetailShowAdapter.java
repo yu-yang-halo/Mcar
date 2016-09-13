@@ -12,11 +12,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.carbeauty.R;
+import com.carbeauty.cache.IDataHandler;
 
 import java.util.List;
 
 import cn.service.WSConnector;
 import cn.service.bean.GoodInfo;
+import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/6/29.
@@ -58,12 +60,14 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
             TextView goodDescTextView= (TextView) convertView.findViewById(R.id.textView7);
             TextView goodPriceTextView= (TextView) convertView.findViewById(R.id.textView54);
 
+
             holder=new AdapterHolder();
 
             holder.goodBuyNumberTextView=goodBuyNumberTextView;
             holder.goodDescTextView=goodDescTextView;
             holder.goodImageView=goodImageView;
             holder.goodPriceTextView=goodPriceTextView;
+
 
             convertView.setTag(holder);
 
@@ -76,6 +80,7 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
         holder.goodPriceTextView.setText("￥"+goodInfo.getPrice());
         holder.goodDescTextView.setText(goodInfo.getDesc());
         holder.goodBuyNumberTextView.setText("x"+goodInfo.getBuyNumber());
+
 
         ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView

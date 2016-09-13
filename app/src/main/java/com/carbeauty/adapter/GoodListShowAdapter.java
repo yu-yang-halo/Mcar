@@ -23,6 +23,7 @@ import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.ShowUnitUtils;
 import com.carbeauty.TimeUtils;
+import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.fragment.GoodListShowFragment;
 import com.pay.AlibabaPay;
 import com.pay.AlipayInfo;
@@ -36,6 +37,7 @@ import cn.service.WSException;
 import cn.service.bean.AlipayInfoType;
 import cn.service.bean.GoodInfo;
 import cn.service.bean.GoodsOrderListType;
+import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/3/30.
@@ -106,8 +108,12 @@ public class GoodListShowAdapter extends BaseAdapter {
 
             viewHolder.itemHeader= (RelativeLayout) convertView.findViewById(R.id.itemHeader);
             viewHolder.itemFooter= (RelativeLayout) convertView.findViewById(R.id.itemFooter);
+
+            viewHolder.shopNameTxt=(TextView)convertView.findViewById(R.id.textView59);
+
             convertView.setTag(viewHolder);
         }
+
         viewHolder= (ViewHolder) convertView.getTag();
 
         viewHolder.orderItemListView.setDividerHeight(1);
@@ -118,6 +124,14 @@ public class GoodListShowAdapter extends BaseAdapter {
 
         viewHolder.orderItemListView.setAdapter(goodListDetailShowAdapter);
         viewHolder.priceLabel.setText(ShowUnitUtils.moneyUnitShow(goodsOrderListTypes.get(position).getPrice()));
+
+        ShopInfo mShopInfo= IDataHandler.getInstance().getShopInfo(goodsOrderListTypes.get(position).getRealShopId());
+
+        if(mShopInfo!=null){
+            viewHolder.shopNameTxt.setText("服务店铺:"+mShopInfo.getName());
+        }
+
+
 
 
         int totalHeight = 0;
@@ -350,5 +364,6 @@ public class GoodListShowAdapter extends BaseAdapter {
         ListView orderItemListView;
         RelativeLayout itemHeader;
         RelativeLayout itemFooter;
+        TextView shopNameTxt;
     }
 }

@@ -157,7 +157,7 @@
         </activity>
         <activity android:name=".good.GoodOrderActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".good.GoodListShowActivity"
+        <activity android:name=".good.GoodOrderListShowActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".good.GoodLookActivity"
         android:screenOrientation="portrait"></activity>
