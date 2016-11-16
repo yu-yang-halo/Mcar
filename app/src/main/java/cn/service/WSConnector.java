@@ -54,6 +54,7 @@ import cn.service.bean.AlipayInfoType;
 import cn.service.bean.AssessInfoType;
 import cn.service.bean.BannerInfoType;
 import cn.service.bean.CameraListType;
+import cn.service.bean.CarBrand;
 import cn.service.bean.CarInfo;
 import cn.service.bean.CityInfo;
 import cn.service.bean.CouponInfo;
@@ -742,6 +743,84 @@ public class WSConnector {
 		return null;
 		
 	}
+
+	public List<CarBrand> getCarBrand(String brand,String carLine) throws WSException {
+
+		String service=WSConnector.wsUrl+"getCarBrand?senderId=123&secToken=123&searchType=1&brand="+brand+"&carLine="+carLine;
+
+		List<CarBrand> carBrands=new ArrayList<CarBrand>();
+		Logger.getLogger(this.getClass()).info(
+				"[getCarBrand]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+
+				NodeList nodeList = root.getElementsByTagName("carBrand");
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Element element = (Element) (nodeList.item(i));
+					CarBrand carBrand = parseXmlToCarBrand(element);
+					Logger.getLogger(this.getClass()).info(
+							"[carBrand]  carBrand = "
+									+ carBrand.toString());
+
+					carBrands.add(carBrand);
+
+
+				}
+
+			}
+		}
+		return carBrands;
+	}
+
+	public CarBrand parseXmlToCarBrand(Element element){
+		CarBrand carBrand=null;
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element letterNode = (Element) element.getElementsByTagName("letter")
+				.item(0);
+		Element brandNode = (Element) element.getElementsByTagName("brand")
+				.item(0);
+		Element carLineNode = (Element) element.getElementsByTagName("carLine")
+				.item(0);
+		Element namedNode = (Element) element.getElementsByTagName("name")
+				.item(0);
+
+		int id=0;
+		String letter=null,brand=null,carLine=null,name=null;
+
+
+		if (idNode != null && idNode.getFirstChild() != null) {
+			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
+		}
+		if (letterNode != null && letterNode.getFirstChild() != null) {
+			letter = letterNode.getFirstChild().getNodeValue();
+		}
+		if (brandNode != null && brandNode.getFirstChild() != null) {
+			brand =brandNode.getFirstChild().getNodeValue();
+		}
+		if (carLineNode != null && carLineNode.getFirstChild() != null) {
+			carLine =carLineNode.getFirstChild().getNodeValue();
+		}
+		if (namedNode != null && namedNode.getFirstChild() != null) {
+			name =namedNode.getFirstChild().getNodeValue();
+		}
+
+		carBrand=new CarBrand(id,letter,brand,carLine,name);
+
+		return  carBrand;
+	}
+
+
 	public AlipayInfoType getAlipayByShopId(int shopId) throws WSException {
 		String service = "";
 		service = WSConnector.wsUrl + "getAlipayByShopId?senderId="

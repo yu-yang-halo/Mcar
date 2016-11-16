@@ -249,7 +249,7 @@ public class LoginActivity extends Activity {
 					}
 				});
 				Intent intent=new Intent();
-				if("3".equals(typeStr)){
+				if("3".equals(typeStr)||"5".equals(typeStr)){
 					intent.setClass(LoginActivity.this, MainActivity.class);
 				}else{
 					intent.setClass(LoginActivity.this, ConsoleActivity.class);

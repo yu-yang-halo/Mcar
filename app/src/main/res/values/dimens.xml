@@ -9,4 +9,6 @@
     <dimen name="defaultFontSize">17sp</dimen>
 
     <dimen name="mainHeadFontSize">20sp</dimen>
+
+    <dimen name="button_font_size">18sp</dimen>
 </resources>

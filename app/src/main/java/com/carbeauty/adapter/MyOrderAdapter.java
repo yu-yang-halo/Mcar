@@ -1,7 +1,9 @@
 package com.carbeauty.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +21,7 @@ import com.alipay.sdk.app.PayTask;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
+import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.fragment.MyOrderFragment;
@@ -218,10 +221,70 @@ public class MyOrderAdapter  extends BaseAdapter {
                     payThread.start();
 
 
-
-
             }
         });
+
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                new AlertDialog.Builder(ctx).setTitle("提示").setMessage("是否删除该订单").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        commonOrderBeans.remove(position);
+                        notifyDataSetChanged();
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_DECO){
+
+                                    try {
+                                        WSConnector.getInstance().delDecoOrder(commonOrderBeans.get(position).getId());
+                                    } catch (WSException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }else if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_OIL){
+
+                                    try {
+                                        WSConnector.getInstance().delOilOrder(commonOrderBeans.get(position).getId());
+                                    } catch (WSException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }else if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_META){
+
+
+                                    try {
+                                        WSConnector.getInstance().delMetaOrder(commonOrderBeans.get(position).getId());
+                                    } catch (WSException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+                        }).start();
+
+
+
+
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+
+
+                return true;
+            }
+        });
+
 
         return convertView;
     }

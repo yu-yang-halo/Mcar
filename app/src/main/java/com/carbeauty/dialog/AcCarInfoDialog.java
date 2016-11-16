@@ -1,7 +1,9 @@
 package com.carbeauty.dialog;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,5 +55,30 @@ public class AcCarInfoDialog extends Activity {
             }
         });
 
+        editText.setKeyListener(null);
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    Intent it=new Intent(AcCarInfoDialog.this,NumberSelectorDialog.class);
+                    startActivityForResult(it,0);
+                }
+            }
+        });
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it=new Intent(AcCarInfoDialog.this,NumberSelectorDialog.class);
+                startActivityForResult(it,0);
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==NumberSelectorDialog.resultCode){
+            String result=data.getStringExtra(NumberSelectorDialog.KEY_RESULT);
+            Log.v("numberCar","result "+result);
+            editText.setText(result);
+        }
     }
 }

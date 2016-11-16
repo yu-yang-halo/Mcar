@@ -17,6 +17,7 @@
         android:layout_height="35dp"
         android:id="@+id/editText"
         android:hint="例如：皖A 88888"
+
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 

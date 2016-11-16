@@ -9,8 +9,8 @@ android {
         applicationId "com.carbeauty.mcar"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 11
-        versionName "1.2.7"
+        versionCode 13
+        versionName "1.3.0"
     }
     buildTypes {
         release {
@@ -19,6 +19,11 @@ android {
         }
     }
 
+}
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -51,4 +56,6 @@ dependencies {
     compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.6'
     compile files('libs/volley.jar')
     compile files('libs/alipaySdk-20160516.jar')
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }
