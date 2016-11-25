@@ -233,44 +233,7 @@ public class MyOrderAdapter  extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        commonOrderBeans.remove(position);
-                        notifyDataSetChanged();
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_DECO){
-
-                                    try {
-                                        WSConnector.getInstance().delDecoOrder(commonOrderBeans.get(position).getId());
-                                    } catch (WSException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }else if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_OIL){
-
-                                    try {
-                                        WSConnector.getInstance().delOilOrder(commonOrderBeans.get(position).getId());
-                                    } catch (WSException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }else if(commonOrderBeans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_META){
-
-
-                                    try {
-                                        WSConnector.getInstance().delMetaOrder(commonOrderBeans.get(position).getId());
-                                    } catch (WSException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                            }
-                        }).start();
-
-
-
+                       new OrderDelTask(ctx,commonOrderBeans,position).execute();
 
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -287,6 +250,62 @@ public class MyOrderAdapter  extends BaseAdapter {
 
 
         return convertView;
+    }
+
+
+    class OrderDelTask extends  AsyncTask<String,String,Boolean>{
+
+        private int position;
+        private List<MyOrderActivity.CommonOrderBean> beans;
+        private Context ctx;
+
+        public OrderDelTask(Context ctx,List<MyOrderActivity.CommonOrderBean> commonOrderBeans,int position){
+            this.position=position;
+            this.beans=commonOrderBeans;
+            this.ctx=ctx;
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            if(beans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_DECO){
+
+                try {
+                    WSConnector.getInstance().delDecoOrder(beans.get(position).getId());
+                } catch (WSException e) {
+                    return false;
+                }
+
+            }else if(beans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_OIL){
+
+                try {
+                    WSConnector.getInstance().delOilOrder(beans.get(position).getId());
+                } catch (WSException e) {
+                    return false;
+                }
+
+            }else if(beans.get(position).getItemType()== MyOrderActivity.CommonOrderBean.ITEM_TYPE_META){
+
+
+                try {
+                    WSConnector.getInstance().delMetaOrder(beans.get(position).getId());
+                } catch (WSException e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if(aBoolean){
+                commonOrderBeans.remove(position);
+            }else{
+                Toast.makeText(ctx,"删除失败",Toast.LENGTH_SHORT).show();
+
+            }
+            notifyDataSetChanged();
+        }
     }
 
 
