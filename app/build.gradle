@@ -46,17 +46,16 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.bumptech.glide:glide:3.6.0'
     compile 'info.hoang8f:android-segmented:1.0.6'
-    compile 'com.github.florent37:viewanimator:1.0.2'
     compile files('libs/jpush-android-2.1.0.jar')
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/avioctrldefine.jar')
     compile files('libs/iotcamera.jar')
     compile 'im.fir:fir-sdk:latest.integration@aar'
-    compile files('libs/gson-2.2.4.jar')
     compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.6'
     compile files('libs/volley.jar')
     compile files('libs/alipaySdk-20160516.jar')
 
     compile 'com.bigkoo:quicksidebar:1.0.3'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile project(path: ':uilibrary')
 }

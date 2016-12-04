@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bigkoo.quicksidebardemo.CarSelectorActivity;
 import com.carbeauty.R;
 
 /**
@@ -72,6 +73,23 @@ public class AcCarInfoDialog extends Activity {
                 startActivityForResult(it,0);
             }
         });
+
+        editText2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    Intent it=new Intent(AcCarInfoDialog.this,CarSelectorActivity.class);
+                    startActivityForResult(it,1);
+                }
+            }
+        });
+        editText2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it=new Intent(AcCarInfoDialog.this,CarSelectorActivity.class);
+                startActivityForResult(it,1);
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -79,6 +97,10 @@ public class AcCarInfoDialog extends Activity {
             String result=data.getStringExtra(NumberSelectorDialog.KEY_RESULT);
             Log.v("numberCar","result "+result);
             editText.setText(result);
+        }else if(resultCode==CarSelectorActivity.RESULT_CODE){
+            String result=data.getStringExtra(CarSelectorActivity.KEY_RESULT);
+            Log.v("CarSelectorActivity","result "+result);
+            editText2.setText(result);
         }
     }
 }

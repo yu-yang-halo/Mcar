@@ -1,5 +1,6 @@
 package com.carbeauty.userlogic;
 
+import com.bigkoo.quicksidebardemo.CarSelectorActivity;
 import com.carbeauty.FirVersion;
 import com.carbeauty.MainActivity;
 import com.carbeauty.MyActivityManager;

@@ -25,7 +25,7 @@ public class NumberSelectorDialog extends Activity {
     Button selectButton;
     GridView gridView;
     NumberAdapter  adapter;
-    public static int resultCode=100;
+    public static int resultCode=1000;
     public static String  KEY_RESULT="key_result";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
