@@ -74,6 +74,7 @@ public class AcCarInfoDialog extends Activity {
             }
         });
 
+        editText2.setKeyListener(null);
         editText2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
