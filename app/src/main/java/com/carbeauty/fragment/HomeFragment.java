@@ -31,6 +31,7 @@ import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.adapter.BitmapCache;
 import com.carbeauty.adapter.HotGoodsAdapter;
+import com.carbeauty.auto.AutowashActivity;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.good.GoodActivity;
 import com.carbeauty.good.GoodLookActivity;
@@ -70,7 +71,7 @@ public class HomeFragment extends Fragment {
     private int[] icon = { R.drawable.homepage_gridview_8, R.drawable.homepage_gridview_6,
             R.drawable.homepage_gridview_7, R.drawable.homepage_gridview_3,
             R.drawable.homepage_gridview_4,
-            R.drawable.homepage_gridview_1,R.drawable.default_icon_serve};
+            R.drawable.homepage_gridview_1,R.drawable.homepage_gridview_9};
     private String[] iconName;
     PullRefreshLayout swipeRefreshLayout;
 
@@ -168,7 +169,10 @@ public class HomeFragment extends Fragment {
                     } else if (position == 5) {
                         toGoods(position);
                     } else if (position == 6) {
-                        Toast.makeText(getActivity(), "即将上线，敬请期待~", Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(getActivity(), AutowashActivity.class);
+                        intent.putExtra("Title", iconName[position]);
+                        startActivity(intent);
+
                     }else if(position==4){
                         toWeb();
                     }

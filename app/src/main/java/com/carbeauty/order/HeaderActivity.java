@@ -46,8 +46,12 @@ public class HeaderActivity extends FragmentActivity {
             if (selCar == null) {
                 selCar = carInfos.get(0);
             }
-            rightBtn.setText(selCar.getNumber());
-            ContentBox.loadInt(this, ContentBox.KEY_CAR_ID, selCar.getId());
+
+            if(selCar!=null){
+                rightBtn.setText(selCar.getNumber());
+                ContentBox.loadInt(this, ContentBox.KEY_CAR_ID, selCar.getId());
+            }
+
         }else{
             ContentBox.loadInt(this, ContentBox.KEY_CAR_ID, -1);
         }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/white_ios"
+    android:orientation="vertical" >
+
+
+
+    <Button
+        android:id="@+id/leftBtn"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:text="返回"
+        android:textColor="@color/black"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="@dimen/defaultFontSize"
+        android:gravity="center"
+        android:text=""
+        android:textStyle="bold"
+        android:id="@+id/titleTxt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:id="@+id/rightBtn"
+        android:background="@null"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

@@ -59,6 +59,7 @@ import cn.service.bean.CarInfo;
 import cn.service.bean.CityInfo;
 import cn.service.bean.CouponInfo;
 import cn.service.bean.DecoOrderInfo;
+import cn.service.bean.DevInfoType;
 import cn.service.bean.GoodsOrderListType;
 import cn.service.bean.GoodsType;
 import cn.service.bean.OrderStateType;
@@ -598,6 +599,8 @@ public class WSConnector {
 		} 
 		return null;
 	}
+
+
 	private  ShopInfo  parseXmlToShopInfo(Element element){
 		Element shopIdNode = (Element) element.getElementsByTagName(
 				"shopId").item(0);
@@ -698,6 +701,129 @@ public class WSConnector {
 		
 		return shopInfo;
 	}
+
+	private DevInfoType parseXmlToDevInfoType(Element element){
+		Element idNode = (Element) element.getElementsByTagName(
+				"id").item(0);
+		Element nameNode = (Element) element.getElementsByTagName(
+				"name").item(0);
+		Element descriptionNode = (Element) element.getElementsByTagName(
+				"description").item(0);
+		Element snIdNode = (Element) element.getElementsByTagName(
+				"snId").item(0);
+		Element ipNode = (Element) element.getElementsByTagName(
+				"ip").item(0);
+		Element portNode = (Element) element.getElementsByTagName(
+				"port").item(0);
+		Element stateNode = (Element) element.getElementsByTagName(
+				"state").item(0);
+		Element createTimeNode = (Element) element.getElementsByTagName(
+				"createTime").item(0);
+		Element longitudeNode = (Element) element.getElementsByTagName(
+				"longitude").item(0);
+		Element latitudeNode = (Element) element.getElementsByTagName(
+				"latitude").item(0);
+		int id=parseElementValueToInt(idNode);
+		String name=parseElementValueNoNull(nameNode);
+		String description=parseElementValueNoNull(descriptionNode);
+		int snId=parseElementValueToInt(snIdNode);
+		String ip=parseElementValueNoNull(ipNode);
+		String port=parseElementValueNoNull(portNode);
+
+		int state=parseElementValueToInt(stateNode);
+		String createTime=parseElementValueNoNull(createTimeNode);
+		float longitude=parseElementValueToFloat(longitudeNode);
+		float latitude=parseElementValueToFloat(latitudeNode);
+
+
+		DevInfoType devInfoType=new DevInfoType(id,name,description,snId,ip,port,state,
+				createTime,longitude,latitude);
+
+
+		return devInfoType;
+
+
+	}
+
+
+	public boolean createDeviceOrder(int deviceId,int couponId,float money,int payType) throws WSException {
+		String service  = WSConnector.wsUrl + "createDeviceOrder?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&deviceId="+deviceId+"&couponId="+couponId
+				+"&money="+money+"&payType="+payType;
+
+
+		Logger.getLogger(this.getClass()).info(
+				"[createDeviceOrder]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+
+//				Element idNode = root.getElementsByTagName("id") != null ? (Element) root
+//						.getElementsByTagName("id").item(0) : null;
+//
+//				parseElementValueToInt(idNode);
+
+				return true;
+			}
+		}
+
+
+		return false;
+
+	}
+
+	public List<DevInfoType> getDeviceList() throws WSException {
+		String service  = WSConnector.wsUrl + "getDeviceList?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken");
+		Logger.getLogger(this.getClass()).info(
+				"[getDeviceList]  ws query = " + service);
+
+
+
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				NodeList nodeList = root.getElementsByTagName("devInfo");
+				Logger.getLogger(this.getClass()).info(
+						"[getDeviceList]   nodeList Size = " + nodeList.getLength());
+				List<DevInfoType> devInfoTypes=new ArrayList<DevInfoType>();
+
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Element element = (Element) (nodeList.item(i));
+					DevInfoType devInfoType = parseXmlToDevInfoType(element);
+					Logger.getLogger(this.getClass()).info(
+							"[devInfoType]  devInfoType = "
+									+ devInfoType.toString());
+					devInfoTypes.add(devInfoType);
+
+
+				}
+				return devInfoTypes;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
+			}
+		}
+		return null;
+	}
+
+
 	public List<ShopInfo> getShopList() throws WSException{
 		String service = "";
 		service = WSConnector.wsUrl + "getShopList?senderId="
@@ -3346,5 +3472,44 @@ public class WSConnector {
 		}
 		return null;
     }
+
+
+	private String parseElementValueNoNull(Element node){
+		String value=parseElementValue(node);
+
+		return value==null?"":value;
+	}
+	private int parseElementValueToInt(Element node){
+		String value=parseElementValue(node);
+
+		return value==null?-1:Integer.parseInt(value);
+	}
+	private short parseElementValueToShort(Element node){
+		String value=parseElementValue(node);
+
+		return value==null?-1:Short.parseShort(value);
+	}
+	private float parseElementValueToFloat(Element node){
+		String value=parseElementValue(node);
+
+		return value==null?-1:Float.parseFloat(value);
+	}
+
+	private String parseElementValue(Element node){
+
+		if(node==null){
+			return null;
+		}
+		if(node.getFirstChild()==null){
+			return null;
+		}
+
+		if(node.getFirstChild().getNodeValue()==null){
+			return null;
+		}
+
+		return node.getFirstChild().getNodeValue();
+
+	}
     
 }
