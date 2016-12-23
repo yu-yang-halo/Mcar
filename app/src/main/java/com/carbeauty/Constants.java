@@ -43,6 +43,10 @@ public class Constants {
     public final static int GOOD_STATE_ORDER_PAY=3;//3已支付
     public final static int GOOD_STATE_ORDER_CANCEL=4;//取消
 
+    public final static int PAY_TYPE_ALIPAY=1;//支付宝
+    public final static int PAY_TYPE_WECHAT=2;//微信
+    public final static int PAY_TYPE_COUPON=3;//优惠券
+
 
 
     public final static int SEARCH_SHOP=1;//搜索类型 按店搜索
@@ -54,11 +58,17 @@ public class Constants {
      */
     public static final int COUPON_TYPE_DISCOUNT=0;//折扣
     public static final int COUPON_TYPE_PRICE=1;//价格
+
+
     public static final int ORDER_TYPE_ALL=0;
     public static final int ORDER_TYPE_DECO=1;
     public static final int ORDER_TYPE_OIL=2;
     public static final int ORDER_TYPE_META=3;
+    public static final int ORDER_TYPE_AUTO=4;
 
 
+    public static final int USER_TYPE_ADMIN=2;
+    public static final int USER_TYPE_NOMAL=3;
+    public static final int USER_TYPE_VIP=5;
 
 }

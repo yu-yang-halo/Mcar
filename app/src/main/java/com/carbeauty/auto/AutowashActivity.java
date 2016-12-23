@@ -31,6 +31,7 @@ import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.fragment.ShopFragment;
 import com.carbeauty.web.PanoramaActivity;
+import com.example.qr_codescan.MipcaActivityCapture;
 
 import java.util.List;
 
@@ -57,6 +58,9 @@ public class AutowashActivity extends BaseActivity {
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                 Intent intent=new Intent(AutowashActivity.this, MipcaActivityCapture.class);
+                 startActivity(intent);
+
 
             }
         });
@@ -107,7 +111,7 @@ public class AutowashActivity extends BaseActivity {
                 .fromResource(R.mipmap.autowash);
         Bundle bundle=new Bundle();
         bundle.putString("desc",devInfoType.getDescription());
-
+        bundle.putInt("deviceId",devInfoType.getId());
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
@@ -152,7 +156,9 @@ public class AutowashActivity extends BaseActivity {
                     public void onClick(View v) {
 
                         Intent intent=new Intent(AutowashActivity.this,PayActivity.class);
+                        intent.putExtra(PayActivity.KEY_DEVICE_ID,marker.getExtraInfo().getInt("deviceId"));
                         startActivity(intent);
+
 
 
                     }

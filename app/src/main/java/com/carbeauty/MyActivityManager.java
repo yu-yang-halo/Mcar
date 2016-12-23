@@ -1,6 +1,7 @@
 package com.carbeauty;
 
 import android.app.Activity;
+import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
@@ -25,7 +26,7 @@ public class MyActivityManager {
     public Activity getCurrentActivity() {
         Activity currentActivity = null;
         if (sCurrentActivityWeakRef != null) {
-            currentActivity = sCurrentActivityWeakRef.get();
+            currentActivity = (Activity) sCurrentActivityWeakRef.get();
         }
         return currentActivity;
     }

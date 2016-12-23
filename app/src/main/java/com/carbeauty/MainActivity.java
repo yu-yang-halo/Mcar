@@ -2,12 +2,14 @@ package com.carbeauty;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.adapter.CityAdapter;
+import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.fragment.HomeFragment;
 import com.carbeauty.fragment.IndividualFragment;
@@ -67,7 +70,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 	Button rightBtn;
 	BDLocation bdLocation;
 	List<CityInfo> cityInfoList;
-	CityInfo currentCity;
+	CityInfo myShopOwnerCity;
 	UserInfo userInfo;
 	List<ShopInfo> shopInfos;
 	private IShowModeListenser iShowModeListenser;
@@ -282,25 +285,76 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 					}
 				}
 
-
-
-
 				for(CityInfo cityInfo:cityInfoList){
 					if(cityInfo.getCityId()==cityId){
-						currentCity=cityInfo;
-
-						currentCity.setName(cityInfo.getName());
+						myShopOwnerCity=cityInfo;
+						myShopOwnerCity.setName(cityInfo.getName());
 						break;
 					}
 				}
-				if(currentCity!=null){
-					leftBtn.setText(currentCity.getName());
-					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,currentCity.getCityId());
+
+				if(myShopOwnerCity!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
+					leftBtn.setText(myShopOwnerCity.getName());
+					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
 				}else{
-					leftBtn.setText("选择城市");
+
+					/*
+					    两种情况：1.所选店铺的城市与当前城市不匹配
+					             2.没有选择店铺,自动切换到目标城市
+					 */
+
+					final CityInfo currentCity=findLocalCityFromServer();
+					if(currentCity!=null){
+						if(myShopOwnerCity!=null){
+							leftBtn.setText(myShopOwnerCity.getName());
+							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+						}
+						DialogManagerUtils.showMessageAndCancel(MainActivity.this, "您目前的位置是" + bdLocation.getCity(), "是否切换到该城市", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								leftBtn.setText(currentCity.getName());
+								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,currentCity.getCityId());
+								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
+							}
+						});
+
+					}else{
+						if(myShopOwnerCity==null){
+							Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店",Toast.LENGTH_SHORT).show();
+							leftBtn.setText("选择城市");
+							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,-1);
+							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
+						}else{
+							Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店,自动切回之前店铺所在城市",Toast.LENGTH_SHORT).show();
+							leftBtn.setText(myShopOwnerCity.getName());
+							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+						}
+
+					}
+
+
+
 				}
+
+
+
+
 			}
 		}
+	}
+	private CityInfo findLocalCityFromServer(){
+		CityInfo findLocalCityFromServer = null;
+		for (CityInfo cityInfo:cityInfoList){
+			if(bdLocation.getCity().contains(cityInfo.getName())){
+				findLocalCityFromServer=cityInfo;
+				break;
+			}
+
+		}
+
+		return findLocalCityFromServer;
+
+
 	}
 
 	public interface IShowModeListenser{

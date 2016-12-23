@@ -149,7 +149,7 @@ public class OrderReokActivity extends HeaderActivity {
 
         int type=ContentBox.getValueInt(this,ContentBox.KEY_USER_TYPE,3);
 
-        if(type==5){
+        if(type==Constants.USER_TYPE_VIP){
             offerStrArrs=new String[]{"在线支付","到店支付"};
             offerIndex=1;
         }else{

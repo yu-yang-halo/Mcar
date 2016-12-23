@@ -1,4 +1,5 @@
 package com.example.jpushdemo;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,8 @@ import com.carbeauty.MyActivityManager;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.MessageManager;
 import com.carbeauty.message.MessageActivity;
+import com.carbeauty.userlogic.AdminActivity;
+import com.carbeauty.userlogic.ICallData;
 import com.carbeauty.userlogic.LoginActivity;
 
 import org.json.JSONException;
@@ -35,11 +38,25 @@ public class MyReceiver extends BroadcastReceiver {
 	public void onReceive(final Context context, final Intent intent) {
         Bundle bundle = intent.getExtras();
 		Log.d(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+		int orderId  =-1;
+		int orderType=-1;
+		try {
+			String extra_data=bundle.getString(JPushInterface.EXTRA_EXTRA);
+			if(extra_data!=null&&!extra_data.isEmpty()){
+				JSONObject json = new JSONObject(extra_data);
+				orderId=json.getInt("orderId");
+				orderType=json.getInt("orderType");
+				Log.d(TAG, "[MyReceiver] orderId - " +orderId+ ", orderType: " + orderType);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		String alertMessage=intent.getStringExtra(JPushInterface.EXTRA_ALERT);
-
-		MessageManager.getInstance().addJPMessage(context,new MessageManager.JPMessage(alertMessage));
-
+		MessageManager.JPMessage jpMessage=new MessageManager.JPMessage(alertMessage);
+		jpMessage.setOrderId(orderId);
+		jpMessage.setOrderType(orderType);
+		MessageManager.getInstance().addJPMessage(context,jpMessage);
 
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
@@ -62,6 +79,12 @@ public class MyReceiver extends BroadcastReceiver {
 
 					}
 				});
+				Activity activity=MyActivityManager.getInstance().getCurrentActivity();
+				Log.e(TAG, "[activity]  " + activity+" context "+context);
+				if(ICallData.class.isAssignableFrom(activity.getClass()) ){
+					ICallData iCallData= (ICallData) activity;
+					iCallData.onDataRefresh();
+				}
 
 			}
 
@@ -76,6 +99,13 @@ public class MyReceiver extends BroadcastReceiver {
 
 					}
 				});
+
+				Activity activity=MyActivityManager.getInstance().getCurrentActivity();
+				Log.e(TAG, "[activity]  " + activity+" context "+context);
+				if(ICallData.class.isAssignableFrom(activity.getClass()) ){
+					ICallData iCallData= (ICallData) activity;
+					iCallData.onDataRefresh();
+				}
 
 			}else{
 				//打开自定义的Activity
@@ -114,6 +144,7 @@ public class MyReceiver extends BroadcastReceiver {
 
 				try {
 					JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+
 					Iterator<String> it =  json.keys();
 
 					while (it.hasNext()) {

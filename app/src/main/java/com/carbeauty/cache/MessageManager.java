@@ -60,6 +60,13 @@ public class MessageManager {
         return messageStack;
     }
     public static class JPMessage{
+
+        /**
+         *消息类型 洗车，养护，钣金喷漆，保养，耗材
+         */
+        private  int orderId;
+        private  int orderType;
+
         private  String msgContent;
 
         public JPMessage(String msgContent) {
@@ -72,6 +79,22 @@ public class MessageManager {
 
         public void setMsgContent(String msgContent) {
             this.msgContent = msgContent;
+        }
+
+        public int getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(int orderId) {
+            this.orderId = orderId;
+        }
+
+        public int getOrderType() {
+            return orderType;
+        }
+
+        public void setOrderType(int orderType) {
+            this.orderType = orderType;
         }
     }
 

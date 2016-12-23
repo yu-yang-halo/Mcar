@@ -1,13 +1,12 @@
 package com.carbeauty.userlogic;
 
-import com.bigkoo.quicksidebardemo.CarSelectorActivity;
+import com.carbeauty.Constants;
 import com.carbeauty.FirVersion;
 import com.carbeauty.MainActivity;
 import com.carbeauty.MyActivityManager;
 import com.carbeauty.R;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentCacheUtils;
-import com.carbeauty.dialog.AcCarInfoDialog;
 import com.carbeauty.dialog.IpConfigDialog;
 import com.carbeauty.message.MessageActivity;
 import com.google.gson.Gson;
@@ -38,7 +37,6 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.service.MD5Generator;
-import cn.service.RegType;
 import cn.service.Util;
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -246,14 +244,16 @@ public class LoginActivity extends Activity {
 				JPushInterface.setAliasAndTags(getApplicationContext(), loginName, tags, new TagAliasCallback() {
 					@Override
 					public void gotResult(int i, String s, Set<String> set) {
-
+						System.out.println("s: "+s+" "+set);
 					}
 				});
 				Intent intent=new Intent();
-				if("3".equals(typeStr)||"5".equals(typeStr)){
+
+				if(typeStr.equals(String.valueOf(Constants.USER_TYPE_NOMAL))
+						||typeStr.equals(String.valueOf(Constants.USER_TYPE_VIP))){
 					intent.setClass(LoginActivity.this, MainActivity.class);
 				}else{
-					intent.setClass(LoginActivity.this, ConsoleActivity.class);
+					intent.setClass(LoginActivity.this, AdminActivity.class);
 				}
 				startActivity(intent);
 				finish();

@@ -111,7 +111,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
     @Override
     public void onStart() {
         super.onStart();
-        new ShopInfosTask(-100).execute();
+
     }
 
     private void addPointToMap(ShopInfo shopInfo,boolean selected){
@@ -301,9 +301,17 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                     initListView(shopID);
                     ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,shopID);
                 }else{
+
+                    int _mshopId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID,-2);
+                    if(_mshopId==-1){
+                        ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,-1);
+                        userInfo.setShopId(-1);
+                    }else{
+                        ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
+                    }
                     initMapData(userInfo.getShopId());
                     initListView(userInfo.getShopId());
-                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
+
                 }
 
             }else {
@@ -314,5 +322,13 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            new ShopInfosTask(-100).execute();
+        }
+
+    }
 }
 
