@@ -117,8 +117,6 @@
                   android:screenOrientation="portrait" >
 
         </activity>
-        <activity android:name="com.example.qr_codescan.MipcaActivityCapture"
-                  android:screenOrientation="portrait"></activity>
 
         <activity android:name=".web.WebBroswerPromotionActivity"
             android:screenOrientation="portrait" >

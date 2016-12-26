@@ -108,7 +108,8 @@ public class ShopMapFragment extends Fragment {
                 .position(point)
                 .title(shopInfo.getName())
                 .extraInfo(bundle)
-                .icon(bitmap);
+                .icon(bitmap)
+                .animateType(MarkerOptions.MarkerAnimateType.grow);;
         showDialog(bundle,point);
 
 //在地图上添加Marker，并显示

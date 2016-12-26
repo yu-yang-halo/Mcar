@@ -1,12 +1,9 @@
 package com.carbeauty.auto;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,16 +26,16 @@ import com.baidu.mapapi.model.LatLng;
 import com.carbeauty.BaseActivity;
 import com.carbeauty.MyApplication;
 import com.carbeauty.R;
-import com.carbeauty.fragment.ShopFragment;
 import com.carbeauty.web.PanoramaActivity;
-import com.example.qr_codescan.MipcaActivityCapture;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.List;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.DevInfoType;
-import cn.service.bean.ShopInfo;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -48,20 +45,21 @@ public class AutowashActivity extends BaseActivity {
 
     MapView bmapView;
     BaiduMap mBaiduMap;
+    List<DevInfoType> devInfoTypeList;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_autowash);
+
+        ZXingLibrary.initDisplayOpinion(this);
         initCustomActionBar();
         titleLabel.setText("自助洗");
         rightBtn.setText("扫一扫");
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 Intent intent=new Intent(AutowashActivity.this, MipcaActivityCapture.class);
-                 startActivity(intent);
-
-
+                Intent intent = new Intent(AutowashActivity.this, CaptureActivity.class);
+                startActivityForResult(intent, 1001);
             }
         });
 
@@ -83,7 +81,38 @@ public class AutowashActivity extends BaseActivity {
 
     }
 
-    private void updateMapStatus(double lgt,double lat){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if(requestCode==1001&&resultCode==RESULT_OK){
+           //处理扫描结果（在界面上显示）
+           if (null != data) {
+               Bundle bundle = data.getExtras();
+               if (bundle == null) {
+                   return;
+               }
+               if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                   String result = bundle.getString(CodeUtils.RESULT_STRING);
+
+                   DevInfoType devInfoType=findScanDevice(result);
+                   if(devInfoType!=null){
+                       Intent intent=new Intent(AutowashActivity.this,PayActivity.class);
+                       intent.putExtra(PayActivity.KEY_DEVICE_ID,devInfoType.getId());
+                       intent.putExtra(PayActivity.KEY_DEVICE_NAME,devInfoType.getName());
+                       startActivity(intent);
+                   }else{
+                       showMessage("找不到该设备");
+                   }
+
+
+               } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                   showMessage("解析二维码失败");
+               }
+           }
+       }
+
+    }
+
+    private void updateMapStatus(double lgt, double lat){
 
             //设定中心点坐标
 
@@ -110,8 +139,8 @@ public class AutowashActivity extends BaseActivity {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.autowash);
         Bundle bundle=new Bundle();
-        bundle.putString("desc",devInfoType.getDescription());
         bundle.putInt("deviceId",devInfoType.getId());
+
 //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
                 .position(point)
@@ -141,7 +170,6 @@ public class AutowashActivity extends BaseActivity {
 
                 nameText.setText(marker.getTitle()
                         + "\n"
-                        + marker.getExtraInfo().getString("desc")+"\n"
                         + "(自助洗车)");
 
                 nameText.measure(0, 0);
@@ -157,6 +185,7 @@ public class AutowashActivity extends BaseActivity {
 
                         Intent intent=new Intent(AutowashActivity.this,PayActivity.class);
                         intent.putExtra(PayActivity.KEY_DEVICE_ID,marker.getExtraInfo().getInt("deviceId"));
+                        intent.putExtra(PayActivity.KEY_DEVICE_NAME,marker.getTitle());
                         startActivity(intent);
 
 
@@ -214,7 +243,6 @@ public class AutowashActivity extends BaseActivity {
     }
 
     class GetWashDataListTask extends AsyncTask<String,String,String>{
-        List<DevInfoType> devInfoTypeList;
 
         @Override
         protected void onPreExecute() {
@@ -242,5 +270,24 @@ public class AutowashActivity extends BaseActivity {
         }
     }
 
+    private DevInfoType findScanDevice(String deviceIdStr){
+        int devId;
+        try {
+            devId=Integer.parseInt(deviceIdStr);
+        } catch (NumberFormatException e) {
+           devId=-1;
+        }
+
+
+        DevInfoType devInfoType = null;
+        for (DevInfoType dev:devInfoTypeList){
+             if(dev.getId()==devId){
+                 devInfoType=dev;
+                 break;
+             }
+        }
+
+        return  devInfoType;
+    }
 
 }

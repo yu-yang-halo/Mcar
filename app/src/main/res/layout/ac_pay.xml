@@ -3,11 +3,99 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:padding="10dp"
-        android:layout_marginTop="19dp"
+        android:background="@color/white"
+        android:id="@+id/relayout"
+        android:layout_marginTop="1dp"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/relayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="15dp"
+            android:id="@+id/imageView15"
+            android:src="@drawable/arrow_right"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginRight="10dp"
+            android:textSize="12sp"
+            android:id="@+id/textView53"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imageView15"
+            android:layout_toStartOf="@+id/imageView15" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择洗车时间"
+            android:textSize="18sp"
+            android:id="@+id/timetext"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:background="@color/white"
+        android:id="@+id/relayout2"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="15dp"
+            android:id="@+id/imageView1"
+            android:src="@drawable/arrow_right"
+            android:visibility="invisible"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/deviceName"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imageView1"
+            android:layout_toStartOf="@+id/imageView1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备名称"
+            android:textSize="18sp"
+            android:id="@+id/textView1"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:layout_marginTop="1dp"
         android:background="@color/white"
         android:id="@+id/couponRelayout"
         android:gravity="center_vertical"
@@ -45,7 +133,6 @@
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>
-
     <Button
         android:text="下单"
         android:layout_width="280dp"
@@ -57,46 +144,4 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="11dp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="10dp"
-        android:background="@color/white"
-        android:id="@+id/relayout"
-        android:gravity="center_vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:id="@+id/imageView15"
-            android:src="@drawable/arrow_right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginRight="10dp"
-            android:textSize="12sp"
-            android:id="@+id/textView53"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/imageView15"
-            android:layout_toStartOf="@+id/imageView15" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="选择洗车时间"
-            android:textSize="18sp"
-            android:id="@+id/timetext"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
 </RelativeLayout>

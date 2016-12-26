@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -45,5 +46,8 @@ public class BaseActivity extends FragmentActivity {
 
 
         return true;
+    }
+    protected void showMessage(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 }

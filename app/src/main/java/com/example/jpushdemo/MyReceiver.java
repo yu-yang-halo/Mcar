@@ -37,6 +37,7 @@ public class MyReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
         Bundle bundle = intent.getExtras();
+		int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
 		Log.d(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
 		int orderId  =-1;
 		int orderType=-1;
@@ -69,7 +70,7 @@ public class MyReceiver extends BroadcastReceiver {
         
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
-            int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
+
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
 			if(!MyActivityManager.getInstance().isRunBackground()){
@@ -79,12 +80,7 @@ public class MyReceiver extends BroadcastReceiver {
 
 					}
 				});
-				Activity activity=MyActivityManager.getInstance().getCurrentActivity();
-				Log.e(TAG, "[activity]  " + activity+" context "+context);
-				if(ICallData.class.isAssignableFrom(activity.getClass()) ){
-					ICallData iCallData= (ICallData) activity;
-					iCallData.onDataRefresh();
-				}
+				notificationToUI(context,notifactionId);
 
 			}
 
@@ -99,13 +95,7 @@ public class MyReceiver extends BroadcastReceiver {
 
 					}
 				});
-
-				Activity activity=MyActivityManager.getInstance().getCurrentActivity();
-				Log.e(TAG, "[activity]  " + activity+" context "+context);
-				if(ICallData.class.isAssignableFrom(activity.getClass()) ){
-					ICallData iCallData= (ICallData) activity;
-					iCallData.onDataRefresh();
-				}
+				notificationToUI(context,notifactionId);
 
 			}else{
 				//打开自定义的Activity
@@ -126,6 +116,16 @@ public class MyReceiver extends BroadcastReceiver {
         } else {
         	Log.d(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
         }
+	}
+	private void notificationToUI(Context context,int notifactionId){
+		Activity activity=MyActivityManager.getInstance().getCurrentActivity();
+		Log.e(TAG, "[activity]  " + activity+" context "+context);
+		if(ICallData.class.isAssignableFrom(activity.getClass()) ){
+			ICallData iCallData= (ICallData) activity;
+			iCallData.onDataRefresh();
+			JPushInterface.clearNotificationById(context,notifactionId);
+		}
+
 	}
 
 	// 打印所有的 intent extra 数据

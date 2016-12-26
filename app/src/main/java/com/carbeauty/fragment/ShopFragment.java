@@ -134,7 +134,8 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                 .position(point)
                 .title(shopInfo.getName())
                 .extraInfo(bundle)
-                .icon(bitmap);
+                .icon(bitmap)
+                .animateType(MarkerOptions.MarkerAnimateType.grow);;
 
 
 

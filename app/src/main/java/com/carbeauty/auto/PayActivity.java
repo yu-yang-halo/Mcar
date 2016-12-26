@@ -39,9 +39,11 @@ import cn.service.bean.CouponInfo;
 
 public class PayActivity extends BaseActivity {
     public static final String KEY_DEVICE_ID="device_ID";
+    public static final String KEY_DEVICE_NAME="device_NAME";
     NumberPicker picker;
     TextView timeLabel;
     TextView couponLabel;
+    TextView deviceNameLabel;
     int shopId;
     List<CouponInfo> couponInfos;
     String[]  couponStrArrs;
@@ -50,6 +52,7 @@ public class PayActivity extends BaseActivity {
     Button btnOrder;
     int deviceId=-1;
     int couponId=-1;
+    String deviceName;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,9 @@ public class PayActivity extends BaseActivity {
         initCustomActionBar();
 
         deviceId=getIntent().getIntExtra(KEY_DEVICE_ID,-1);
+        deviceName=getIntent().getStringExtra(KEY_DEVICE_NAME);
+
+
 
 
         RelativeLayout relayout= (RelativeLayout) findViewById(R.id.relayout);
@@ -64,7 +70,12 @@ public class PayActivity extends BaseActivity {
 
         timeLabel= (TextView) findViewById(R.id.textView53);
         couponLabel= (TextView) findViewById(R.id.textView52);
+        deviceNameLabel= (TextView) findViewById(R.id.deviceName);
         btnOrder= (Button) findViewById(R.id.button8);
+
+        if(deviceName!=null){
+            deviceNameLabel.setText(deviceName);
+        }
 
 
 
@@ -179,15 +190,7 @@ public class PayActivity extends BaseActivity {
                 } catch (WSException e) {
                     e.printStackTrace();
                 }
-                allCoupons=new ArrayList<CouponInfo>();
 
-                for (int i=0;i<10;i++){
-                    CouponInfo couponInfo=new CouponInfo((i+1)*3, "23", "优惠哦"+i, "",
-                            2, 100.0f*i, 0.5f,1,
-                            "2016-11-21T08:10:11.000", "2016-12-29T08:10:11.000",-1,1,
-                            2,4);
-                    allCoupons.add(couponInfo);
-                }
             }else{
                 try {
                     WSConnector.getInstance().createDeviceOrder(deviceId,couponId,1,Constants.PAY_TYPE_COUPON);

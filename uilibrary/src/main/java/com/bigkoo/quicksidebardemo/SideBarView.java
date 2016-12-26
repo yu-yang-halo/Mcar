@@ -57,15 +57,16 @@ public class SideBarView {
 
 
     public void showSideBarView(){
-        ViewAnimator.animate(sideView).translationX(1000,0).duration(300).start();
+
+        ViewAnimator.animate(sideView).translationX(10000,0).duration(300).start();
 
     }
     public void hideSideBarView(){
-        ViewAnimator.animate(sideView).translationX(0,1000).duration(300).start();
+        ViewAnimator.animate(sideView).translationX(0,10000).duration(300).start();
 
     }
     public void hideSideBarView(int millseconds){
-        ViewAnimator.animate(sideView).translationX(0,1000).duration(millseconds).start();
+        ViewAnimator.animate(sideView).translationX(0,10000).duration(millseconds).start();
 
     }
 
