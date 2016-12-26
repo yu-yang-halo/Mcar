@@ -1,21 +1,13 @@
 package com.carbeauty;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -25,9 +17,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.ContentCacheUtils;
-import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
-import com.tutk.IOTC.Camera;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +30,6 @@ import cn.service.MD5Generator;
 import cn.service.WSConnector;
 import cn.service.WSException;
 import im.fir.sdk.FIR;
-import im.fir.sdk.VersionCheckCallback;
 
 /**
  * Created by Administrator on 2016/3/20.
@@ -185,7 +174,7 @@ public class MyApplication extends Application {
      */
     private void setStyleBasic() {
         BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(getApplicationContext());
-        builder.statusBarDrawable = R.mipmap.ic_launcher;
+        builder.statusBarDrawable = R.mipmap.appicon;
         builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;  //设置为点击后自动消失
         builder.notificationDefaults = Notification.DEFAULT_SOUND;  //设置为铃声（ Notification.DEFAULT_SOUND）或者震动（ Notification.DEFAULT_VIBRATE）
         JPushInterface.setPushNotificationBuilder(1, builder);
