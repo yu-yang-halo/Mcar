@@ -152,9 +152,9 @@ public class CarSelectorActivity extends FragmentActivity implements OnQuickSide
 
             String JSON_ALL_CAR_BRAND;
             if(type==0){
-                JSON_ALL_CAR_BRAND= DataFetcherUtils.fetechNetWorkData(ConstantsURLUtils.URL_ALL_CAR_BRAND);
+                JSON_ALL_CAR_BRAND= DataFetcherUtils.fetechNetWorkData(ConstantsURLUtils.LOCAL_URL_ALL_CAR_BRAND);
             }else{
-                JSON_ALL_CAR_BRAND= DataFetcherUtils.fetechNetWorkData(String.format(ConstantsURLUtils.URL_Car_By_ParentId,parentId));
+                JSON_ALL_CAR_BRAND= DataFetcherUtils.fetechNetWorkData(String.format(ConstantsURLUtils.LOCAL_URL_Car_By_ParentId,parentId));
             }
 
             Gson gson=new Gson();
