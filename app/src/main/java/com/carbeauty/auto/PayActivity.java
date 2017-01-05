@@ -9,8 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +22,18 @@ import com.carbeauty.BaseActivity;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
+import com.carbeauty.adapter.MoneyAdapter;
+import com.carbeauty.adapter.OrderTimeAdapter;
+import com.carbeauty.alertDialog.WindowUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.order.OrderReokActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.pay.AlibabaPay;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.qqtheme.framework.picker.NumberPicker;
 import cn.qqtheme.framework.picker.OptionPicker;
@@ -41,14 +50,14 @@ public class PayActivity extends BaseActivity {
     public static final String KEY_DEVICE_ID="device_ID";
     public static final String KEY_DEVICE_NAME="device_NAME";
     NumberPicker picker;
-    TextView timeLabel;
     TextView couponLabel;
     TextView deviceNameLabel;
+    GridView moneyGV;
     int shopId;
     List<CouponInfo> couponInfos;
     String[]  couponStrArrs;
     int selectIndex=-1;
-    int timeValue=-1;
+    int moneyValue=-1;
     Button btnOrder;
     int deviceId=-1;
     int couponId=-1;
@@ -65,13 +74,16 @@ public class PayActivity extends BaseActivity {
 
 
 
-        RelativeLayout relayout= (RelativeLayout) findViewById(R.id.relayout);
+
         RelativeLayout couponRelayout= (RelativeLayout) findViewById(R.id.couponRelayout);
 
-        timeLabel= (TextView) findViewById(R.id.textView53);
+        moneyGV= (GridView) findViewById(R.id.moneyGV);
         couponLabel= (TextView) findViewById(R.id.textView52);
         deviceNameLabel= (TextView) findViewById(R.id.deviceName);
         btnOrder= (Button) findViewById(R.id.button8);
+
+
+        gridViewInit();
 
         if(deviceName!=null){
             deviceNameLabel.setText(deviceName);
@@ -90,21 +102,14 @@ public class PayActivity extends BaseActivity {
                     Toast.makeText(PayActivity.this,"请选择优惠券",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(timeValue<0){
-                    Toast.makeText(PayActivity.this,"请选择洗车时间",Toast.LENGTH_SHORT).show();
+                if(moneyValue<0){
+                    Toast.makeText(PayActivity.this,"请选择洗车金额",Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 couponId=couponInfos.get(selectIndex).getId();
                 new DataRequestTask(1).execute();
 
-            }
-        });
-
-        relayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPickerNumber();
             }
         });
 
@@ -144,17 +149,37 @@ public class PayActivity extends BaseActivity {
 
 
     }
+
+    private void gridViewInit(){
+
+        String[] arrs=new String[]{"1元","2元","3元"};
+
+        final MoneyAdapter moneyAdapter=new MoneyAdapter(arrs,this);
+
+        moneyGV.setAdapter(moneyAdapter);
+        moneyGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("pos","pos "+position+" "+view);
+                moneyAdapter.setSelPos(position);
+
+                moneyValue=position+1;
+
+            }
+        });
+    }
+
     public void showPickerNumber() {
         NumberPicker picker = new NumberPicker(this);
         picker.setOffset(2);//偏移量
-        picker.setRange(1, 20, 1);//数字范围
-        picker.setSelectedItem(15);
-        picker.setLabel("分钟");
+        picker.setRange(1, 3, 1);//数字范围
+        picker.setSelectedItem(3);
+        picker.setLabel("元");
         picker.setOnNumberPickListener(new NumberPicker.OnNumberPickListener() {
             @Override
             public void onNumberPicked(int index, Number item) {
-                timeValue=item.intValue();
-                timeLabel.setText(item.intValue()+"分钟");
+                moneyValue=item.intValue();
+
             }
         });
         picker.show();
@@ -193,7 +218,7 @@ public class PayActivity extends BaseActivity {
 
             }else{
                 try {
-                    WSConnector.getInstance().createDeviceOrder(deviceId,couponId,1,Constants.PAY_TYPE_COUPON);
+                    WSConnector.getInstance().createDeviceOrder(deviceId,couponId,moneyValue,Constants.PAY_TYPE_COUPON,moneyValue);
                 } catch (WSException e) {
                     e.printStackTrace();
                 }

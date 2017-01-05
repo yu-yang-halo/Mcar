@@ -746,11 +746,11 @@ public class WSConnector {
 	}
 
 
-	public boolean createDeviceOrder(int deviceId,int couponId,float money,int payType) throws WSException {
+	public boolean createDeviceOrder(int deviceId,int couponId,float money,int payType,int minute) throws WSException {
 		String service  = WSConnector.wsUrl + "createDeviceOrder?senderId="
 				+ this.userMap.get("userId") + "&secToken="
 				+ this.userMap.get("secToken")+"&deviceId="+deviceId+"&couponId="+couponId
-				+"&money="+money+"&payType="+payType;
+				+"&money="+money+"&payType="+payType+"&minute="+minute;
 
 
 		Logger.getLogger(this.getClass()).info(

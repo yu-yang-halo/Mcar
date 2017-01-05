@@ -293,7 +293,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 					}
 				}
 
-				if(myShopOwnerCity!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
+				if(myShopOwnerCity!=null&&bdLocation!=null&&bdLocation.getCity()!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
 					leftBtn.setText(myShopOwnerCity.getName());
 					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
 				}else{

@@ -4,50 +4,6 @@
     android:layout_height="match_parent">
 
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="10dp"
-        android:background="@color/white"
-        android:id="@+id/relayout"
-        android:layout_marginTop="1dp"
-        android:gravity="center_vertical"
-        android:layout_below="@+id/relayout2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <ImageView
-            android:layout_width="8dp"
-            android:layout_height="15dp"
-            android:id="@+id/imageView15"
-            android:src="@drawable/arrow_right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginRight="10dp"
-            android:textSize="12sp"
-            android:id="@+id/textView53"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/imageView15"
-            android:layout_toStartOf="@+id/imageView15" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="选择洗车时间"
-            android:textSize="18sp"
-            android:id="@+id/timetext"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -99,7 +55,7 @@
         android:background="@color/white"
         android:id="@+id/couponRelayout"
         android:gravity="center_vertical"
-        android:layout_below="@+id/relayout"
+        android:layout_below="@+id/relayout2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
@@ -133,6 +89,7 @@
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>
+
     <Button
         android:text="下单"
         android:layout_width="280dp"
@@ -144,4 +101,41 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="11dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:padding="10dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/white"
+        android:id="@+id/relayout3"
+        android:layout_below="@+id/couponRelayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择金额:"
+            android:textSize="18sp"
+            android:id="@+id/moneyTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/moneyGV"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/moneyTitle"
+            android:layout_alignParentLeft="true"
+            android:numColumns="3"
+            android:layout_alignParentStart="true">
+        </GridView>
+
+    </RelativeLayout>
 </RelativeLayout>
