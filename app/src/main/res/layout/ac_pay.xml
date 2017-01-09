@@ -104,9 +104,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="200dp"
         android:padding="10dp"
-        android:layout_marginTop="1dp"
         android:background="@color/white"
         android:id="@+id/relayout3"
         android:layout_below="@+id/couponRelayout"
@@ -128,12 +127,12 @@
 
         <GridView
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="170dp"
             android:id="@+id/moneyGV"
             android:layout_marginTop="5dp"
             android:layout_below="@+id/moneyTitle"
             android:layout_alignParentLeft="true"
-            android:numColumns="3"
+            android:numColumns="5"
             android:layout_alignParentStart="true">
         </GridView>
 

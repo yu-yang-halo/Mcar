@@ -25,6 +25,7 @@ public enum ErrorCode {
 	REJECT(1, "服务器错误，请稍后再试！"),
 	LOGIN_FAILED(2, "登录失败，请再试！"),
 	CONN_TO_WS_ERR(3, "不能连接到服务器，请检查手机通信状态，稍后再试！"),
+	BALANCE_NOT_ENOUGH(24,"余额不足"),
 	
 	INVALID_LOGIN_NAME_PWD(1001, "用户名或密码输入错误。"),
 	LOGIN_NAME_NOT_EXIST(1002, "用户名或密码输入错误。"),
@@ -81,6 +82,7 @@ public enum ErrorCode {
 	DATAFORMAT_ERROR(2002,"时间数据格式化错误，请输入正确的时间格式"),
 	VEDIO_LOAD_FAIL(2003,"视频加载错误"),
 	DEVICE_LOCKED(2004,"设备已锁定，请按设备解锁"),
+
 
 	UNKNOWERRORCODE(10000,"未解析的errcode"),
 

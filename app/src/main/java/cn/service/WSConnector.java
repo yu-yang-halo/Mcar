@@ -766,14 +766,14 @@ public class WSConnector {
 					.getNodeValue());
 			if (errorCode == ErrorCode.ACCEPT.getCode()) {
 
-//				Element idNode = root.getElementsByTagName("id") != null ? (Element) root
-//						.getElementsByTagName("id").item(0) : null;
-//
-//				parseElementValueToInt(idNode);
 
 				return true;
+			}else{
+				throw new WSException(ErrorCode.get(errorCode));
 			}
 		}
+
+
 
 
 		return false;
@@ -1400,6 +1400,10 @@ public class WSConnector {
 				"shopId").item(0);
 		Element priceNode = (Element) element.getElementsByTagName(
 				"price").item(0);
+
+		Element balanceNode = (Element) element.getElementsByTagName(
+				"balance").item(0);
+
 		Element discountNode = (Element) element.getElementsByTagName(
 				"discount").item(0);
 		Element typeNode = (Element) element.getElementsByTagName(
@@ -1417,7 +1421,8 @@ public class WSConnector {
 		Element orderTypeNode = (Element) element.getElementsByTagName(
 				"orderType").item(0);
 		int id=-1,shopId=-1,type=-1,createUserId=-1,useUserId=-1,isUsed=-1,orderType=-1;
-		float price=0,discount=0;
+
+		float price=0,discount=0,balance = 0;
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
 		}
@@ -1428,6 +1433,11 @@ public class WSConnector {
 		if (priceNode != null && priceNode.getFirstChild() != null) {
 			price = Float.parseFloat(priceNode.getFirstChild().getNodeValue());
 		}
+		if (balanceNode != null && balanceNode.getFirstChild() != null) {
+			balance = Float.parseFloat(balanceNode.getFirstChild().getNodeValue());
+		}
+
+
 		if (discountNode != null && discountNode.getFirstChild() != null) {
 			discount = Float.parseFloat(discountNode.getFirstChild().getNodeValue());
 		}
@@ -1464,9 +1474,11 @@ public class WSConnector {
 		if (createTimeNode != null && createTimeNode.getFirstChild() != null) {
 			createTime = createTimeNode.getFirstChild().getNodeValue();
 		}
+
+
 		
 		CouponInfo couponInfo=new CouponInfo(id, number, name, desc, shopId, price, discount, type, createTime, endTime, createUserId, useUserId, isUsed, orderType);
-		
+		couponInfo.setBalance(balance);
 		return couponInfo;
 		
 	}

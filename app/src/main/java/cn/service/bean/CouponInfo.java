@@ -6,6 +6,8 @@ public class CouponInfo {
 	private String name;
 	private String desc;
 	private int shopId;
+	private float balance;
+
 
 	public CouponInfo(int id, String number, String name, String desc,
 			int shopId, float price, float discount, int type,
@@ -28,6 +30,7 @@ public class CouponInfo {
 		this.orderType = orderType;
 	}
 
+
 	@Override
 	public String toString() {
 		return "CouponInfo [id=" + id + ", number=" + number + ", name=" + name
@@ -36,6 +39,14 @@ public class CouponInfo {
 				+ createTime + ", endTime=" + endTime + ", createUserId="
 				+ createUserId + ", useUserId=" + useUserId + ", isUsed="
 				+ isUsed + ", orderType=" + orderType + "]";
+	}
+
+	public float getBalance() {
+		return balance;
+	}
+
+	public void setBalance(float balance) {
+		this.balance = balance;
 	}
 
 	private float price;

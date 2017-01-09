@@ -31,6 +31,8 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import com.pay.AlibabaPay;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,11 +135,16 @@ public class PayActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v("sel","cancel which "+which);
                         selectIndex=-1;
+                        couponLabel.setText("");
                     }
                 }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v("sel","ok which "+which);
+                        if(selectIndex<0){
+                            showMessage("请选择优惠券");
+                            return;
+                        }
                         couponLabel.setText(couponStrArrs[selectIndex]);
                     }
                 }).show();
@@ -151,8 +158,15 @@ public class PayActivity extends BaseActivity {
     }
 
     private void gridViewInit(){
+        String[] arrs= null;
+        List<String> listArrs=new ArrayList<>();
 
-        String[] arrs=new String[]{"1元","2元","3元"};
+        for(int i=1;i<=25;i++){
+            listArrs.add(i+"元");
+        }
+
+        arrs=listArrs.toArray(new String[]{});
+
 
         final MoneyAdapter moneyAdapter=new MoneyAdapter(arrs,this);
 
@@ -192,6 +206,7 @@ public class PayActivity extends BaseActivity {
             this.type=type;
         }
         List<CouponInfo> allCoupons;
+        String message;
         @Override
         protected void onPreExecute() {
 
@@ -220,7 +235,9 @@ public class PayActivity extends BaseActivity {
                 try {
                     WSConnector.getInstance().createDeviceOrder(deviceId,couponId,moneyValue,Constants.PAY_TYPE_COUPON,moneyValue);
                 } catch (WSException e) {
-                    e.printStackTrace();
+
+                    message=e.getMessage();
+
                 }
 
             }
@@ -246,13 +263,7 @@ public class PayActivity extends BaseActivity {
                     couponStrArrs=new String[couponInfos.size()];
                     for (int i=0;i<couponInfos.size();i++){
                         CouponInfo info=couponInfos.get(i);
-                        String desc="";
-                        if(info.getType()==Constants.COUPON_TYPE_DISCOUNT){
-                            desc+=info.getDiscount()+"折优惠";
-                        }else{
-                            desc+="抵扣"+info.getPrice();
-                        }
-
+                        String desc="券号:"+info.getNumber()+" 余额:"+info.getPrice();
                         couponStrArrs[i]=desc;
                     }
 
@@ -261,10 +272,13 @@ public class PayActivity extends BaseActivity {
 
                 if(progressHUD!=null){
                     progressHUD.dismiss();
-                    Toast.makeText(PayActivity.this,"下单完成,请立即使用",Toast.LENGTH_SHORT).show();
-                    finish();
                 }
 
+                if(message==null){
+                    message="下单完成,请立即使用";
+                    finish();
+                }
+                Toast.makeText(PayActivity.this,message,Toast.LENGTH_SHORT).show();
 
             }
 

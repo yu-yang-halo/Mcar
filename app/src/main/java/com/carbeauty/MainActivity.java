@@ -259,6 +259,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 	class GetCityTasks extends AsyncTask<String,String,String> {
         private int cityId=-1;
+		private int shopId=-1;
 		@Override
 		protected String doInBackground(String... params) {
 			try {
@@ -281,6 +282,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 				for (ShopInfo info: shopInfos){
 					if(info.getShopId()==userInfo.getShopId()){
 						cityId=info.getCityId();
+						shopId=info.getShopId();
 						break;
 					}
 				}
@@ -296,6 +298,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 				if(myShopOwnerCity!=null&&bdLocation!=null&&bdLocation.getCity()!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
 					leftBtn.setText(myShopOwnerCity.getName());
 					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,shopId);
 				}else{
 
 					/*
