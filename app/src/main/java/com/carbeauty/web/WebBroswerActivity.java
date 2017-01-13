@@ -18,6 +18,8 @@ import com.carbeauty.R;
 import com.carbeauty.dialog.AcCarInfoDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import cn.service.WSConnector;
+
 /**
  * Created by Administrator on 2016/3/10.
  */
@@ -35,9 +37,6 @@ public class WebBroswerActivity extends Activity {
         webView= (WebView) findViewById(R.id.webView);
 
         String url=getIntent().getStringExtra("URL");
-        //Toast.makeText(this, getHttpURL(url), Toast.LENGTH_SHORT).show();
-
-
         WebSettings setting = webView.getSettings();
         setting.setJavaScriptEnabled(true);
         setting.setDefaultTextEncodingName("GBK");
@@ -53,18 +52,24 @@ public class WebBroswerActivity extends Activity {
                 .setDimAmount(0.3f)
                 .show();
 
+
+
+
         webView.setWebChromeClient(new WebChromeClient() {
 
             public void onProgressChanged(WebView view, int progress) {
 
                 if (progress == 100) {
                     progressHUD.dismiss();
+                    String userId=WSConnector.getInstance().getUserMap().get("userId");
+                    webView.loadUrl("javascript:toJSClientUserid("+userId+");");
                 }
             }
 
-
-
         });
+
+
+
 
 
 

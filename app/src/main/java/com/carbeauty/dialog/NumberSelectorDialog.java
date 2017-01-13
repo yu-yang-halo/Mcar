@@ -45,8 +45,9 @@ public class NumberSelectorDialog extends Activity {
 
         ClickListenser listenser=new ClickListenser();
         btn01.setOnClickListener(listenser);
-        btn01.setSelected(true);
-        selectButton=btn01;
+        btn01.setText(NumberUtils.provinces[12]);
+        btn02.setSelected(true);
+        selectButton=btn02;
 
         btn02.setOnClickListener(listenser);
         btn03.setOnClickListener(listenser);
@@ -75,7 +76,7 @@ public class NumberSelectorDialog extends Activity {
         });
 
         adapter=new NumberAdapter(this, NumberUtils.provinces);
-        initProvicesData();
+        initCharsData(true);
 
 
 
@@ -94,6 +95,9 @@ public class NumberSelectorDialog extends Activity {
                         Matcher m = r.matcher(charStr);
                         if (!m.matches()){
                             selectButton.setText(charStr);
+                        }else{
+                            Toast.makeText(NumberSelectorDialog.this,"请选择[A-Z]字符",Toast.LENGTH_SHORT).show();
+                            return;
                         }
                     }else{
                         selectButton.setText(charStr);
