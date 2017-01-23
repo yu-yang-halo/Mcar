@@ -25,6 +25,9 @@ public class IDataHandler {
         ShopInfo m_shopIndo=null;
 
         List<ShopInfo> shopInfos=this.getShopInfos();
+        if(shopInfos==null){
+            return null;
+        }
 
         for (ShopInfo shopInfo:shopInfos) {
            if(shopInfo.getShopId() == shopId) {

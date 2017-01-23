@@ -104,7 +104,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:padding="10dp"
         android:background="@color/white"
         android:id="@+id/relayout3"
@@ -127,9 +127,9 @@
 
         <GridView
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="200dp"
             android:id="@+id/moneyGV"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="20dp"
             android:layout_below="@+id/moneyTitle"
             android:layout_alignParentLeft="true"
             android:numColumns="5"
