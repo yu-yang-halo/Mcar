@@ -82,6 +82,7 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		SDKInitializer.initialize(getApplication());
 		setContentView(R.layout.main);
 		MyApplication application= (MyApplication) getApplication();
 		bdLocation=application.getMyLocation();
@@ -276,7 +277,10 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 		@Override
 		protected void onPostExecute(String s) {
-			ContentBox.loadInt(MainActivity.this,ContentBox.KEY_USER_TYPE,userInfo.getType());
+			if(userInfo!=null){
+				ContentBox.loadInt(MainActivity.this,ContentBox.KEY_USER_TYPE,userInfo.getType());
+			}
+
 			if(s==null&&cityInfoList!=null){
 
 				for (ShopInfo info: shopInfos){
@@ -346,6 +350,9 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 		}
 	}
 	private CityInfo findLocalCityFromServer(){
+		if(bdLocation==null||bdLocation.getCity()==null){
+			return null;
+		}
 		CityInfo findLocalCityFromServer = null;
 		for (CityInfo cityInfo:cityInfoList){
 			if(bdLocation.getCity().contains(cityInfo.getName())){

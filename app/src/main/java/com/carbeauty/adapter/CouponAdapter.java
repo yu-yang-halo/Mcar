@@ -99,7 +99,12 @@ public class CouponAdapter extends BaseAdapter {
             couponEndtimeTxt.setTextColor(ctx.getResources().getColor(R.color.font_origan1));
             couponDescTxt.setTextColor(ctx.getResources().getColor(R.color.font_origan1));
 
-            couponPriceDiscountTxt.setText("￥"+couponInfos.get(position).getPrice());
+            if(couponInfos.get(position).getOrderType()==Constants.ORDER_TYPE_AUTO){
+                couponPriceDiscountTxt.setText("￥"+couponInfos.get(position).getBalance());
+            }else{
+                couponPriceDiscountTxt.setText("￥"+couponInfos.get(position).getPrice());
+            }
+
         }
 
 

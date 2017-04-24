@@ -17,7 +17,9 @@ import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.ContentCacheUtils;
+import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
+import com.tutk.IOTC.Camera;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,14 +94,10 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-
-
-
         initLocation();
 
         enableJPUSH();
         enableFIR();
-
 
         WSConnector.getInstance().setWSErrorCodeListener(new IWSErrorCodeListener() {
             @Override
@@ -210,6 +208,11 @@ public class MyApplication extends Application {
             ContentBox.loadString(getApplicationContext(), ContentBox.KEY_LONG_LAT,
                     location.getLongitude() + ":" + location.getLatitude());
             setMyLocation(location);
+        }
+
+        @Override
+        public void onConnectHotSpotMessage(String s, int i) {
+
         }
     }
     private void setMyLocation(BDLocation location){

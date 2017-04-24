@@ -305,9 +305,20 @@ public class HomeFragment extends Fragment {
         hotgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(getActivity(), GoodActivity.class);
-                intent.putExtra("Title", iconName[5]);
-                intent.putExtra("Type", hotGoodInfos.get(position).getType());
+//                Intent intent=new Intent(getActivity(), GoodActivity.class);
+//                intent.putExtra("Title", iconName[5]);
+//                intent.putExtra("Type", hotGoodInfos.get(position).getType());
+//                startActivity(intent);
+
+                Intent intent=new Intent(getActivity(),GoodLookActivity.class);
+
+                intent.putExtra("price",hotGoodInfos.get(position).getPrice());
+                intent.putExtra("name",hotGoodInfos.get(position).getName());
+                intent.putExtra("desc",hotGoodInfos.get(position).getDesc());
+                intent.putExtra("id",hotGoodInfos.get(position).getId());
+                intent.putExtra("shopId",hotGoodInfos.get(position).getShopId());
+                intent.putExtra("src",hotGoodInfos.get(position).getSrc());
+                intent.putExtra("href",hotGoodInfos.get(position).getHref());
                 startActivity(intent);
 
 

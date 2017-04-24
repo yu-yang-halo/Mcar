@@ -1,5 +1,7 @@
 package com.carbeauty.userlogic;
 
+import com.baidu.mapapi.BMapManager;
+import com.baidu.mapapi.SDKInitializer;
 import com.carbeauty.Constants;
 import com.carbeauty.FirVersion;
 import com.carbeauty.MainActivity;
@@ -113,6 +115,8 @@ public class LoginActivity extends Activity {
 				if (firVersion.getBuild().equals(packageInfo.versionCode + "")
 						&& firVersion.getVersionShort().equals(packageInfo.versionName)) {
 					Log.i("fir", "版本号一致,无需更新");
+
+					versionTxt.setText("最新版本");
 
 				} else {
 

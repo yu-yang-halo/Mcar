@@ -39,16 +39,16 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/appicon"
         android:label="@string/app_name"
-        android:name=".MyApplication"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="k9HSMU8RrEhnMGDjichxpnGz0GrHhb1G"/>
-        <meta-data android:value="09651885e14f236f42a74420831b5192"
+        <meta-data android:value="3b97bcea47f1c1e102e6bc3496b94924"
             android:name="BUG_HD_SDK_GENERAL_KEY" />
 
 
@@ -126,6 +126,7 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".auto.ScannerActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".message.MessageActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".message.NewMsgActivity" android:screenOrientation="portrait">

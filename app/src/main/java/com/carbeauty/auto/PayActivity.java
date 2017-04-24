@@ -182,7 +182,6 @@ public class PayActivity extends BaseActivity {
             }
         });
     }
-
     public void showPickerNumber() {
         NumberPicker picker = new NumberPicker(this);
         picker.setOffset(2);//偏移量
@@ -263,7 +262,7 @@ public class PayActivity extends BaseActivity {
                     couponStrArrs=new String[couponInfos.size()];
                     for (int i=0;i<couponInfos.size();i++){
                         CouponInfo info=couponInfos.get(i);
-                        String desc="券号:"+info.getNumber()+" 余额:"+info.getPrice();
+                        String desc="券号:"+info.getNumber()+" 余额:"+info.getBalance();
                         couponStrArrs[i]=desc;
                     }
 

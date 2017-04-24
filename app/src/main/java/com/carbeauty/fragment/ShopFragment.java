@@ -60,8 +60,11 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        SDKInitializer.initialize(getActivity());
+
         View v=inflater.inflate(R.layout.fr_shop, null);
-        SDKInitializer.initialize(getActivity().getApplicationContext());
+
         bmapView= (MapView) v.findViewById(R.id.bmapView);
         listView=(ListView)v.findViewById(R.id.listView);
 

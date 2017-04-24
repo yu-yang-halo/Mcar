@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
@@ -27,9 +28,6 @@ import com.carbeauty.BaseActivity;
 import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.web.PanoramaActivity;
-import com.uuzuche.lib_zxing.activity.CaptureActivity;
-import com.uuzuche.lib_zxing.activity.CodeUtils;
-import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.List;
 
@@ -51,14 +49,13 @@ public class AutowashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_autowash);
 
-        ZXingLibrary.initDisplayOpinion(this);
         initCustomActionBar();
         titleLabel.setText("自助洗");
         rightBtn.setText("扫一扫");
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AutowashActivity.this, CaptureActivity.class);
+                Intent intent = new Intent(AutowashActivity.this, ScannerActivity.class);
                 startActivityForResult(intent, 1001);
             }
         });
@@ -90,23 +87,23 @@ public class AutowashActivity extends BaseActivity {
                if (bundle == null) {
                    return;
                }
-               if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
-                   String result = bundle.getString(CodeUtils.RESULT_STRING);
+               String result = bundle.getString(ScannerActivity.RESULT_STRING);
 
-                   DevInfoType devInfoType=findScanDevice(result);
-                   if(devInfoType!=null){
+               DevInfoType devInfoType=findScanDevice(result);
+               if(devInfoType!=null){
+                   if(devInfoType.getState()<=0){
+                       showMessage("对不起,当前设备不在线");
+                   }else{
                        Intent intent=new Intent(AutowashActivity.this,PayActivity.class);
                        intent.putExtra(PayActivity.KEY_DEVICE_ID,devInfoType.getId());
                        intent.putExtra(PayActivity.KEY_DEVICE_NAME,devInfoType.getName());
                        startActivity(intent);
-                   }else{
-                       showMessage("找不到该设备");
                    }
 
-
-               } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                   showMessage("解析二维码失败");
+               }else{
+                   showMessage("找不到该设备");
                }
+
            }
        }
 
@@ -136,8 +133,14 @@ public class AutowashActivity extends BaseActivity {
         //定义Maker坐标点
         LatLng point = new LatLng(devInfoType.getLatitude(), devInfoType.getLongitude());
 //构建Marker图标
+        int resId=R.mipmap.online;
+        if(devInfoType.getState()==0){
+            resId=R.mipmap.offline;
+        }
         BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.mipmap.autowash);
+                .fromResource(resId);
+
+
         Bundle bundle=new Bundle();
         bundle.putInt("deviceId",devInfoType.getId());
 
@@ -183,10 +186,17 @@ public class AutowashActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
 
+                        showMessage("请点击扫一扫");
+                        return;
+
+                        /**
+
                         Intent intent=new Intent(AutowashActivity.this,PayActivity.class);
                         intent.putExtra(PayActivity.KEY_DEVICE_ID,marker.getExtraInfo().getInt("deviceId"));
                         intent.putExtra(PayActivity.KEY_DEVICE_NAME,marker.getTitle());
                         startActivity(intent);
+
+                         */
 
 
 
@@ -203,6 +213,7 @@ public class AutowashActivity extends BaseActivity {
         });
 
     }
+
     private void showDialog(final Bundle bundle, final LatLng position){
         //创建InfoWindow展示的view
 

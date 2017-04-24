@@ -168,17 +168,17 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
         rightBtn.setVisibility(View.GONE);
 
         monitor  = (Monitor) findViewById(R.id.monitor);
-        monitor.setPTZ(false);
 
+    }
+
+    public void startVideo(){
+        monitor.setPTZ(false);
         progressHUD= KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("视频加载中...")
                 .setAnimationSpeed(1)
                 .setDimAmount(0.3f)
                 .show();
-
-
-
         connectVideoToMonitor("MyVideo", getIntent().getStringExtra("uid"),
                 getIntent().getStringExtra("account"), getIntent().getStringExtra("password"));
 
@@ -187,6 +187,17 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
         }else{
             mActionbar.show();
         }
+    }
+    public void closeVideo(){
+        // Deattach this camera.
+        monitor.deattachCamera();
+        // Unregister this camera.
+        camera.unregisterIOTCListener(this);
+        // Stop all actions of camera and then disconnect.
+        camera.stopListening(0);
+        camera.stopShow(0);
+        camera.stop(0);
+        camera.disconnect();
     }
 
 
@@ -232,7 +243,7 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
     @Override
     public void onStart() {
         super.onStart();
-
+        startVideo();
     }
     @Override
     public void onBackPressed() {
@@ -243,15 +254,7 @@ public class VideoInfoActivity extends HeaderActivity implements com.tutk.IOTC.I
     @Override
     public void onPause() {
         super.onPause();
-        // Deattach this camera.
-        monitor.deattachCamera();
-        // Unregister this camera.
-        camera.unregisterIOTCListener(this);
-        // Stop all actions of camera and then disconnect.
-        camera.stopListening(0);
-        camera.stopShow(0);
-        camera.stop(0);
-        camera.disconnect();
+        closeVideo();
     }
 
     @Override

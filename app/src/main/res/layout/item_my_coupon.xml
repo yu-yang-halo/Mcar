@@ -67,9 +67,9 @@
             android:layout_height="90dp"
             android:id="@+id/invailedImageView"
             android:src="@drawable/past"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/couponNameTxt"
-            android:layout_toEndOf="@+id/couponNameTxt" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-10dp"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -100,6 +100,11 @@ public class MyOrderAdapter  extends BaseAdapter {
 
         TextView shopNameTxt= (TextView) convertView.findViewById(R.id.textView58);
 
+        if(position>=commonOrderBeans.size()||commonOrderBeans.get(position)==null){
+            Toast.makeText(ctx,"数据错误，请刷新重试~",Toast.LENGTH_SHORT).show();
+            return convertView;
+        }
+
 
         titleNameTxt.setText(commonOrderBeans.get(position).getTitle());
 

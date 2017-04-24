@@ -18,6 +18,7 @@
 -keep class com.baidu.** {*;}
 -keep class vi.com.** {*;}
 -dontwarn com.baidu.**
+
 -keep class android.support.** {*;}
 -keep class cn.service.** {*;}
 -keep class com.carbeauty.** {*;}
