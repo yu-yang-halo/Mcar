@@ -93,6 +93,7 @@ public class WSConnector {
 	//private static String IP1 = "112.124.106.131";
 	private static String IP1 = "112.124.106.131";
 	private static String portStr = "9000";
+	private static String portImageStr = "8888";
 	private static final String REQUEST_HEAD = "http://";
 	private static WSConnector instance = new WSConnector();
 	private Map<String, String> userMap;
@@ -121,13 +122,13 @@ public class WSConnector {
 
 	 */
 	public static String getDecoItemURL(int id,String imageName){
-		return REQUEST_HEAD+IP1+"/upload/server/deco/"+id+"/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/upload/server/deco/"+id+"/"+imageName;
 	}
 	public static String getOilItemURL(int id,String imageName){
-		return REQUEST_HEAD+IP1+"/upload/server/oil/"+id+"/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/upload/server/oil/"+id+"/"+imageName;
 	}
 	public static String getMetaItemURL(int id,String imageName){
-		return REQUEST_HEAD+IP1+"/upload/server/meta/"+id+"/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/upload/server/meta/"+id+"/"+imageName;
 	}
 
 	public static String getCheXianURL(){
@@ -135,20 +136,20 @@ public class WSConnector {
 	}
 
 	public static String getBannerURL(String imageName){
-		return REQUEST_HEAD+IP1+"/kele/upload/banner/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/upload/banner/"+imageName;
 	}
 	public static String getPromotionURL(String imageName){
-		return REQUEST_HEAD+IP1+"/kele/upload/promotion/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/upload/promotion/"+imageName;
 	}
 
 	public static String getGoodsURL(String shopId,String imageName){
-		return REQUEST_HEAD+IP1+"/kele/upload/goods/"+shopId+"/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/upload/goods/"+shopId+"/"+imageName;
 	}
 	public static String getPanoramaURL(String shopId,String imageName){
-		return REQUEST_HEAD+IP1+"/kele/upload/panorama/"+shopId+"/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/upload/panorama/"+shopId+"/"+imageName;
 	}
 	public static String getShopPanoramaURL(String shopId,String imageName){
-		return REQUEST_HEAD+IP1+"/kele/upload/panorama/"+shopId+"/icon/"+imageName;
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/upload/panorama/"+shopId+"/icon/"+imageName;
 	}
 
 	public Map<String, String> getUserMap() {

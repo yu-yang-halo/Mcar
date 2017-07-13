@@ -39,9 +39,11 @@ import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.web.PanoramaActivity;
 
+import java.util.Iterator;
 import java.util.List;
 
 import cn.service.WSConnector;
+import cn.service.WSException;
 import cn.service.bean.ShopInfo;
 
 /**
@@ -174,22 +176,8 @@ public class ShopMapFragment extends Fragment {
     }
 
     private void initMapData(){
-       List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
 
-        if(shopInfos==null){
-            return;
-        }
-        int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
-        for (ShopInfo shopInfo: shopInfos){
-            if(shopId==shopInfo.getShopId()){
-
-                new NetTaskReq(shopInfo).execute();
-
-            }
-
-        }
-
-
+        new NetTaskReq().execute();
     }
 
     private void baiduNavigation(LatLng pt1,LatLng pt2){
@@ -226,22 +214,51 @@ public class ShopMapFragment extends Fragment {
             builder.create().show();
         }
     }
+    private List<ShopInfo> filterShopInfoList(List<ShopInfo> shopInfos){
 
-    class NetTaskReq extends AsyncTask<String,String,String>{
-        ShopInfo shopInfo;
-        NetTaskReq(ShopInfo shopInfo){
-            this.shopInfo=shopInfo;
+        int cityId=ContentBox.getValueInt(getActivity(), ContentBox.KEY_CITY_ID, -1);
+        Iterator<ShopInfo> iterator=shopInfos.iterator();
+        while (iterator.hasNext()){
+            ShopInfo shopInfo=iterator.next();
+            if(cityId!=shopInfo.getCityId()){
+                iterator.remove();
+            }
         }
+        return shopInfos;
+    }
+    class NetTaskReq extends AsyncTask<String,String,String>{
+        ShopInfo mshopInfo;
+
         @Override
         protected String doInBackground(String... params) {
-            bm=ImageUtils.convertNetToBitmap(WSConnector.getShopPanoramaURL(String.valueOf(shopInfo.getShopId()),shopInfo.getIcon()));
+
+            List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
+            if(shopInfos==null){
+                try {
+                    shopInfos = WSConnector.getInstance().getShopList();
+                    shopInfos=filterShopInfoList(shopInfos);
+                    IDataHandler.getInstance().setShopInfos(shopInfos);
+                } catch (WSException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            int shopId = ContentBox.getValueInt(getActivity(), ContentBox.KEY_SHOP_ID, -1);
+            for (ShopInfo shopInfo: shopInfos){
+                if(shopId==shopInfo.getShopId()){
+                    mshopInfo=shopInfo;
+                }
+            }
+            bm=ImageUtils.convertNetToBitmap(WSConnector.getShopPanoramaURL(String.valueOf(mshopInfo.getShopId()),mshopInfo.getIcon()));
+
+
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
-            addPointToMap(shopInfo);
+            updateMapStatus(mshopInfo.getLongitude()+":"+mshopInfo.getLatitude());
+            addPointToMap(mshopInfo);
         }
     }
 
