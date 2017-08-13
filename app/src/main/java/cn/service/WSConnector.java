@@ -132,7 +132,7 @@ public class WSConnector {
 	}
 
 	public static String getCheXianURL(){
-		return REQUEST_HEAD+IP1+"/kele/chexian.htm";
+		return REQUEST_HEAD+IP1+":"+portImageStr+"/kele/chexian.htm";
 	}
 
 	public static String getBannerURL(String imageName){

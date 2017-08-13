@@ -244,7 +244,7 @@ public class DataFetcherUtils {
 	}
 
 	public static String fetechNetWorkData(String urlString) {
-		StringBuffer sb = null;
+		StringBuffer sb = new StringBuffer();
 		InputStream is = null;
 		try {
 			URL url = new URL(urlString);
@@ -254,7 +254,7 @@ public class DataFetcherUtils {
 			conn.setReadTimeout(11 * 1000);
 
 			is = conn.getInputStream();
-			sb = new StringBuffer();
+
 
 			byte[] buffer = new byte[1024];
 			int i = -1;

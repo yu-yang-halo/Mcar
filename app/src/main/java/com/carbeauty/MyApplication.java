@@ -19,6 +19,7 @@ import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.ContentCacheUtils;
 import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
+import com.pgyersdk.crash.PgyCrashManager;
 import com.tutk.IOTC.Camera;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import cn.service.IWSErrorCodeListener;
 import cn.service.MD5Generator;
 import cn.service.WSConnector;
 import cn.service.WSException;
-import im.fir.sdk.FIR;
 
 /**
  * Created by Administrator on 2016/3/20.
@@ -97,7 +97,7 @@ public class MyApplication extends Application {
         initLocation();
 
         enableJPUSH();
-        enableFIR();
+        enablePayer();
 
         WSConnector.getInstance().setWSErrorCodeListener(new IWSErrorCodeListener() {
             @Override
@@ -154,17 +154,20 @@ public class MyApplication extends Application {
 
 
 
+
+
     private void enableJPUSH(){
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
 
         setStyleBasic();
     }
-    private void enableFIR(){
-        FIR.init(this);
-
+    private void enablePayer(){
+        PgyCrashManager.register(this);
     }
-
+    private void disablePayer(){
+        PgyCrashManager.unregister();
+    }
 
 
     /**
