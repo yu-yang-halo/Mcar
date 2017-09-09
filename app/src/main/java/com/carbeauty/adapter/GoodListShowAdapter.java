@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import com.alipay.sdk.app.PayTask;
 import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.ShowUnitUtils;
-import com.carbeauty.TimeUtils;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.fragment.GoodListShowFragment;
 import com.pay.AlibabaPay;
@@ -31,6 +29,7 @@ import com.pay.PayResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.service.WSConnector;
 import cn.service.WSException;
@@ -198,7 +197,7 @@ public class GoodListShowAdapter extends BaseAdapter {
                                         // 构造PayTask 对象
                                         PayTask alipay = new PayTask((Activity) ctx);
                                         // 调用支付接口，获取支付结果
-                                        String result = alipay.pay(payinfo, true);
+                                        Map<String, String>  result = alipay.payV2(payinfo, true);
 
                                         Message msg = new Message();
                                         msg.what = SDK_PAY_FLAG;
@@ -271,7 +270,7 @@ public class GoodListShowAdapter extends BaseAdapter {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
                      * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
                      * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&

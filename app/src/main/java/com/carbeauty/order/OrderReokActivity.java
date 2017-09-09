@@ -32,6 +32,7 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.carbeauty.Constants;
 import com.pay.AlibabaPay;
@@ -92,7 +93,7 @@ public class OrderReokActivity extends HeaderActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
+                    PayResult payResult = new PayResult((Map<String, String>)  msg.obj);
                     /**
                      * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
                      * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
@@ -609,7 +610,7 @@ public class OrderReokActivity extends HeaderActivity {
                            // 构造PayTask 对象
                            PayTask alipay = new PayTask(ctx);
                            // 调用支付接口，获取支付结果
-                           String result = alipay.pay(payinfo, true);
+                           Map<String, String>  result = alipay.payV2(payinfo, true);
 
                            Message msg = new Message();
                            msg.what = SDK_PAY_FLAG;

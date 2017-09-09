@@ -38,6 +38,14 @@ public class TimeUtils {
 		return simpleDateFormat.format(date);
 	}
 
+	public static String currentTime(){
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(new Date());
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		return simpleDateFormat.format(calendar.getTime());
+	}
+
 	public static Date formatString(String timeStr){
 		String format = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);

@@ -2,7 +2,6 @@ package com.carbeauty.good;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,26 +13,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.carbeauty.Constants;
 import com.carbeauty.R;
 import com.carbeauty.UserAddressManager;
 import com.carbeauty.adapter.GoodLookAdapter;
 import com.carbeauty.cache.CartManager;
 import com.carbeauty.cache.ContentBox;
-import com.carbeauty.order.HeaderActivity;
-import com.carbeauty.order.OrderResultActivity;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.pay.AlibabaPay;
 import com.pay.AlipayInfo;
 import com.pay.PayResult;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +63,7 @@ public class GoodOrderActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
                      * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
                      * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
@@ -327,7 +321,7 @@ public class GoodOrderActivity extends FragmentActivity {
                         // 构造PayTask 对象
                         PayTask alipay = new PayTask(ctx);
                         // 调用支付接口，获取支付结果
-                        String result = alipay.pay(payinfo, true);
+                        Map<String, String>   result = alipay.payV2(payinfo, true);
 
                         Message msg = new Message();
                         msg.what = SDK_PAY_FLAG;

@@ -1,22 +1,6 @@
 package com.pay;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
-import android.widget.Toast;
-
-import com.alipay.sdk.app.PayTask;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
-
-import cn.service.WSConnector;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/7/13.
@@ -27,9 +11,14 @@ public class AlibabaPay {
 //    // 商户收款账号
 //    public static final String SELLER = "13395602277@163.com";
 //    // 商户私钥，pkcs8格式
- //     public static final String RSA_PRIVATE = "+B/+nA9sS08qO4s1gERdYyCb4SfB8bL0JPAkEAyP0I27+PLIM7zdzqKy9rAlUe2t3SFqShiOhj2q4HKjfMoFHP/8PvdVcRII361/r/f0g9r/r2JDH1rKCv0anBDwJAVkSfmyyrPJZ7o3zg3nCBWtmiIiRFDuA/FO/Y+QoHNXxjwk1YSxV9JjgUYEwj9iV0Szv3bwoRV4YR32f3DOiVvQJAF4pgw5rAf5FOMQgjVVWMm3DrpCbN1Q8Ak6NQzmhvjWvyAD7JMlTq5oNn9wSsvXnX/Xn83SZj3PkvQ2QfwSV/Ew==";
+    public static final String RSA_PRIVATE = "AMITT+B/+nA9sS08qO4s1gERdYyCb4SfB8bL0JPAkEAyP0I27+PLIM7zdzqKy9rAlUe2t3SFqShiOhj2q4HKjfMoFHP/8PvdVcRII361/r/f0g9r/r2JDH1rKCv0anBDwJAVkSfmyyrPJZ7o3zg3nCBWtmiIiRFDuA/FO/Y+QoHNXxjwk1YSxV9JjgUYEwj9iV0Szv3bwoRV4YR32f3DOiVvQJAF4pgw5rAf5FOMQgjVVWMm3DrpCbN1Q8Ak6NQzmhvjWvyAD7JMlTq5oNn9wSsvXnX/Xn83SZj3PkvQ2QfwSV/Ew==";
 //    // 支付宝公钥
 //    public static final String RSA_PUBLIC = "///PrQEB/+ilIZwBC2AQ2UBVOrFXfFl75p6/";
+
+    /** 支付宝支付业务：入参app_id */
+    public static final String APPID = "2017090708595026";
+    public static final String RSA2_PRIVATE = "AMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwo7ZwCTkqR+OlbsVQkVpI3TR8qzIou6jatEZDsNLjpcRhZ+JRU4Z6VZPg68cDMGgv9t6rYtCI+IpdDJN0+Zv8uFHVSFmyaoic3+lDE0S2Oyl1lGByvgM0g7cGT3Z8DYC0gVU7iyw2V9KQhKbTpcnlcj8xh0w3E1CSI20m12l3bF5U3GL2uXVs9wY67dyZJZ7Tu5OM5eB/bxw0jftpnkfksCxUJzUlpw5+JpEPSd6dCLC6fVDw9TxERV/3bfsND4EouufkaYygMSnkOskuCEtIarh6vRiMA+V3h1g4b/B9LtO2pl5k8C+cIHa7GQJHZBcBb+iCb+1RF1532d+oXtc9AgMBAAECggEAcjpch1Ufl50HtPrONMzactZB1AEtnbPFfTEpYyrdJgQT292/OFJoW4It8Dzo5MIQDjx6QKDVNE5tw8CXNwUX/7T+jouMHdnQ4InYId07CRF3PScnu+vuzK4E1NrcR1rACXq9sJTOkZH3hCeUbrf+uRdJkHDrM46VAvxP4Ndax7PA+VrN1gGHdosGhRgOhRFn58h4krU97vWUzpfXizs4CVBl8WCuVOllTysxXqHGjzLMsQ2Ap9v/sYbVhiEzFuY9oKJxrtnGYqIiKNqzM+LVt3IgBknictphRzT3gMRrzQ4yxQ1KwZ5NCZc5CgNRHB/D5r0zYq8ZtyBwxIeWojie7QKBgQD671nNg9sWIXNXhtz0Dfu4/Vo699Fy+Jav+uaMRwWvOSN9uye5uAwPZgbvn6skbTFRklTtFzkzyI3jN289Kf8wSgIiL56sGoDoxCuYSiG5BiPB3WNMyieYN2OT9UFLfr3ETl31ZBP15xjbbR/spr9nXTrbQIc8utPAkm04CyHUBwKBgQC0NHT92+Eo/CPYKgzvo++bkayKlYQNJOuxdCPFD1vT8Rcs/T3MDvWbmUPjXMqE896e82xs4PkZQqx1B8/Dju++HkLAkGPYAj7N1mD9hM5F5Ng3C6lw1QKBu38D7JxtFjRqSlPy1bBZh2L1YNQ/xmo5/qZxNZh4Zbv5Jjrtx/kRmwKBgQDo+zG1zqardYNR0LV1I0aECzaraUveI1BFM/66X3a3qaV6JzpLBMatxVzLPsP3niocQnD3cIh7u8mBHQb7EvMMMqqocu4vfKwTcY/IZYvJ7hlk9dgsg8UfXs3loeBt587pZJl4LOMbfOVnVXo+jtNHdRggWVk22X+hXFJrpmpSIQKBgB+AC/NUPEety5Y9w4UgYwIOtNqEyFCD469hXd9Uj/i8bBCxM9w3wTcx02wrDDuxZXjjlFB0AxcnUH4kn2zPz5isMX73vnxD6DaTAuFOFcCiACmfID9Y/Ncwr0NAWRe4ifEKjSIluG3t/J5oDrIXPPpmSTIA7GYfYnxq8mIeUquBAoGALMXsMMTaUcNH/ldLZ/qQmljE9adykuZgkXamVe0WH7sRiXbs+yTi+HHjjQj11mOzgxw8fFWvhiWQoX2Z6CfX+aJ99ON9+YjAVJ40UsaCMKC6YLTFIUtzYmmfcjGo/ssGLGt5dzU4kVcH8o/bM0F5YbMj1A95xjvNFyR4XfMm34U==";
+
 
     private  String PARTNER;
     private  String SELLER;
@@ -40,31 +29,13 @@ public class AlibabaPay {
 
     }
 
-
-
     public String getPayInfoData(AlipayInfo alipayInfo){
-        String orderInfo = getOrderInfo(alipayInfo);
+        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, true,alipayInfo);
+        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
 
-        /**
-         * 特别注意，这里的签名逻辑需要放在服务端，切勿将私钥泄露在代码中！
-         */
-        String sign = alipayInfo.getSign();
-
-
-
-        try {
-            /**
-             * 仅需对sign 做URL编码
-             */
-            sign = URLEncoder.encode(sign, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        /**
-         * 完整的符合支付宝参数规范的订单信息
-         */
-        final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + getSignType();
+        String privateKey =  RSA2_PRIVATE ;
+        String sign = OrderInfoUtil2_0.getSign(params, privateKey, true);
+        final String payInfo = orderParam + "&" + sign;
 
 
         return payInfo;
@@ -95,55 +66,10 @@ public class AlibabaPay {
      *
      */
     public String getOrderInfo(AlipayInfo alipayInfo) {
+        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, true,alipayInfo);
+        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
 
-        // 签约合作者身份ID
-        String orderInfo = "partner=" + "\"" + PARTNER + "\"";
-
-        // 签约卖家支付宝账号
-        orderInfo += "&seller_id=" + "\"" + SELLER + "\"";
-
-        // 商户网站唯一订单号
-        orderInfo += "&out_trade_no=" + "\"" + alipayInfo.getOut_trade_no()+ "\"";
-
-        // 商品名称
-        orderInfo += "&subject=" + "\"" + alipayInfo.getSubject() + "\"";
-
-        // 商品详情
-        orderInfo += "&body=" + "\"" + alipayInfo.getBody() + "\"";
-
-        // 商品金额
-        orderInfo += "&total_fee=" + "\"" + alipayInfo.getPrice() + "\"";
-        String notify_url="http://112.124.106.131/kele/Notify_aliNotify";
-
-        // 服务器异步通知页面路径
-        orderInfo += "&notify_url=" + "\"" + notify_url + "\"";
-
-        // 服务接口名称， 固定值
-        orderInfo += "&service=\"mobile.securitypay.pay\"";
-
-        // 支付类型， 固定值
-        orderInfo += "&payment_type=\"1\"";
-
-        // 参数编码， 固定值
-        orderInfo += "&_input_charset=\"utf-8\"";
-
-        // 设置未付款交易的超时时间
-        // 默认30分钟，一旦超时，该笔交易就会自动被关闭。
-        // 取值范围：1m～15d。
-        // m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
-        // 该参数数值不接受小数点，如1.5h，可转换为90m。
-        orderInfo += "&it_b_pay=\"30m\"";
-
-        // extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
-        // orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
-
-        // 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
-        orderInfo += "&return_url=\"m.alipay.com\"";
-
-        // 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
-        // orderInfo += "&paymethod=\"expressGateway\"";
-
-        return orderInfo;
+        return orderParam;
     }
     /**
      * get the out_trade_no for an order. 生成商户订单号，该值在商户端应保持唯一（可自定义格式规范）

@@ -10,17 +10,24 @@ public class SignUtils {
 
 	private static final String SIGN_ALGORITHMS = "SHA1WithRSA";
 
+	private static final String SIGN_SHA256RSA_ALGORITHMS = "SHA256WithRSA";
+
 	private static final String DEFAULT_CHARSET = "UTF-8";
 
-	public static String sign(String content, String privateKey) {
+	private static String getAlgorithms(boolean rsa2) {
+		return rsa2 ? SIGN_SHA256RSA_ALGORITHMS : SIGN_ALGORITHMS;
+	}
+	
+	public static String sign(String content, String privateKey, boolean rsa2) {
+		String key=privateKey.substring(1,privateKey.length()-1);
 		try {
 			PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(
-					Base64.decode(privateKey));
+					Base64.decode(key));
 			KeyFactory keyf = KeyFactory.getInstance(ALGORITHM);
 			PrivateKey priKey = keyf.generatePrivate(priPKCS8);
 
 			java.security.Signature signature = java.security.Signature
-					.getInstance(SIGN_ALGORITHMS);
+					.getInstance(getAlgorithms(rsa2));
 
 			signature.initSign(priKey);
 			signature.update(content.getBytes(DEFAULT_CHARSET));
@@ -32,7 +39,7 @@ public class SignUtils {
 			e.printStackTrace();
 		}
 
-		return null;
+		return "FUCK";
 	}
 
 }

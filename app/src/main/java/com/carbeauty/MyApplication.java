@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -146,6 +147,15 @@ public class MyApplication extends Application {
             @Override
             public void onActivityDestroyed(Activity activity) {
 
+            }
+        });
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                System.err.println(e.getCause());
+                Process.killProcess(Process.myPid());
+                System.exit(0);
             }
         });
 

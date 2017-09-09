@@ -60,7 +60,7 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.login);
 		initCustomActionBar();
 
-		PgyUpdateManager.setIsForced(true); //设置是否强制更新。true为强制更新；false为不强制更新（默认值）。
+		PgyUpdateManager.setIsForced(false); //设置是否强制更新。true为强制更新；false为不强制更新（默认值）。
 		PgyUpdateManager.register(this, "provider_car");
 
 		versionTxt= (TextView) findViewById(R.id.versionTxt);
