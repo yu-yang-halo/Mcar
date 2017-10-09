@@ -6,6 +6,8 @@ package cn.service.bean;
 public class GoodsType {
     private int id;
     private String name;
+    private int orderBy;
+    private int type;
 
     public int getId() {
         return id;
@@ -34,5 +36,21 @@ public class GoodsType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(int orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

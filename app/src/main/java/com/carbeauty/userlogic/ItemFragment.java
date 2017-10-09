@@ -2,39 +2,25 @@ package com.carbeauty.userlogic;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.R;
-import com.carbeauty.adapter.GoodsAdapter;
-import com.carbeauty.cache.ContentBox;
+import com.carbeauty.admin.NotificationUI;
 import com.carbeauty.cache.MessageManager;
-import com.carbeauty.fragment.SimpleCardFragment;
-import com.carbeauty.good.GoodLookActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.Executors;
-
-import cn.service.WSConnector;
-import cn.service.WSException;
-import cn.service.bean.GoodInfo;
-import cn.service.bean.GoodsType;
 
 
 @SuppressLint("ValidFragment")
@@ -43,7 +29,7 @@ public class ItemFragment extends Fragment {
     TextView tips;
     PullRefreshLayout swipeRefreshLayout;
     int orderType;
-    AdminActivity ctx;
+    NotificationUI ctx;
     public static ItemFragment getInstance(int orderType) {
         ItemFragment sf = new ItemFragment();
         sf.orderType=orderType;
@@ -53,7 +39,7 @@ public class ItemFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ctx= (AdminActivity) context;
+        ctx= (NotificationUI) context;
     }
 
     @Override

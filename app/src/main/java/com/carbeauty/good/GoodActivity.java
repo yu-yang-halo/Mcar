@@ -42,6 +42,7 @@ public class GoodActivity extends FragmentActivity {
     ActionBar mActionbar;
     Button cartButton;
     int type;
+    boolean isAdmin=false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +51,14 @@ public class GoodActivity extends FragmentActivity {
 
         type=getIntent().getIntExtra("Type",-1);
 
+        shopId=getIntent().getIntExtra("shopId",-100);
+        if(shopId==-100){
+            shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
+            isAdmin=false;
+        }else {
+            isAdmin=true;
+        }
 
-        shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
 
          /*
             进入购物车界面
@@ -110,7 +117,7 @@ public class GoodActivity extends FragmentActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                goodsTypes= WSConnector.getInstance().getGoodsType();
+                goodsTypes= WSConnector.getInstance().getGoodsType(isAdmin);
                 goodInfos= WSConnector.getInstance().getGoodsList(shopId);
 
             } catch (WSException e) {

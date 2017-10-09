@@ -7,8 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -20,11 +22,14 @@ import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.ContentCacheUtils;
 import com.carbeauty.camera.MyCamera;
 import com.carbeauty.userlogic.LoginActivity;
+import com.permission.PermissionUtils;
 import com.pgyersdk.crash.PgyCrashManager;
 import com.tutk.IOTC.Camera;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
@@ -44,6 +49,18 @@ public class MyApplication extends Application {
     private BDLocationListener myListener = new MyLocationListener();
     private BDLocation bdLocation;
 
+    private ExecutorService executorService= Executors.newCachedThreadPool();
+    private Handler         uiHandler=new Handler(Looper.getMainLooper());
+    public ExecutorService getThreadPool(){
+        return executorService;
+    }
+    public Handler getUiHandler(){
+        return uiHandler;
+    }
+
+
+
+
     private Handler applicationHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -58,7 +75,7 @@ public class MyApplication extends Application {
                         public void run() {
                             try {
                                 WSConnector.getInstance().appUserLogin(usernamePassArr[0],
-                                        MD5Generator.reverseMD5Value(usernamePassArr[1]), -1, "android", false);
+                                        MD5Generator.reverseMD5Value(usernamePassArr[1]), false);
 
                             } catch (WSException e) {
                                 e.printStackTrace();
@@ -153,17 +170,13 @@ public class MyApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                System.err.println(e.getCause());
+                System.err.println("ERROR:"+e.getMessage());
                 Process.killProcess(Process.myPid());
                 System.exit(0);
             }
         });
 
     }
-
-
-
-
 
 
     private void enableJPUSH(){
@@ -201,7 +214,7 @@ public class MyApplication extends Application {
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );
         option.setCoorType("bd09ll");
-        int span=1000;
+        int span=5000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         option.setOpenGps(true);
@@ -214,13 +227,20 @@ public class MyApplication extends Application {
         mLocationClient.setLocOption(option);
         mLocationClient.start();
 
+
+
+
+
     }
     public class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
             ContentBox.loadString(getApplicationContext(), ContentBox.KEY_LONG_LAT,
                     location.getLongitude() + ":" + location.getLatitude());
-            setMyLocation(location);
+            if(location!=null){
+                setMyLocation(location);
+            }
+
         }
 
         @Override

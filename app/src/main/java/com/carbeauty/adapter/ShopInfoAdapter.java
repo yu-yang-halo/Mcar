@@ -2,6 +2,7 @@ package com.carbeauty.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -42,6 +44,8 @@ public class ShopInfoAdapter extends BaseAdapter {
     Context ctx;
     private int selectShopId=0;
     BDLocation bdLocation;
+    KProgressHUD progressHUD;
+
     public ShopInfoAdapter(List<ShopInfo> shopInfos,Context ctx,BDLocation bdLocation){
         this.shopInfos=shopInfos;
         this.ctx=ctx;
@@ -147,69 +151,71 @@ public class ShopInfoAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new BindShopTask(shopInfos.get(position).getShopId()).execute();
+                bindShop(shopInfos.get(position).getShopId());
             }
         });
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new BindShopTask(shopInfos.get(position).getShopId()).execute();
+                bindShop(shopInfos.get(position).getShopId());
             }
         });
 
         return convertView;
     }
 
-    class BindShopTask extends AsyncTask<String,String,String>{
-        int shopId;
-        KProgressHUD progressHUD;
-        BindShopTask(int shopId){
-            this.shopId=shopId;
-        }
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                UserInfo userInfo=WSConnector.getInstance().getUserInfoById();
-                if(shopId!=userInfo.getShopId()){
-                    userInfo.setShopId(shopId);
-                    userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
-                    WSConnector.getInstance().updUser(userInfo);
-                    String loginName=WSConnector.getInstance().getUserMap().get("loginName");
-                    String password=WSConnector.getInstance().getUserMap().get("password");
-                    WSConnector.getInstance().appUserLogin(loginName,password, -1, "android", false);
-                }else {
-                    return "已经选中";
+
+    private void bindShop(final int shopId){
+        progressHUD= KProgressHUD.create(ctx)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setAnimationSpeed(1)
+                .setDimAmount(0.3f)
+                .setLabel("切换店铺中...")
+                .show();
+
+        MyApplication myApplication= (MyApplication) ctx.getApplicationContext();
+        final Handler uiHandler=myApplication.getUiHandler();
+
+        myApplication.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean successYN=false;
+                try {
+                    UserInfo userInfo=WSConnector.getInstance().getUserInfoById();
+                    if(shopId!=userInfo.getShopId()){
+                        userInfo.setShopId(shopId);
+                        userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
+                        WSConnector.getInstance().updUser(userInfo);
+                        String loginName=WSConnector.getInstance().getUserMap().get("loginName");
+                        String password=WSConnector.getInstance().getUserMap().get("password");
+                        WSConnector.getInstance().appUserLogin(loginName,password, false);
+                        successYN=true;
+                    }
+
+                } catch (WSException e) {
+
                 }
+                final boolean finalSuccessYN = successYN;
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressHUD.dismiss();
+                        if(finalSuccessYN){
+                            setSelectShopId(shopId);
+                            ContentBox.loadInt(ctx, ContentBox.KEY_SHOP_ID, shopId);
+                        }else{
+                            Toast.makeText(ctx,"已经选中",Toast.LENGTH_SHORT).show();
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
 
-            } catch (WSException e) {
-                return e.getErrorMsg();
             }
+        });
 
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(String s) {
-            progressHUD.dismiss();
-            if(s==null){
-                setSelectShopId(shopId);
-                ContentBox.loadInt(ctx, ContentBox.KEY_SHOP_ID, shopId);
-             }else{
-                Toast.makeText(ctx,s,Toast.LENGTH_SHORT).show();
-             }
-             notifyDataSetChanged();
-        }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressHUD= KProgressHUD.create(ctx)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setAnimationSpeed(1)
-                    .setDimAmount(0.3f)
-                    .show();
-        }
     }
+
 
 }

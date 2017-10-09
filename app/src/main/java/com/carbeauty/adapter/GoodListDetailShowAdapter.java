@@ -16,6 +16,7 @@ import com.carbeauty.cache.IDataHandler;
 
 import java.util.List;
 
+import cn.service.Util;
 import cn.service.WSConnector;
 import cn.service.bean.GoodInfo;
 import cn.service.bean.ShopInfo;
@@ -78,9 +79,8 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
         GoodInfo goodInfo=goodInfos.get(position);
 
         holder.goodPriceTextView.setText("￥"+goodInfo.getPrice());
-        holder.goodDescTextView.setText(goodInfo.getDesc());
+        holder.goodDescTextView.setText(Util.formatHtml(goodInfo.getDesc()));
         holder.goodBuyNumberTextView.setText("x"+goodInfo.getBuyNumber());
-
 
         ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView

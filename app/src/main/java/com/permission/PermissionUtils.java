@@ -48,16 +48,23 @@ public class PermissionUtils {
     public static final String PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     private static final String[] requestPermissions = {
-            PERMISSION_RECORD_AUDIO,
-            PERMISSION_GET_ACCOUNTS,
-            PERMISSION_READ_PHONE_STATE,
-            PERMISSION_CALL_PHONE,
             PERMISSION_CAMERA,
             PERMISSION_ACCESS_FINE_LOCATION,
             PERMISSION_ACCESS_COARSE_LOCATION,
             PERMISSION_READ_EXTERNAL_STORAGE,
             PERMISSION_WRITE_EXTERNAL_STORAGE
     };
+//    private static final String[] requestPermissions = {
+//            PERMISSION_RECORD_AUDIO,
+//            PERMISSION_GET_ACCOUNTS,
+//            PERMISSION_READ_PHONE_STATE,
+//            PERMISSION_CALL_PHONE,
+//            PERMISSION_CAMERA,
+//            PERMISSION_ACCESS_FINE_LOCATION,
+//            PERMISSION_ACCESS_COARSE_LOCATION,
+//            PERMISSION_READ_EXTERNAL_STORAGE,
+//            PERMISSION_WRITE_EXTERNAL_STORAGE
+//    };
 
     public interface PermissionGrant {
         void onPermissionGranted(int requestCode);

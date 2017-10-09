@@ -24,6 +24,7 @@ import com.carbeauty.R;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import cn.service.Util;
 import cn.service.WSConnector;
 import cn.service.bean.GoodInfo;
 
@@ -83,7 +84,9 @@ public class GoodsAdapter extends BaseAdapter {
         holder= (ItemHolder) convertView.getTag();
 
         holder.goodName.setText(goodInfos.get(position).getName());
-        holder.goodDesc.setText(goodInfos.get(position).getDesc());
+
+
+        holder.goodDesc.setText(Util.formatHtml(goodInfos.get(position).getDesc()));
         holder.goodPriceTxt.setText(goodInfos.get(position).getPrice() + "元");
 
 
@@ -97,13 +100,8 @@ public class GoodsAdapter extends BaseAdapter {
 
         imageLoader.get(url, listener);
 
-
-
         return convertView;
-
     }
-
-
     class ItemHolder{
         TextView goodName;
         TextView goodDesc;

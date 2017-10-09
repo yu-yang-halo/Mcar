@@ -2,27 +2,19 @@ package com.carbeauty.fragment;
 
 
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
-
 import com.baoyz.widget.PullRefreshLayout;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.R;
 import com.carbeauty.adapter.PromotionAdapter;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.PromotionInfoType;
@@ -30,7 +22,7 @@ import cn.service.bean.PromotionInfoType;
 /**
  * Created by Administrator on 2016/3/6.
  */
-public class PromotionFragment extends Fragment {
+public class PromotionFragment extends BaseFragment {
     ListView promlistView;
     PullRefreshLayout swipeRefreshLayout;
     @Nullable
@@ -42,7 +34,7 @@ public class PromotionFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new PromotionInfoTask().execute();
+                loadPromotionInfo();
             }
         });
         return v;
@@ -51,54 +43,50 @@ public class PromotionFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        new PromotionInfoTask().execute();
+        loadPromotionInfo();
     }
 
-    class PromotionInfoTask extends AsyncTask<String,String,String>{
-        List<PromotionInfoType> promotionInfoTypes;
-        List<Bitmap> bitmaps= new ArrayList<Bitmap>();
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            swipeRefreshLayout.setRefreshing(true);
-        }
+    private void loadPromotionInfo(){
+        swipeRefreshLayout.setRefreshing(true);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                 List<PromotionInfoType> promotionInfoTypes = null;
+                 List<Bitmap> bitmaps= new ArrayList<Bitmap>();
+                boolean successYN=false;
+                try {
+                    promotionInfoTypes = WSConnector.getInstance().getPromotionList(5);
 
-        @Override
-        protected String doInBackground(String... params) {
+                    for (PromotionInfoType promotionInfoType:promotionInfoTypes){
 
-            try {
-                promotionInfoTypes = WSConnector.getInstance().getPromotionList(5);
+                        String url= WSConnector.getPromotionURL(promotionInfoType.getImgName());
+                        bitmaps.add(ImageUtils.convertNetToBitmap(url));
 
-                for (PromotionInfoType promotionInfoType:promotionInfoTypes){
-
-                    String url= WSConnector.getPromotionURL(promotionInfoType.getImgName());
-                    //String url="http://d.hiphotos.baidu.com/video/pic/item/ac6eddc451da81cb942f93755566d016082431b8.jpg";
-
-                    bitmaps.add(ImageUtils.convertNetToBitmap(url));
+                    }
+                    successYN=true;
+                } catch (WSException e) {
 
                 }
+                final boolean finalSuccessYN = successYN;
+                final List<PromotionInfoType> finalPromotionInfoTypes = promotionInfoTypes;
+                final List<Bitmap> finalBitmaps = bitmaps;
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        if(finalSuccessYN){
+                            PromotionAdapter promotionAdapter=new PromotionAdapter(finalPromotionInfoTypes,getActivity(),finalBitmaps);
+                            promlistView.setAdapter(promotionAdapter);
+                            promlistView.setDividerHeight(2);
+                        }else {
+                            Toast.makeText(getActivity(),"优惠券加载失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
-
-            } catch (WSException e) {
-                return e.getErrorMsg();
             }
-            System.out.println(promotionInfoTypes);
-            return null;
-        }
+        });
 
-        @Override
-        protected void onPostExecute(String s) {
-            swipeRefreshLayout.setRefreshing(false);
-            if(s==null){
-                PromotionAdapter promotionAdapter=new PromotionAdapter(promotionInfoTypes,getActivity(),bitmaps);
-                promlistView.setAdapter(promotionAdapter);
-                promlistView.setDividerHeight(2);
-            }else {
-                Toast.makeText(getActivity(),s, Toast.LENGTH_SHORT).show();
-            }
-        }
     }
-
-
 
 }

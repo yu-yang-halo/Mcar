@@ -1,15 +1,11 @@
 package com.carbeauty.fragment;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,7 +24,6 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.carbeauty.CommonUtils;
 import com.carbeauty.MainActivity;
 import com.carbeauty.R;
 import com.carbeauty.adapter.ShopInfoAdapter;
@@ -37,6 +32,7 @@ import com.carbeauty.cache.IDataHandler;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,12 +46,15 @@ import cn.service.bean.UserInfo;
  * Created by Administrator on 2016/3/6.
  * 门店列表---地图模式和一般模式
  */
-public class ShopFragment extends Fragment implements MainActivity.IShowModeListenser {
+public class ShopFragment extends BaseFragment implements MainActivity.IShowModeListenser {
     MapView bmapView;
     BaiduMap mBaiduMap;
     MainActivity mainActivity;
     ListView listView;
 
+    float lastZoom=-1;
+    LatLng target=null;
+    private List<OverlayOptions> overlayOptionsList=new ArrayList<>();
 
     @Nullable
     @Override
@@ -69,14 +68,13 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
         listView=(ListView)v.findViewById(R.id.listView);
 
 
-
         mBaiduMap = bmapView.getMap();
         //普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
 
-        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
-
-        updateMapStatus(lgtlatStr);
+//        String lgtlatStr=ContentBox.getValueString(getActivity(), ContentBox.KEY_LONG_LAT,null);
+//
+//      // updateMapStatus(lgtlatStr);
 
         return v;
     }
@@ -87,12 +85,23 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
             double lgt=Double.parseDouble(lgtlatStr.split(":")[0]);
             double lat=Double.parseDouble(lgtlatStr.split(":")[1]);
             //设定中心点坐标
+            LatLng  center = new LatLng(lat,lgt);
+            if(target==null){
+                target=center;
+            }else{
+                target=mBaiduMap.getMapStatus().target;
+            }
+            if(lastZoom<0){
+                lastZoom=13;
+            }else{
+                lastZoom=mBaiduMap.getMapStatus().zoom;
+            }
 
-            LatLng cenpt = new LatLng(lat,lgt);
+            mBaiduMap.clear();
             //定义地图状态
             MapStatus mMapStatus = new MapStatus.Builder()
-                    .target(cenpt)
-                    .zoom(13)
+                    .target(target)
+                    .zoom(lastZoom)
                     .build();
             //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
 
@@ -100,6 +109,10 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
             MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
             //改变地图状态
             mBaiduMap.setMapStatus(mMapStatusUpdate);
+
+
+
+
 
         }
     }
@@ -118,9 +131,24 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
     }
 
     private void addPointToMap(ShopInfo shopInfo,boolean selected){
-        int resId=R.mipmap.maker;
+        int resId=R.mipmap.maker0;
         if(selected){
-            resId=R.mipmap.maker2;
+            resId=R.mipmap.maker;
+        }else{
+            switch (shopInfo.getBusy()){
+                case 0:
+                    resId=R.mipmap.maker0;
+                    break;
+                case 1:
+                    resId=R.mipmap.maker1;
+                    break;
+                case 2:
+                    resId=R.mipmap.maker2;
+                    break;
+                case 3:
+                    resId=R.mipmap.maker3;
+                    break;
+            }
         }
 
         //定义Maker坐标点
@@ -138,12 +166,38 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                 .title(shopInfo.getName())
                 .extraInfo(bundle)
                 .icon(bitmap)
-                .animateType(MarkerOptions.MarkerAnimateType.grow);;
+                .animateType(MarkerOptions.MarkerAnimateType.none);
+
+
+
+        overlayOptionsList.add(option);
+
+
+    }
+    private void initMapData(int shopId){
+        List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
+
+        if(shopInfos==null){
+            return;
+        }
+
+        overlayOptionsList.clear();
+        for (ShopInfo shopInfo: shopInfos){
+            int cityId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_CITY_ID,-1);
+
+            if(cityId!=shopInfo.getCityId()){
+                continue;
+            }
+
+            updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
+
+            addPointToMap(shopInfo,(shopId==shopInfo.getShopId()));
+        }
 
 
 
 //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);
+        mBaiduMap.addOverlays(overlayOptionsList);
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
@@ -173,8 +227,8 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                     @Override
                     public void onClick(View v) {
                         marker.setIcon(BitmapDescriptorFactory
-                                .fromResource(R.mipmap.maker2));
-                        new ShopInfosTask(marker.getExtraInfo().getInt("shopId")).execute();
+                                .fromResource(R.mipmap.maker));
+                        reqShopsData(marker.getExtraInfo().getInt("shopId"));
                     }
                 });
 //定义用于显示该InfoWindow的坐标点
@@ -186,26 +240,6 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
                 return false;
             }
         });
-
-    }
-    private void initMapData(int shopId){
-        List<ShopInfo> shopInfos=IDataHandler.getInstance().getShopInfos();
-
-        if(shopInfos==null){
-            return;
-        }
-        mBaiduMap.clear();
-        for (ShopInfo shopInfo: shopInfos){
-            int cityId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_CITY_ID,-1);
-
-            if(cityId!=shopInfo.getCityId()){
-                continue;
-            }
-
-            updateMapStatus(shopInfo.getLongitude()+":"+shopInfo.getLatitude());
-
-            addPointToMap(shopInfo,(shopId==shopInfo.getShopId()));
-        }
 
     }
 
@@ -231,7 +265,7 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 
     @Override
     public void onShowMode(int mode) {
-        new ShopInfosTask(-100).execute();
+        reqShopsData(-100);
         if(mode==0){
             listView.setVisibility(View.VISIBLE);
             bmapView.setVisibility(View.GONE);
@@ -244,93 +278,99 @@ public class ShopFragment extends Fragment implements MainActivity.IShowModeList
 
     }
 
-    class ShopInfosTask extends AsyncTask<String,String,String>{
+    private void reqShopsData(final int shopID){
 
-        List<ShopInfo> shopInfos;
-        UserInfo userInfo;
-        int shopID;
-        KProgressHUD progressHUD;
-        public ShopInfosTask(int shopID){
-            this.shopID=shopID;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if(shopID>0){
-                progressHUD= KProgressHUD.create(getActivity())
-                        .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                        .setAnimationSpeed(1)
-                        .setDimAmount(0.3f)
-                        .setLabel("切换店铺中...")
-                        .show();
-            }
-
+        if(shopID>0){
+            progressHUD = KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setAnimationSpeed(1)
+                    .setDimAmount(0.3f)
+                    .setLabel("切换店铺中...")
+                    .show();
         }
 
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                userInfo=WSConnector.getInstance().getUserInfoById();
-                if(shopID>0&&userInfo.getShopId()!=shopID){
-                    userInfo.setShopId(shopID);
-                    userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
-                    WSConnector.getInstance().updUser(userInfo);
-                    String loginName=WSConnector.getInstance().getUserMap().get("loginName");
-                    String password=WSConnector.getInstance().getUserMap().get("password");
-                    WSConnector.getInstance().appUserLogin(loginName,password, -1, "android", false);
-                }
-
-                shopInfos=WSConnector.getInstance().getShopList();
-                shopInfos=filterShopInfoList(shopInfos);
-
-                System.err.println(shopInfos);
-                IDataHandler.getInstance().setShopInfos(shopInfos);
-
-            } catch (WSException e) {
-               return e.getErrorMsg();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if(shopID>0){
-                progressHUD.dismiss();
-            }
-
-            if(s==null){
-
-                if(shopID>0){
-                    initMapData(shopID);
-                    initListView(shopID);
-                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,shopID);
-                }else{
-
-                    int _mshopId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID,-2);
-                    if(_mshopId==-1){
-                        ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,-1);
-                        userInfo.setShopId(-1);
-                    }else{
-                        ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,userInfo.getShopId());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<ShopInfo> shopInfos;
+                UserInfo userInfo = null;
+                boolean successYN=false;
+                try {
+                    userInfo=WSConnector.getInstance().getUserInfoById();
+                    if(shopID>0&&userInfo.getShopId()!=shopID){
+                        userInfo.setShopId(shopID);
+                        userInfo.setType(RegType.REGULAR_USER_TYPE.getVal());
+                        WSConnector.getInstance().updUser(userInfo);
+                        String loginName=WSConnector.getInstance().getUserMap().get("loginName");
+                        String password=WSConnector.getInstance().getUserMap().get("password");
+                        WSConnector.getInstance().appUserLogin(loginName,password, false);
                     }
-                    initMapData(userInfo.getShopId());
-                    initListView(userInfo.getShopId());
+
+                    shopInfos=WSConnector.getInstance().getShopList();
+                    shopInfos=filterShopInfoList(shopInfos);
+
+                    System.err.println(shopInfos);
+                    IDataHandler.getInstance().setShopInfos(shopInfos);
+                    successYN=true;
+                } catch (WSException e) {
 
                 }
 
-            }else {
+                final boolean finalSuccessYN = successYN;
+                final UserInfo finalUserInfo = userInfo;
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
+                        if(shopID>0){
+                            if(progressHUD!=null){
+                                progressHUD.dismiss();
+                            }
+                           
+                        }
+
+                        if(finalSuccessYN){
+
+                            if(shopID>0){
+                                initMapData(shopID);
+                                initListView(shopID);
+                                ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,shopID);
+                            }else{
+
+                                int _mshopId=ContentBox.getValueInt(getActivity(),ContentBox.KEY_SHOP_ID,-2);
+                                if(_mshopId==-1){
+                                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID,-1);
+                                    finalUserInfo.setShopId(-1);
+                                }else{
+                                    ContentBox.loadInt(getActivity(),ContentBox.KEY_SHOP_ID, finalUserInfo.getShopId());
+                                }
+                                initMapData(finalUserInfo.getShopId());
+                                initListView(finalUserInfo.getShopId());
+
+                            }
+
+                        }else {
+
+                            Toast.makeText(getActivity(),"加载店铺数据失败",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
+        });
 
-        }
+
+
+
+
+
     }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if(!hidden){
-            new ShopInfosTask(-100).execute();
+            reqShopsData(-100);
         }
 
     }

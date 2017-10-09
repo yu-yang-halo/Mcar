@@ -7,49 +7,24 @@
 package cn.service;
 
 import com.carbeauty.TimeUtils;
-import com.pay.AlipayInfo;
-
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.SocketImpl;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import cn.service.bean.AlipayInfoType;
 import cn.service.bean.AssessInfoType;
 import cn.service.bean.BannerInfoType;
@@ -76,26 +51,17 @@ import cn.service.bean.OilOrderInfo.OilOrderNumberInfo;
 import cn.service.bean.PromotionInfoType;
 import cn.service.bean.ShopInfo;
 import cn.service.bean.UserInfo;
-
-
-
-import java.text.ParseException;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class WSConnector {
 	private static String wsUrl = "";
-	//private static String IP1 = "112.124.106.131";
 	private static String IP1 = "112.124.106.131";
 	private static String portStr = "9000";
 	private static String portImageStr = "8888";
 	private static final String REQUEST_HEAD = "http://";
-	private static WSConnector instance = new WSConnector();
+	private static WSConnector instance ;
 	private Map<String, String> userMap;
     private IWSErrorCodeListener listener;
 	private WSConnector() {
@@ -103,24 +69,25 @@ public class WSConnector {
 		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr + "/car/services/carwsapi/";
 	}
 
-	public String getWsUrl(){
-		return wsUrl;
+	@Deprecated
+	public static WSConnector getInstance(String ip, String port,
+										   boolean isHttps) {
+		instance.IP1 = ip;
+		instance.portStr = port;
+		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr +  "/car/services/carwsapi/";
+		return instance;
 	}
 
-	/*
-	   http://ip:80/kele/upload/banner/图片名
-       http://ip:80/kele/upload/goods/店铺ID/图片名
-       http://ip:80/kele/upload/promotion/图片名
-       http://ip:80/kele/upload/panorama/店铺ID/图片名
+	public static WSConnector getInstance() {
+		synchronized (WSConnector.class){
+			if(instance==null){
+				instance=new WSConnector();
+			}
+		}
+		return instance;
+	}
 
-       http://112.124.106.131/kele/chexian.htm
 
-       /upload/panorama/" + this.getShopId()+"/icon/
-
-       /upload/server/deco/" + this.getId()
-        oil    meta
-
-	 */
 	public static String getDecoItemURL(int id,String imageName){
 		return REQUEST_HEAD+IP1+":"+portImageStr+"/upload/server/deco/"+id+"/"+imageName;
 	}
@@ -155,25 +122,6 @@ public class WSConnector {
 	public Map<String, String> getUserMap() {
 		return userMap;
 	}
-
-	public String getIP1() {
-		return IP1;
-	}
-
-	public static WSConnector getInstance() {
-		return instance;
-	}
-
-	public static WSConnector getInstance(String ip, String port,
-			boolean isHttps) {
-		instance.IP1 = ip;
-		instance.portStr = port;
-		wsUrl = REQUEST_HEAD + IP1 + ":" + portStr +  "/car/services/carwsapi/";
-		return instance;
-	}
-
-
-
 
 
 	private InputStream request(String service) throws WSException {
@@ -286,6 +234,7 @@ public class WSConnector {
 		} catch (Exception e) {
 			e.printStackTrace();
 			is = null;
+			Logger.getLogger(this.getClass()).info("inputStream return null" );
 			return null;
 		}
 		Logger.getLogger(this.getClass()).info("document :" + document);
@@ -330,13 +279,11 @@ public class WSConnector {
        *  功能描述: 用户登录 简单版本
 	   */
 
-	public boolean appUserLogin(String name, String password, int shopId,
-			String clientEnv, boolean logoutYN) throws WSException {
+	public boolean appUserLogin(String name, String password, boolean logoutYN) throws WSException {
 		this.userMap.put("password", password);
 		Element element = null;
 		String service = WSConnector.wsUrl + "appUserLogin?name=" + name
-				+ "&password=" + password + "&appId=" + shopId + "&clientEnv="
-				+ clientEnv + "&logoutYN=" + logoutYN;
+				+ "&password=" + password + "&appId=-1"  + "&clientEnv=android&logoutYN=" + logoutYN;
 		Logger.getLogger(this.getClass()).info(
 				"[appUserLogin] service = " + service);
 		element = getXMLNode(service);
@@ -605,6 +552,8 @@ public class WSConnector {
 	private  ShopInfo  parseXmlToShopInfo(Element element){
 		Element shopIdNode = (Element) element.getElementsByTagName(
 				"shopId").item(0);
+		Element busyNode = (Element) element.getElementsByTagName(
+				"busy").item(0);
 		Element nameNode = (Element) element.getElementsByTagName("name")
 				.item(0);
 		Element longitudeNode = (Element) element.getElementsByTagName("longitude").item(
@@ -696,10 +645,13 @@ public class WSConnector {
 			icon = iconNode.getFirstChild().getNodeValue();
 		}
 
+		int busy=parseElementValueToInt(busyNode);
+
 
 		ShopInfo shopInfo=new ShopInfo(shopId, name, longitude,
 				latitude, cityId, desc,panorama,openTime,closeTime,oilPer,decoPer,metaPer,phone,icon);
-		
+
+		shopInfo.setBusy(busy);
 		return shopInfo;
 	}
 
@@ -869,6 +821,34 @@ public class WSConnector {
 		}
 		return null;
 		
+	}
+	public float getTotalPriceByShopId(int shopId,String startTime,String endTime) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getTotalPriceByShopId?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&shopId="
+				+ shopId+"&startTime="+startTime+"&endTime="+endTime;
+		Logger.getLogger(this.getClass()).info(
+				"[getTotalPriceByShopId]  ws query = " + service);
+
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		float totalPrice=0.0f;
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				Element priceNode = (Element) root.getElementsByTagName("price")
+						.item(0);
+				totalPrice=parseElementValueToFloat(priceNode);
+			}
+		}
+
+		return totalPrice;
 	}
 
 	public List<CarBrand> getCarBrand(String brand,String carLine) throws WSException {
@@ -1376,6 +1356,10 @@ public class WSConnector {
 				"id").item(0);
 		Element nameNode = (Element) element.getElementsByTagName(
 				"name").item(0);
+		Element orderByNode = (Element) element.getElementsByTagName(
+				"orderBy").item(0);
+		Element typeNode = (Element) element.getElementsByTagName(
+				"type").item(0);
 		int id=-1;
 		if (idNode != null && idNode.getFirstChild() != null) {
 			id = Integer.parseInt(idNode.getFirstChild().getNodeValue());
@@ -1384,7 +1368,14 @@ public class WSConnector {
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
 		}
+
+		int orderBy=parseElementValueToInt(orderByNode);
+		int type=parseElementValueToInt(typeNode);
+
 		GoodsType goodsType=new GoodsType(id,name);
+		goodsType.setType(type);
+		goodsType.setOrderBy(orderBy);
+
 		return goodsType;
 	}
 
@@ -1596,7 +1587,7 @@ public class WSConnector {
 		return null;
 	}
 
-	public List<GoodsType> getGoodsType() throws WSException {
+	public List<GoodsType> getGoodsType(boolean isAdmin) throws WSException {
 		String service = "";
 		service = WSConnector.wsUrl + "getGoodsType?senderId="
 				+ this.userMap.get("userId") + "&secToken="
@@ -1623,7 +1614,22 @@ public class WSConnector {
 					Logger.getLogger(this.getClass()).info(
 							"[GoodsType]  goodsType = "
 									+ goodsType.toString());
-					goodsTypes.add(goodsType);
+
+					if(goodsType==null){
+						continue;
+					}
+					if(isAdmin){
+						if(goodsType.getType()==2){
+							goodsTypes.add(goodsType);
+						}
+					}else{
+						if(goodsType.getType()==2){
+							continue;
+						}
+						goodsTypes.add(goodsType);
+					}
+
+
 				}
 				return goodsTypes;
 			}else{

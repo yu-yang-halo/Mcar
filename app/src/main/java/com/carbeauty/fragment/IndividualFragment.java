@@ -48,7 +48,7 @@ import cn.service.bean.UserInfo;
 /**
  * Created by Administrator on 2016/3/6.
  */
-public class IndividualFragment extends Fragment {
+public class IndividualFragment extends BaseFragment {
     ListView individualListView;
     TextView accountName;
     RelativeLayout layoutCoupon;
@@ -100,7 +100,7 @@ public class IndividualFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new LoadUserInfoTask().execute();
+                loadUserInfo();
             }
         });
 
@@ -111,7 +111,7 @@ public class IndividualFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        new LoadUserInfoTask().execute();
+        loadUserInfo();
     }
 
     private void initListView(){
@@ -188,62 +188,59 @@ public class IndividualFragment extends Fragment {
         });
     }
 
-    class LoadUserInfoTask extends AsyncTask<String,String,String> {
-        UserInfo userInfo;
-        List<CarInfo> carInfos;
+    private void loadUserInfo(){
+        swipeRefreshLayout.setRefreshing(true);
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            swipeRefreshLayout.setRefreshing(true);
-        }
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                UserInfo userInfo = null;
+                List<CarInfo> carInfos = null;
 
-        @Override
-        protected String doInBackground(String... params) {
-            try {
+                try {
+                    userInfo=WSConnector.getInstance().getUserInfoById();
+                    carInfos=WSConnector.getInstance().getCarByUserId();
+                    System.out.println(userInfo+" \n "+carInfos);
 
-                userInfo=WSConnector.getInstance().getUserInfoById();
-                carInfos=WSConnector.getInstance().getCarByUserId();
-                System.out.println(userInfo+" \n "+carInfos);
-
-            } catch (WSException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            swipeRefreshLayout.setRefreshing(false);
-            if(userInfo!=null){
-                accountName.setText(userInfo.getLoginName());
-                UserAddressManager.cacheUserInfoToLocal(getActivity(),userInfo);
-            }
-
-            if(carInfos!=null&&carInfos.size()>0){
-                if(ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, -1)<=0){
-                    ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, carInfos.get(0).getId());
-                }
-                IDataHandler.getInstance().setCarInfos(carInfos);
-
-                if(carInfos.size()>1){
-                    numberTxt.setText(carInfos.get(0).getNumber()+"..");
-                }else{
-                    numberTxt.setText(carInfos.get(0).getNumber());
+                } catch (WSException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
 
-            } else {
-                ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
-                numberTxt.setText("请添加车牌");
+                final UserInfo finalUserInfo = userInfo;
+                final List<CarInfo> finalCarInfos = carInfos;
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        if(finalUserInfo !=null){
+                            accountName.setText(finalUserInfo.getLoginName());
+                            UserAddressManager.cacheUserInfoToLocal(getActivity(), finalUserInfo);
+                        }
+
+                        if(finalCarInfos !=null&& finalCarInfos.size()>0){
+                            if(ContentBox.getValueInt(getActivity(), ContentBox.KEY_CAR_ID, -1)<=0){
+                                ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, finalCarInfos.get(0).getId());
+                            }
+                            IDataHandler.getInstance().setCarInfos(finalCarInfos);
+
+                            if(finalCarInfos.size()>1){
+                                numberTxt.setText(finalCarInfos.get(0).getNumber()+"..");
+                            }else{
+                                numberTxt.setText(finalCarInfos.get(0).getNumber());
+                            }
+
+                        } else {
+                            ContentBox.loadInt(getActivity(), ContentBox.KEY_CAR_ID, -1);
+                            numberTxt.setText("请添加车牌");
+                        }
+
+                    }
+                });
             }
-
-
-
-        }
+        });
     }
+    
 
 }

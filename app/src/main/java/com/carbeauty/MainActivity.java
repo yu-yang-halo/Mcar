@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -114,12 +115,11 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 			@Override
 			public void onTabReselect(int position) {
-				//Toast.makeText(getApplicationContext(),"onTabReselect position:"+position,Toast.LENGTH_SHORT).show();
 
 			}
 		});
 
-		new GetCityTasks().execute();
+		loadData();
 
 	}
 	public void setSelectPos(int position){
@@ -257,98 +257,96 @@ public class MainActivity extends FragmentActivity implements LocationUpdateList
 
 		return bdLocation;
 	}
-
-	class GetCityTasks extends AsyncTask<String,String,String> {
-        private int cityId=-1;
-		private int shopId=-1;
-		@Override
-		protected String doInBackground(String... params) {
-			try {
-				cityInfoList= WSConnector.getInstance().getCityList();
-				shopInfos=WSConnector.getInstance().getShopList();
-				userInfo=WSConnector.getInstance().getUserInfoById();
-
-
-			} catch (WSException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String s) {
-			if(userInfo!=null){
-				ContentBox.loadInt(MainActivity.this,ContentBox.KEY_USER_TYPE,userInfo.getType());
-			}
-
-			if(s==null&&cityInfoList!=null){
-
-				for (ShopInfo info: shopInfos){
-					if(info.getShopId()==userInfo.getShopId()){
-						cityId=info.getCityId();
-						shopId=info.getShopId();
-						break;
-					}
+	private void loadData(){
+		MyApplication myApplication= (MyApplication) getApplicationContext();
+		final Handler uiHandler=myApplication.getUiHandler();
+		myApplication.getThreadPool().execute(new Runnable() {
+			@Override
+			public void run() {
+				boolean successYN=false;
+				try {
+					cityInfoList= WSConnector.getInstance().getCityList();
+					shopInfos=WSConnector.getInstance().getShopList();
+					userInfo=WSConnector.getInstance().getUserInfoById();
+					successYN=true;
+				} catch (WSException e) {
+					e.printStackTrace();
 				}
+				final boolean finalSuccessYN = successYN;
+				uiHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						if(userInfo!=null){
+							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_USER_TYPE,userInfo.getType());
+						}
+						int cityId=-1;
+						int shopId=-1;
+						if(finalSuccessYN &&cityInfoList!=null){
 
-				for(CityInfo cityInfo:cityInfoList){
-					if(cityInfo.getCityId()==cityId){
-						myShopOwnerCity=cityInfo;
-						myShopOwnerCity.setName(cityInfo.getName());
-						break;
-					}
-				}
+							for (ShopInfo info: shopInfos){
+								if(info.getShopId()==userInfo.getShopId()){
+									cityId=info.getCityId();
+									shopId=info.getShopId();
+									break;
+								}
+							}
 
-				if(myShopOwnerCity!=null&&bdLocation!=null&&bdLocation.getCity()!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
-					leftBtn.setText(myShopOwnerCity.getName());
-					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
-					ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,shopId);
-				}else{
+							for(CityInfo cityInfo:cityInfoList){
+								if(cityInfo.getCityId()==cityId){
+									myShopOwnerCity=cityInfo;
+									myShopOwnerCity.setName(cityInfo.getName());
+									break;
+								}
+							}
+
+							if(myShopOwnerCity!=null&&bdLocation!=null&&bdLocation.getCity()!=null&&bdLocation.getCity().contains(myShopOwnerCity.getName())){
+								leftBtn.setText(myShopOwnerCity.getName());
+								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,shopId);
+							}else{
 
 					/*
 					    两种情况：1.所选店铺的城市与当前城市不匹配
 					             2.没有选择店铺,自动切换到目标城市
 					 */
 
-					final CityInfo currentCity=findLocalCityFromServer();
-					if(currentCity!=null){
-						if(myShopOwnerCity!=null){
-							leftBtn.setText(myShopOwnerCity.getName());
-							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
-						}
-						DialogManagerUtils.showMessageAndCancel(MainActivity.this, "您目前的位置是" + bdLocation.getCity(), "是否切换到该城市", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								leftBtn.setText(currentCity.getName());
-								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,currentCity.getCityId());
-								ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
+								final CityInfo currentCity=findLocalCityFromServer();
+								if(currentCity!=null){
+									if(myShopOwnerCity!=null){
+										leftBtn.setText(myShopOwnerCity.getName());
+										ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+									}
+									DialogManagerUtils.showMessageAndCancel(MainActivity.this, "您目前的位置是" + bdLocation.getCity(), "是否切换到该城市", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog, int which) {
+											leftBtn.setText(currentCity.getName());
+											ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,currentCity.getCityId());
+											ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
+										}
+									});
+								}else{
+									if(myShopOwnerCity==null){
+										Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店",Toast.LENGTH_SHORT).show();
+										leftBtn.setText("选择城市");
+										ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,-1);
+										ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
+									}else{
+										Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店,自动切回之前店铺所在城市",Toast.LENGTH_SHORT).show();
+										leftBtn.setText(myShopOwnerCity.getName());
+										ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
+									}
+								}
 							}
-						});
 
-					}else{
-						if(myShopOwnerCity==null){
-							Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店",Toast.LENGTH_SHORT).show();
-							leftBtn.setText("选择城市");
-							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,-1);
-							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_SHOP_ID,-1);
-						}else{
-							Toast.makeText(MainActivity.this,"对不起,您所在的城市还没有门店,自动切回之前店铺所在城市",Toast.LENGTH_SHORT).show();
-							leftBtn.setText(myShopOwnerCity.getName());
-							ContentBox.loadInt(MainActivity.this,ContentBox.KEY_CITY_ID,myShopOwnerCity.getCityId());
 						}
-
 					}
-
-
-
-				}
-
-
-
+				});
 
 			}
-		}
+		});
 	}
+
+
 	private CityInfo findLocalCityFromServer(){
 		if(bdLocation==null||bdLocation.getCity()==null){
 			return null;

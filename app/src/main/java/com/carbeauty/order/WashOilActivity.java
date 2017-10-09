@@ -3,6 +3,7 @@ package com.carbeauty.order;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.TimeUtils;
 import com.carbeauty.adapter.DecorationAdapter;
@@ -41,20 +43,13 @@ public class WashOilActivity extends HeaderActivity {
 
     public static  final int REQUEST_CODE_DECO=1009;
     public static  final int REQUEST_CODE_OIL=1010;
-
-
     private int ac_type_value=0;
-
-
     private int shopId;
     private GridView gridView;
     private ListView listView;
     TextView itemTotalPrice;
     TextView itemNums;
     Button bOrderBtn;
-
-
-
     DecorationAdapter decorationAdapter;
     OilInfoAdapter oilInfoAdapter;
 
@@ -75,10 +70,10 @@ public class WashOilActivity extends HeaderActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.button21) {
                     ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
-                    new GetDataList(0).execute();
+                    loadData(0);
                 } else if (checkedId == R.id.button22) {
                     ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 1);
-                    new GetDataList(1).execute();
+                    loadData(1);
                 }
             }
         });
@@ -131,7 +126,7 @@ public class WashOilActivity extends HeaderActivity {
         });
 
         ContentBox.loadInt(WashOilActivity.this, ContentBox.KEY_WAHT_DAY, 0);
-        new GetDataList(-1).execute();
+        loadData(-1);
 
     }
 
@@ -161,10 +156,6 @@ public class WashOilActivity extends HeaderActivity {
     }
 
     private void initData(){
-
-
-
-
         float total=0;
         int data=0;
 
@@ -211,9 +202,7 @@ public class WashOilActivity extends HeaderActivity {
                     Toast.makeText(WashOilActivity.this,"暂无详情数据",Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 Intent intent = new Intent(WashOilActivity.this, WashOilDetailActivity.class);
-
                 intent.putExtra("src", decorationInfos.get(position).getSrc());
                 intent.putExtra("id", decorationInfos.get(position).getId());
                 intent.putExtra("desc", decorationInfos.get(position).getDesc());
@@ -242,12 +231,6 @@ public class WashOilActivity extends HeaderActivity {
             }
         }
     }
-
-
-
-
-
-
     private void initOilInfoListView(final List<OilInfo> oilInfos){
         oilInfoAdapter=new OilInfoAdapter(oilInfos,this);
         oilInfoAdapter.setMyHandlerCallback(new MyHandlerCallback() {
@@ -280,61 +263,58 @@ public class WashOilActivity extends HeaderActivity {
         });
     }
 
-
-
-    class GetDataList extends AsyncTask<String,String,String>{
-        List<OrderStateType> orderStateTypes;
-        List<OilInfo> oilInfos;
-        List<DecorationInfo> decorationInfos;
-        int incr;
-        GetDataList(int incr){
-            this.incr=incr;
-        }
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                if(ac_type_value==Constants.AC_TYPE_OIL) {
-                    orderStateTypes = WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_OIL, shopId, incr);
-                }else  if(ac_type_value==Constants.AC_TYPE_WASH){
-                    orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, incr);
-                }
-
-                if(incr<0){
-                    if(ac_type_value==Constants.AC_TYPE_OIL){
-
-                        oilInfos=WSConnector.getInstance().getOilList(shopId);
-
+    private void loadData(final int incr){
+        MyApplication myApplication= (MyApplication) getApplicationContext();
+        final Handler uiHandler=myApplication.getUiHandler();
+        
+        myApplication.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<OrderStateType> orderStateTypes = null;
+                List<OilInfo> oilInfos = null;
+                List<DecorationInfo> decorationInfos = null;
+                try {
+                    if(ac_type_value==Constants.AC_TYPE_OIL) {
+                        orderStateTypes = WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_OIL, shopId, incr);
                     }else  if(ac_type_value==Constants.AC_TYPE_WASH){
-
-                        decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
+                        orderStateTypes=WSConnector.getInstance().getDayOrderStateList(Constants.SEARCH_TYPE_DECO, shopId, incr);
                     }
+                    if(incr<0){
+                        if(ac_type_value==Constants.AC_TYPE_OIL){
+                            oilInfos=WSConnector.getInstance().getOilList(shopId);
+                        }else  if(ac_type_value==Constants.AC_TYPE_WASH){
+                            decorationInfos=WSConnector.getInstance().getDecorationList(shopId);
+                        }
+                    }
+                } catch (WSException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
+                final List<OrderStateType> finalOrderStateTypes = orderStateTypes;
+                final  List<DecorationInfo> finalDecorationInfos=decorationInfos;
+                final List<OilInfo> finalOilInfos = oilInfos;
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        initGridView(finalOrderStateTypes);
+                        if(incr<0){
+                            if(ac_type_value==Constants.AC_TYPE_WASH){
+                                initDecorationListView(finalDecorationInfos);
+                            }else  if(ac_type_value==Constants.AC_TYPE_OIL){
+                                initOilInfoListView(finalOilInfos);
+                            }
+                        }
 
-
-            } catch (WSException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                    }
+                });
+                
+                
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            initGridView(orderStateTypes);
-            if(incr<0){
-                if(ac_type_value==Constants.AC_TYPE_WASH){
-                    initDecorationListView(decorationInfos);
-                }else  if(ac_type_value==Constants.AC_TYPE_OIL){
-                    initOilInfoListView(oilInfos);
-                }
-            }
-
-
-        }
+        });
+        
     }
+
 
 
 

@@ -57,7 +57,7 @@ import cn.service.bean.GoodInfo;
  */
 public class GoodLookActivity extends CommonActivity {
 
-    TextView gDesc;
+    WebView gDesc;
     EditText gCount;
     TextView gPrice;
     ConvenientBanner banner;
@@ -88,7 +88,7 @@ public class GoodLookActivity extends CommonActivity {
         initCustomActionBar();
         titleTxt.setText(name);
 
-        gDesc= (TextView) findViewById(R.id.gDesc);
+        gDesc= (WebView) findViewById(R.id.gDesc);
         banner= (ConvenientBanner) findViewById(R.id.convenientBanner);
         gCount= (EditText) findViewById(R.id.gCount);
         gPrice= (TextView) findViewById(R.id.gPrice);
@@ -106,9 +106,10 @@ public class GoodLookActivity extends CommonActivity {
 
 
 
+        gDesc.getSettings().setDefaultTextEncodingName("UTF-8") ;
+        gDesc.loadData(desc,"text/html; charset=UTF-8", null);
 
 
-        gDesc.setText(desc);
         gCount.setText("1");
         gPrice.setText(price + "元");
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.carbeauty.BaseActivity;
 import com.carbeauty.R;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.IDataHandler;
@@ -19,7 +20,7 @@ import cn.service.bean.CarInfo;
 /**
  * Created by Administrator on 2016/3/22.
  */
-public class HeaderActivity extends FragmentActivity {
+public class HeaderActivity extends BaseActivity {
    protected ActionBar mActionbar;
    protected TextView tvTitle;
    protected Button rightBtn;

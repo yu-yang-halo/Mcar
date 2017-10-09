@@ -2,12 +2,17 @@ package com.carbeauty;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -18,6 +23,11 @@ public class BaseActivity extends FragmentActivity {
     protected Button    rightBtn;
     protected Button    leftBtn;
     protected TextView  titleLabel;
+    protected Handler mainHandler=new Handler(Looper.getMainLooper());
+    protected ExecutorService executorService= Executors.newCachedThreadPool();
+
+
+
 
     protected boolean initCustomActionBar() {
         mActionbar = getActionBar();

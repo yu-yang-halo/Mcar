@@ -1,33 +1,28 @@
 package com.carbeauty.userlogic;
 
-import com.baidu.mapapi.BMapManager;
-import com.baidu.mapapi.SDKInitializer;
+import com.carbeauty.BaseActivity;
 import com.carbeauty.Constants;
-import com.carbeauty.FirVersion;
 import com.carbeauty.MainActivity;
-import com.carbeauty.MyActivityManager;
 import com.carbeauty.R;
+import com.carbeauty.admin.AdminUI;
+import com.carbeauty.admin.NotificationUI;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentCacheUtils;
 import com.carbeauty.dialog.IpConfigDialog;
 import com.carbeauty.message.MessageActivity;
-import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.permission.PermissionUtils;
 import com.pgyersdk.update.PgyUpdateManager;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,7 +40,7 @@ import cn.service.Util;
 import cn.service.WSConnector;
 import cn.service.WSException;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 	ActionBar mActionbar;
 	TextView tvTitle;
 	EditText usernameEdit;
@@ -88,7 +83,8 @@ public class LoginActivity extends Activity {
 				if(Util.isEmpty(username)||Util.isEmpty(password)){
 					Toast.makeText(LoginActivity.this, "用户名和密码不能为空",Toast.LENGTH_SHORT).show();
 				}else{
-					new LoginTask(LoginActivity.this, username, password).execute();
+//					new LoginTask(LoginActivity.this, username, password).execute();
+					login( username, password);
 				}
 			}
 		});
@@ -105,69 +101,6 @@ public class LoginActivity extends Activity {
 		});
 		packageInfo = getVersionInfo(getApplicationContext());
 		versionTxt.setText("v" + packageInfo.versionName);
-//
-//		FIR.checkForUpdateInFIR("11044c8cac8c136a31cb0b8ab5bd5162", new VersionCheckCallback() {
-//			@Override
-//			public void onSuccess(String versionJson) {
-//				Gson gson = new Gson();
-//				final FirVersion firVersion = gson.fromJson(versionJson, FirVersion.class);
-//
-//
-//				Log.i("fir", "check from fir.im success! "
-//						+ "\n" + firVersion + " packageInfo " + packageInfo.versionName + " " + packageInfo.versionCode);
-//
-//				if (firVersion.getBuild().equals(packageInfo.versionCode + "")
-//						&& firVersion.getVersionShort().equals(packageInfo.versionName)) {
-//					Log.i("fir", "版本号一致,无需更新");
-//
-//					versionTxt.setText("最新版本");
-//
-//				} else {
-//
-//					if (!MyActivityManager.getInstance().isRunBackground()) {
-//						new AlertDialog.Builder(MyActivityManager.getInstance().getCurrentActivity(), AlertDialog.THEME_HOLO_LIGHT)
-//								.setTitle("提示")
-//								.setMessage("发现新版本~")
-//								.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-//									@Override
-//									public void onClick(DialogInterface dialog, int which) {
-//
-//
-//										Uri uri = Uri.parse(firVersion.getInstall_url());
-//
-//										Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//										startActivity(intent);
-//
-//
-//									}
-//								})
-//								.setNegativeButton("暂不更新", new DialogInterface.OnClickListener() {
-//									@Override
-//									public void onClick(DialogInterface dialog, int which) {
-//
-//									}
-//								}).show();
-//					}
-//
-//
-//				}
-//			}
-//
-//			@Override
-//			public void onFail(Exception exception) {
-//				Log.i("fir", "check fir.im fail! " + "\n" + exception.getMessage());
-//			}
-//
-//			@Override
-//			public void onStart() {
-//
-//			}
-//
-//			@Override
-//			public void onFinish() {
-//
-//			}
-//		});
 
 
 		String message=getIntent().getStringExtra(MessageActivity.MESSAGE_CONTENT);
@@ -179,16 +112,37 @@ public class LoginActivity extends Activity {
 				}
 			});
 		}
-		PermissionUtils.requestPermission(this, PermissionUtils.CODE_WRITE_EXTERNAL_STORAGE, new PermissionUtils.PermissionGrant() {
+//		PermissionUtils.requestPermission(this, PermissionUtils.CODE_WRITE_EXTERNAL_STORAGE, new PermissionUtils.PermissionGrant() {
+//			@Override
+//			public void onPermissionGranted(int requestCode) {
+//
+//			}
+//		});
+//		PermissionUtils.requestPermission(this, PermissionUtils.CODE_ACCESS_COARSE_LOCATION, new PermissionUtils.PermissionGrant() {
+//			@Override
+//			public void onPermissionGranted(int requestCode) {
+//
+//			}
+//		});
+
+		PermissionUtils.requestMultiPermissions(this,new PermissionUtils.PermissionGrant() {
 			@Override
 			public void onPermissionGranted(int requestCode) {
 
 			}
 		});
-	}
-	
 
-	private boolean initCustomActionBar() {
+
+
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		PgyUpdateManager.unregister();
+	}
+
+	protected boolean initCustomActionBar() {
 		mActionbar = getActionBar();
 		if (mActionbar == null) {
 			return false;
@@ -213,68 +167,64 @@ public class LoginActivity extends Activity {
 		
 		return true;
 	}
-	class LoginTask extends AsyncTask<String, String, String>{
-		String loginName;
-		String password;
-		Context ctx;
-		KProgressHUD progressHUD;
-		LoginTask(Context ctx, String loginName, String password){
-			this.loginName=loginName;
-			this.password=password;
-			this.ctx=ctx;
-		}
-		@Override
-		protected String doInBackground(String... params) {
+	private  void login(final String username, final String password){
+		final KProgressHUD	progressHUD=KProgressHUD.create(this)
+				.setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+				.setLabel("登录中...")
+				.setAnimationSpeed(1)
+				.setDimAmount(0.3f)
+				.show();
 
-			try {
-				WSConnector.getInstance().appUserLogin(loginName, MD5Generator.reverseMD5Value(password), -1, "android", false);
-			} catch (WSException e) {
-				return e.getErrorMsg();
-			}
-			return null;
-		}
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
 
-			progressHUD=KProgressHUD.create(ctx)
-					.setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-					.setLabel("登录中...")
-					.setAnimationSpeed(1)
-					.setDimAmount(0.3f)
-					.show();
-		}
+		executorService.execute(new Runnable() {
+			@Override
+			public void run() {
+				boolean loginYN=false;
+				try {
+					loginYN=WSConnector.getInstance().appUserLogin(username, MD5Generator.reverseMD5Value(password), false);
+				} catch (WSException e) {
 
-		@Override
-		protected void onPostExecute(String result) {
-			progressHUD.dismiss();
-			if(result==null){
-				ContentCacheUtils.cacheUsernamePass(ctx, loginName, password);
-				String typeStr=WSConnector.getInstance().getUserMap().get("type");
-				Set<String> tags=new HashSet<String>();
-				tags.add(typeStr);
-				JPushInterface.setAliasAndTags(getApplicationContext(), loginName, tags, new TagAliasCallback() {
+				}
+				final boolean finalLoginYN = loginYN;
+				mainHandler.post(new Runnable() {
 					@Override
-					public void gotResult(int i, String s, Set<String> set) {
-						System.out.println("s: "+s+" "+set);
+					public void run() {
+						progressHUD.dismiss();
+						if(finalLoginYN){
+							ContentCacheUtils.cacheUsernamePass(LoginActivity.this, username, password);
+							String typeStr=WSConnector.getInstance().getUserMap().get("type");
+							Set<String> tags=new HashSet<String>();
+							tags.add(typeStr);
+							JPushInterface.setAliasAndTags(getApplicationContext(), username, tags, new TagAliasCallback() {
+								@Override
+								public void gotResult(int i, String s, Set<String> set) {
+									System.out.println("s: "+s+" "+set);
+								}
+							});
+							Intent intent=new Intent();
+
+							if(typeStr.equals(String.valueOf(Constants.USER_TYPE_NOMAL))
+									||typeStr.equals(String.valueOf(Constants.USER_TYPE_VIP))){
+								intent.setClass(LoginActivity.this, MainActivity.class);
+							}else{
+								intent.setClass(LoginActivity.this, AdminUI.class);
+							}
+							startActivity(intent);
+							finish();
+						}else{
+							Toast.makeText(LoginActivity.this,"用户名或密码错误",Toast.LENGTH_SHORT).show();
+						}
 					}
 				});
-				Intent intent=new Intent();
-
-				if(typeStr.equals(String.valueOf(Constants.USER_TYPE_NOMAL))
-						||typeStr.equals(String.valueOf(Constants.USER_TYPE_VIP))){
-					intent.setClass(LoginActivity.this, MainActivity.class);
-				}else{
-					intent.setClass(LoginActivity.this, AdminActivity.class);
-				}
-				startActivity(intent);
-				finish();
-			}else{
-				Toast.makeText(ctx,result,Toast.LENGTH_SHORT).show();
 			}
-		}
-		
+		});
+
+
+
+
+
+
 	}
 
 

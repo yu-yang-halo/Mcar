@@ -15,9 +15,9 @@
             android:layout_height="match_parent"
             >
 
-            <TextView
+            <WebView
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="200dp"
                 android:background="#f3f4f6"
                 android:padding="10dp"
                 android:textSize="13sp"

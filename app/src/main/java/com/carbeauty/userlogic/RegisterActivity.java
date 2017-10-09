@@ -180,7 +180,7 @@ public class RegisterActivity extends Activity{
 				userId=WSConnector.getInstance().createUser(loginName, password, loginName, RegType.REGULAR_USER_TYPE.getVal(), -1, null, null);
 
 				if(userId>0){
-					boolean loginYN=WSConnector.getInstance().appUserLogin(loginName, MD5Generator.reverseMD5Value(password), -1, "android", false);
+					boolean loginYN=WSConnector.getInstance().appUserLogin(loginName, MD5Generator.reverseMD5Value(password), false);
 
 					if(loginYN){
 						CarInfo carInfo=new CarInfo(0,0,carNumber,0,carbrand);

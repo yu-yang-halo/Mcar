@@ -82,8 +82,7 @@ public class OrderInfoUtil2_0 {
 
 		keyValues.put("timestamp",timestamp );
 		//keyValues.put("extend_params", "{\"hb_fq_num\":\"3\",\"hb_fq_seller_percent\":\"100\"}");
-
-
+		keyValues.put("notify_url", "http://dzcflm.cn:8888/Notify_aliNotify");
 		keyValues.put("version", "1.0");
 		
 		return keyValues;

@@ -6,14 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.carbeauty.MainActivity;
 import com.carbeauty.MyActivityManager;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.MessageManager;
 import com.carbeauty.message.MessageActivity;
-import com.carbeauty.userlogic.AdminActivity;
 import com.carbeauty.userlogic.ICallData;
 import com.carbeauty.userlogic.LoginActivity;
 

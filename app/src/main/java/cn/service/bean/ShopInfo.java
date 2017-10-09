@@ -19,6 +19,16 @@ public class ShopInfo {
 	private int kilometerDistance;
 
 	private String icon;
+	private int busy;//0绿色  1橙色  2红色  3深红
+
+
+	public int getBusy() {
+		return busy;
+	}
+
+	public void setBusy(int busy) {
+		this.busy = busy;
+	}
 
 	public int getKilometerDistance() {
 		return kilometerDistance;

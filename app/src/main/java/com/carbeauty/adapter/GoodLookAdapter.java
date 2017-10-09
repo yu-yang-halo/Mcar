@@ -22,6 +22,7 @@ import com.carbeauty.cache.CartManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.service.Util;
 import cn.service.WSConnector;
 
 /**
@@ -91,7 +92,7 @@ public class GoodLookAdapter extends BaseAdapter {
 
 
         nameTxt.setText(myCartClassList.get(position).getGoodInfo().getName());
-        descTxt.setText(myCartClassList.get(position).getGoodInfo().getDesc());
+        descTxt.setText(Util.formatHtml(myCartClassList.get(position).getGoodInfo().getDesc()));
         countTxt.setText("x"+myCartClassList.get(position).getCount());
         priceTxt.setText(myCartClassList.get(position).getGoodInfo().getPrice() + "元");
 

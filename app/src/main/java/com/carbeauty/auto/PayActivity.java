@@ -188,13 +188,18 @@ public class PayActivity extends BaseActivity {
         picker.setRange(1, 3, 1);//数字范围
         picker.setSelectedItem(3);
         picker.setLabel("元");
-        picker.setOnNumberPickListener(new NumberPicker.OnNumberPickListener() {
+        picker.setOnOptionPickListener(new OptionPicker.OnOptionPickListener() {
             @Override
-            public void onNumberPicked(int index, Number item) {
-                moneyValue=item.intValue();
+            public void onOptionPicked(String option) {
+                moneyValue=0;
+                try {
+                    moneyValue=Integer.parseInt(option);
+                }catch (Exception e){
 
+                }
             }
         });
+
         picker.show();
     }
 

@@ -17,7 +17,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="#666666"
         android:text=""
         android:textSize="@dimen/defaultFontSize"
         android:layout_centerVertical="true"

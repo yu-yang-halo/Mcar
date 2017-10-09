@@ -148,18 +148,8 @@ public class OrderReokActivity extends HeaderActivity {
 
 
 
-        int type=ContentBox.getValueInt(this,ContentBox.KEY_USER_TYPE,3);
-
-        if(type==Constants.USER_TYPE_VIP){
-            offerStrArrs=new String[]{"在线支付","到店支付"};
-            offerIndex=1;
-        }else{
-            offerStrArrs=new String[]{"在线支付"};
-            offerIndex=0;
-        }
 
 
-        offerDescTxt.setText(offerStrArrs[offerIndex]);
 
 
         offerRelayout.setOnClickListener(new View.OnClickListener() {
@@ -229,13 +219,25 @@ public class OrderReokActivity extends HeaderActivity {
         ac_type_value=getIntent().getIntExtra(Constants.AC_TYPE,
                 Constants.AC_TYPE_WASH);
 
+        int type=ContentBox.getValueInt(this,ContentBox.KEY_USER_TYPE,3);
+        if(type==Constants.USER_TYPE_VIP){
+            offerStrArrs=new String[]{"在线支付","到店支付"};
+            offerIndex=1;
+        }else{
+            offerStrArrs=new String[]{"在线支付"};
+            offerIndex=0;
+        }
         if(ac_type_value==Constants.AC_TYPE_WASH){
             orderType=Constants.ORDER_TYPE_DECO;
         }else if(ac_type_value==Constants.AC_TYPE_OIL){
             orderType=Constants.ORDER_TYPE_OIL;
         }else{
             orderType=Constants.ORDER_TYPE_META;
+            offerStrArrs=new String[]{"在线支付","到店支付"};
+            offerIndex=1;
         }
+
+        offerDescTxt.setText(offerStrArrs[offerIndex]);
 
 
 

@@ -53,7 +53,17 @@ public class Util {
 			return true;
 		}
 	}
+	public static String formatHtml(String str){
+		int start=str.indexOf("<");
+		int end=str.indexOf(">");
+		while (start>=0&&end>=0){
 
+			str=str.replace(str.substring(start,end+1),"");
+			start=str.indexOf("<");
+			end=str.indexOf(">");
+		}
+		return str;
+	}
 	public static boolean isEmpty(String val) {
 		if (val == null) {
 			return true;
