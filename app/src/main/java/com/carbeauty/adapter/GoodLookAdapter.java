@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.cache.CartManager;
 
@@ -63,6 +64,13 @@ public class GoodLookAdapter extends BaseAdapter {
         return null;
     }
 
+    public void initPriceLabel(){
+        if(totalPriceTxt!=null){
+            totalPriceTxt.setText(getLastestNewPrice() + "元");
+        }
+
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -78,6 +86,10 @@ public class GoodLookAdapter extends BaseAdapter {
         TextView descTxt= (TextView) convertView.findViewById(R.id.textView45);
         TextView priceTxt= (TextView) convertView.findViewById(R.id.textView46);
         TextView countTxt= (TextView) convertView.findViewById(R.id.textView47);
+
+
+        TextView sizeTxt= (TextView) convertView.findViewById(R.id.textView62);
+        TextView colorTxt= (TextView) convertView.findViewById(R.id.textView63);
 
         ImageView showImageView= (ImageView) convertView.findViewById(R.id.imageView10);
 
@@ -96,19 +108,36 @@ public class GoodLookAdapter extends BaseAdapter {
         countTxt.setText("x"+myCartClassList.get(position).getCount());
         priceTxt.setText(myCartClassList.get(position).getGoodInfo().getPrice() + "元");
 
-        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+        String tags=myCartClassList.get(position).getGoodInfo().getTags();
+        String colors=myCartClassList.get(position).getGoodInfo().getColors();
+        if(tags!=null){
+            sizeTxt.setVisibility(View.VISIBLE);
+            sizeTxt.setText(tags);
+        }else{
+            sizeTxt.setVisibility(View.INVISIBLE);
+        }
+        if(colors!=null){
+            colorTxt.setVisibility(View.VISIBLE);
+            colorTxt.setBackgroundColor(Util.rgbArrsToInt(colors));
+        }else{
+            colorTxt.setVisibility(View.INVISIBLE);
+        }
+
+        MyApplication myApplication= (MyApplication) ctx.getApplicationContext();
+
+        ImageLoader imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(showImageView
                 , 0, 0);
 
 
 
-        imageLoader.get(myCartClassList.get(position).getImageURL(), listener);
+        imageLoader.get(myCartClassList.get(position).getImageURL(), listener,160,160);
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 myCartClassList.get(position).setCheckYN(isChecked);
-                totalPriceTxt.setText(getLastestNewPrice() + "元");
+                initPriceLabel();
             }
         });
 
@@ -177,6 +206,10 @@ public class GoodLookAdapter extends BaseAdapter {
 
         String data0="";
         String data1="";
+        String tags0="";
+        String tags1="";
+        String colors0="";
+        String colors1="";
         float  totalPrice0=0;
         float  totalPrice1=0;
         for (CartManager.MyCartClass myCartClass:myCartClassList){
@@ -184,11 +217,20 @@ public class GoodLookAdapter extends BaseAdapter {
                 if(myCartClass.getGoodInfo().getShopId()==-1){
                     data0+=myCartClass.getId()
                             +"+"+myCartClass.getCount()+",";
+
+
+                    tags0+=(myCartClass.getGoodInfo().getTags()==null?"":myCartClass.getGoodInfo().getTags())+"|";
+                    colors0+=(myCartClass.getGoodInfo().getColors()==null?"":myCartClass.getGoodInfo().getColors())+"|";
+
                     commitDataBean0.setShopId(-1);
                     totalPrice0+=(myCartClass.getCount()*myCartClass.getGoodInfo().getPrice());
                 }else{
                     data1+=myCartClass.getId()
                             +"+"+myCartClass.getCount()+",";
+
+                    tags1+=(myCartClass.getGoodInfo().getTags()==null?"":myCartClass.getGoodInfo().getTags())+"|";
+                    colors1+=(myCartClass.getGoodInfo().getColors()==null?"":myCartClass.getGoodInfo().getColors())+"|";
+
                     commitDataBean1.setShopId(myCartClass.getGoodInfo().getShopId());
                     totalPrice1+=(myCartClass.getCount()*myCartClass.getGoodInfo().getPrice());
                 }
@@ -202,16 +244,35 @@ public class GoodLookAdapter extends BaseAdapter {
             data1=data1.substring(0,data1.length()-1);
         }
 
+        if(!tags0.equals("")){
+            tags0=tags0.substring(0,tags0.length()-1);
+        }
+        if(!tags1.equals("")){
+            tags1=tags1.substring(0,tags1.length()-1);
+        }
+
+
+        if(!colors0.equals("")){
+            colors0=colors0.substring(0,colors0.length()-1);
+        }
+        if(!colors1.equals("")){
+            colors1=tags1.substring(0,colors1.length()-1);
+        }
+
         List<CommitDataBean> commitDataBeans=new ArrayList<CommitDataBean>();
 
         if(totalPrice0>0){
             commitDataBean0.setTotalPrice(totalPrice0);
             commitDataBean0.setData(data0);
+            commitDataBean0.setColor(colors0);
+            commitDataBean0.setTag(tags0);
             commitDataBeans.add(commitDataBean0);
         }
         if(totalPrice1>0){
             commitDataBean1.setTotalPrice(totalPrice1);
             commitDataBean1.setData(data1);
+            commitDataBean1.setColor(colors1);
+            commitDataBean1.setTag(tags1);
             commitDataBeans.add(commitDataBean1);
         }
 
@@ -224,6 +285,24 @@ public class GoodLookAdapter extends BaseAdapter {
         private String data;
         private float totalPrice;
         private int shopId;
+        private String tag;
+        private String color;
+
+        public String getTag() {
+            return tag;
+        }
+
+        public void setTag(String tag) {
+            this.tag = tag;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
+        }
 
         public String getData() {
             return data;

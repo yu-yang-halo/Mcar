@@ -1,6 +1,7 @@
 package com.carbeauty.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.cache.IDataHandler;
 
@@ -28,10 +30,14 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
     private List<GoodInfo> goodInfos;
     private Context ctx;
     RequestQueue mQueue;
+    ImageLoader imageLoader;
     public GoodListDetailShowAdapter(List<GoodInfo> goodInfos, Context ctx){
         this.goodInfos=goodInfos;
         this.ctx=ctx;
         mQueue = Volley.newRequestQueue(ctx);
+        MyApplication myApplication= (MyApplication) ctx.getApplicationContext();
+
+        imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
     }
     @Override
     public int getCount() {
@@ -61,13 +67,16 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
             TextView goodDescTextView= (TextView) convertView.findViewById(R.id.textView7);
             TextView goodPriceTextView= (TextView) convertView.findViewById(R.id.textView54);
 
-
+            TextView sizeTxt= (TextView) convertView.findViewById(R.id.textView66);
+            TextView colorTxt= (TextView) convertView.findViewById(R.id.textView67);
             holder=new AdapterHolder();
 
             holder.goodBuyNumberTextView=goodBuyNumberTextView;
             holder.goodDescTextView=goodDescTextView;
             holder.goodImageView=goodImageView;
             holder.goodPriceTextView=goodPriceTextView;
+            holder.sizeTxt=sizeTxt;
+            holder.colorTxt=colorTxt;
 
 
             convertView.setTag(holder);
@@ -82,7 +91,22 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
         holder.goodDescTextView.setText(Util.formatHtml(goodInfo.getDesc()));
         holder.goodBuyNumberTextView.setText("x"+goodInfo.getBuyNumber());
 
-        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+
+        if(goodInfo.getTags()!=null&& !TextUtils.isEmpty(goodInfo.getTags().trim())){
+            holder.sizeTxt.setVisibility(View.VISIBLE);
+            holder.sizeTxt.setText(goodInfo.getTags());
+        }else{
+            holder.sizeTxt.setVisibility(View.INVISIBLE);
+        }
+        if(goodInfo.getColors()!=null&& !TextUtils.isEmpty(goodInfo.getColors().trim())){
+            holder.colorTxt.setVisibility(View.VISIBLE);
+            holder.colorTxt.setBackgroundColor(Util.rgbArrsToInt(goodInfo.getColors()));
+        }else{
+            holder.colorTxt.setVisibility(View.INVISIBLE);
+        }
+
+
+
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView
                 , 0, 0);
 
@@ -90,7 +114,7 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
         String src=goodInfo.getSrc();
         String url= WSConnector.getGoodsURL(goodInfo.getShopId() + "", src.split(",")[0]);
 
-        imageLoader.get(url, listener);
+        imageLoader.get(url, listener,160,160);
 
 
 
@@ -102,5 +126,7 @@ public class GoodListDetailShowAdapter extends BaseAdapter {
         TextView goodBuyNumberTextView;
         TextView goodDescTextView;
         TextView goodPriceTextView;
+        TextView sizeTxt;
+        TextView colorTxt;
     }
 }

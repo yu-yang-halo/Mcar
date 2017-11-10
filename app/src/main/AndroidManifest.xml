@@ -115,6 +115,11 @@
             android:theme="@style/AppTheme">
 
         </activity>
+        <activity android:name=".order.ExpressActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
+        </activity>
         <activity android:name=".web.WebBroswerActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">

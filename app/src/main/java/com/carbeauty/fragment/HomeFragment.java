@@ -28,6 +28,7 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.carbeauty.DensityUtil;
 import com.carbeauty.ImageUtils;
 import com.carbeauty.MainActivity;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.adapter.BitmapCache;
 import com.carbeauty.adapter.HotGoodsAdapter;
@@ -75,12 +76,15 @@ public class HomeFragment extends Fragment {
     private String[] iconName;
     PullRefreshLayout swipeRefreshLayout;
 
-
+    ImageLoader imageLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v("Home","onCreate....");
+        MyApplication myApplication= (MyApplication) getActivity().getApplicationContext();
+        imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
+
 
     }
 
@@ -416,11 +420,11 @@ public class HomeFragment extends Fragment {
         }
         @Override
         public void UpdateUI(Context context, final int position, String imageURL) {
-            ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+
             ImageLoader.ImageListener listener=ImageLoader.getImageListener(imageView
                     , 0, 0);
 
-            imageLoader.get(imageURL, listener);
+            imageLoader.get(imageURL, listener,400,400);
         }
     }
 

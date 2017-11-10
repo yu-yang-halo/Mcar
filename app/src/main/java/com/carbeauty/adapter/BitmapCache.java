@@ -16,7 +16,7 @@ public class BitmapCache implements ImageLoader.ImageCache {
     public BitmapCache() {
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
          // 使用最大可用内存值的1/4作为缓存的大小。
-        int maxSize = maxMemory / 2;
+        int maxSize = maxMemory / 100;
         Log.v("BitmapCache","maxMemory is "+maxMemory+"KB maxSize is "+maxSize+"KB");
 
 

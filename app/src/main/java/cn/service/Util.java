@@ -14,6 +14,8 @@
  */
 package cn.service;
 
+import android.graphics.Color;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,6 +65,40 @@ public class Util {
 			end=str.indexOf(">");
 		}
 		return str;
+	}
+
+	public  static int stringToInt(String val){
+		int value=Integer.MIN_VALUE;
+		try{
+			value=Integer.parseInt(val.trim());
+		}catch (NumberFormatException e){
+
+		}
+		return value;
+	}
+
+	public static int rgbArrsToInt(String str){
+
+		int[] arrs=rgbArrs(str);
+		return Color.argb(255,arrs[0],arrs[1],arrs[2]);
+	}
+
+	public static int[] rgbArrs(String str){
+		str=str.replace("+","");
+		//rgb(0, 0, 0);
+		int[] rgbArrrs=new int[]{0,0,0};
+		int start=str.indexOf("(");
+		int end=str.indexOf(")");
+		String subStr= str.substring(start+1,end);
+		String[] subArrs=subStr.split(",");
+
+		if(subArrs==null||subArrs.length!=3){
+			return rgbArrrs;
+		}
+		rgbArrrs[0]=stringToInt(subArrs[0]);
+		rgbArrrs[1]=stringToInt(subArrs[1]);
+		rgbArrrs[2]=stringToInt(subArrs[2]);
+		return rgbArrrs;
 	}
 	public static boolean isEmpty(String val) {
 		if (val == null) {

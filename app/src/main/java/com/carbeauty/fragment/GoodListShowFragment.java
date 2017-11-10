@@ -39,7 +39,7 @@ public class GoodListShowFragment extends Fragment {
     GoodOrderListShowActivity activity;
     WeakReference<GoodListShowFragment> weakReference;
 
-    /** type::: 未发货--0  已发货--1  未支付--2  已支付--3 已取消--4**/
+    /** type::: 未发货--0  已发货--1  未支付--2  已支付--3 已取消--4  已收货--5**/
     int type;
 
     public static GoodListShowFragment getInstance(int type,List<GoodsOrderListType> goodsOrderListTypes,List<GoodInfo> goodInfos) {
@@ -56,6 +56,7 @@ public class GoodListShowFragment extends Fragment {
 
         List<GoodsOrderListType> list=new ArrayList<GoodsOrderListType>();
         for (GoodsOrderListType orderListType:goodsOrderListTypes){
+
             if (orderListType.getState()==type){
                 list.add(orderListType);
             }
@@ -81,7 +82,6 @@ public class GoodListShowFragment extends Fragment {
                cacheMap.put(existObj.getTradeNo(),existObj);
                System.out.println("组合数据....");
            }
-
         }
         Collection<GoodsOrderListType> collections=cacheMap.values();
         if (collections instanceof List){

@@ -37,11 +37,12 @@ public class Constants {
     public final static int STATE_ORDER_CANCEL=3;//取消
 
 
-    public final static int GOOD_STATE_ORDER_NO_DELIVE=0;//0未发货
+    public final static int GOOD_STATE_ORDER_NO_DELIVE=0;//0待发货
     public final static int GOOD_STATE_ORDER_DELIVE=1;//1已发货
     public final static int GOOD_STATE_ORDER_NO_PAY=2;// 2 未支付
     public final static int GOOD_STATE_ORDER_PAY=3;//3已支付
     public final static int GOOD_STATE_ORDER_CANCEL=4;//取消
+    public final static int GOOD_STATE_ORDER_FINISHED=5;//确认收货
 
     public final static int PAY_TYPE_ALIPAY=1;//支付宝
     public final static int PAY_TYPE_WECHAT=2;//微信

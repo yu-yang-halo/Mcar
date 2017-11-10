@@ -139,7 +139,6 @@ public class LoginActivity extends BaseActivity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		PgyUpdateManager.unregister();
 	}
 
 	protected boolean initCustomActionBar() {
@@ -238,4 +237,9 @@ public class LoginActivity extends BaseActivity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		PgyUpdateManager.unregister();
+	}
 }

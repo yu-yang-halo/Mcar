@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carbeauty.R;
 
@@ -30,6 +31,9 @@ public class CommonActivity extends FragmentActivity {
     protected String href;
     protected String desc;
 
+    protected String tags;
+    protected String colors;
+
     protected GoodInfo goodInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +49,11 @@ public class CommonActivity extends FragmentActivity {
         src=getIntent().getExtras().getString("src");
         href=getIntent().getExtras().getString("href");
         desc=getIntent().getExtras().getString("desc");
-
+        tags=getIntent().getExtras().getString("tags");
+        colors=getIntent().getExtras().getString("colors");
 
         goodInfo=new GoodInfo(id,name,desc,0,0,price,src,shopId,0,href,false);
+
 
 
     }
@@ -112,5 +118,8 @@ public class CommonActivity extends FragmentActivity {
 
 
         return true;
+    }
+    protected void showMessage(String message){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 }

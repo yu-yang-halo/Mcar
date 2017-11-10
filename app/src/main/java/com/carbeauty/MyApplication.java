@@ -17,6 +17,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
+import com.carbeauty.adapter.BitmapCache;
 import com.carbeauty.alertDialog.DialogManagerUtils;
 import com.carbeauty.cache.ContentBox;
 import com.carbeauty.cache.ContentCacheUtils;
@@ -58,6 +59,14 @@ public class MyApplication extends Application {
         return uiHandler;
     }
 
+    private BitmapCache bitmapCache;
+
+    public BitmapCache getBitmapCache(){
+        if(bitmapCache==null){
+            bitmapCache=new BitmapCache();
+        }
+        return bitmapCache;
+    }
 
 
 
@@ -167,14 +176,16 @@ public class MyApplication extends Application {
             }
         });
 
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                System.err.println("ERROR:"+e.getMessage());
-                Process.killProcess(Process.myPid());
-                System.exit(0);
-            }
-        });
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(Thread t, Throwable e) {
+//                System.err.println("ERROR:"+e.getMessage());
+//                Process.killProcess(Process.myPid());
+//                System.exit(0);
+//            }
+//        });
+
+        bitmapCache=new BitmapCache();
 
     }
 

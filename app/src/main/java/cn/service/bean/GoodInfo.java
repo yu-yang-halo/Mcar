@@ -59,6 +59,9 @@ public class GoodInfo {
 	private int isChange;
 	private boolean isTop;
 	private float price;
+	private String colors;
+	private String tags;
+
 
 	public int getBuyNumber() {
 		return buyNumber;
@@ -132,5 +135,21 @@ public class GoodInfo {
 
 	public void setBitmap(Bitmap bitmap) {
 		this.bitmap = bitmap;
+	}
+
+	public String getColors() {
+		return colors;
+	}
+
+	public void setColors(String colors) {
+		this.colors = colors;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 }

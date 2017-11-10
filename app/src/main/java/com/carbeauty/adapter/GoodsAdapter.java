@@ -89,8 +89,8 @@ public class GoodsAdapter extends BaseAdapter {
         holder.goodDesc.setText(Util.formatHtml(goodInfos.get(position).getDesc()));
         holder.goodPriceTxt.setText(goodInfos.get(position).getPrice() + "元");
 
-
-        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+        MyApplication myApplication= (MyApplication) ctx.getApplicationContext();
+        ImageLoader imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(holder.goodImageView
                 , 0, 0);
 
@@ -98,7 +98,7 @@ public class GoodsAdapter extends BaseAdapter {
         String src=goodInfos.get(position).getSrc();
         String url= WSConnector.getGoodsURL(goodInfos.get(position).getShopId() + "", src.split(",")[0]);
 
-        imageLoader.get(url, listener);
+        imageLoader.get(url, listener,160,160);
 
         return convertView;
     }

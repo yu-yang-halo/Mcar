@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 
 import java.util.List;
@@ -77,13 +78,13 @@ public class ImageAdapter extends BaseAdapter {
 
 
 
-
-        ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+        MyApplication myApplication= (MyApplication) ctx.getApplicationContext();
+        ImageLoader imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
         ImageLoader.ImageListener listener=ImageLoader.getImageListener(item_image
                 , 0, 0);
 
 
-        imageLoader.get(paths.get(position), listener);
+        imageLoader.get(paths.get(position), listener,160,160);
 
         return convertView;
     }

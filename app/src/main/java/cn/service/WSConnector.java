@@ -35,6 +35,7 @@ import cn.service.bean.CityInfo;
 import cn.service.bean.CouponInfo;
 import cn.service.bean.DecoOrderInfo;
 import cn.service.bean.DevInfoType;
+import cn.service.bean.ExpressInfo;
 import cn.service.bean.GoodsOrderListType;
 import cn.service.bean.GoodsType;
 import cn.service.bean.OrderStateType;
@@ -1288,11 +1289,17 @@ public class WSConnector {
 
 		Element tradeNoNode = (Element) element.getElementsByTagName(
 				"tradeNo").item(0);
+		Element colorNode = (Element) element.getElementsByTagName(
+				"color").item(0);
+		Element tagNode = (Element) element.getElementsByTagName(
+				"tag").item(0);
+		Element msgNode = (Element) element.getElementsByTagName(
+				"msg").item(0);
 
 		int id=0,userId=0,shopId=-3,state=0,realShopId=-3;
 		float price=0;
 		String goodsInfo="",createTime="",address="",name="",phone="",
-				processTime="",tradeNo="";
+				processTime="",tradeNo="",color="",tag="",msg="";
 
 		if (nameNode != null && nameNode.getFirstChild() != null) {
 			name = nameNode.getFirstChild().getNodeValue();
@@ -1340,12 +1347,19 @@ public class WSConnector {
 			price = Float.parseFloat(priceNode.getFirstChild().getNodeValue());
 		}
 
+		color=parseElementValue(colorNode);
+		tag=parseElementValue(tagNode);
+		msg=parseElementValue(msgNode);
+
 
 		GoodsOrderListType goodsOrderListType=new GoodsOrderListType(id,goodsInfo,  createTime,  userId,  shopId,  price,  address,  name,  phone,  state,  processTime);
 
 
 		goodsOrderListType.setTradeNo(tradeNo);
 		goodsOrderListType.setRealShopId(realShopId);
+		goodsOrderListType.setColor(color);
+		goodsOrderListType.setTag(tag);
+		goodsOrderListType.setMsg(msg);
 
 		return  goodsOrderListType;
 
@@ -1477,7 +1491,8 @@ public class WSConnector {
 
 
 	public Map<String,Object> createGoodsOrder(String goodsInfo,int shopId,float price,
-									String address,String name,String phone,String desContent,int realShopId) throws WSException {
+									String address,String name,String phone,String desContent,int realShopId,
+											   String tag,String color,String msg) throws WSException {
 		Map<String,Object> returnObject=new HashMap<String,Object>();
 		String service = "";
 
@@ -1489,10 +1504,19 @@ public class WSConnector {
                     +"&shopId="+shopId+"&price="+price+"&address="+URLEncoder.encode(address, "UTF-8")
                     +"&name="+URLEncoder.encode(name, "UTF-8")+"&phone="+phone+"&realShopId="+realShopId;
 
+
+			if(tag!=null){
+				service+="&tag="+URLEncoder.encode(tag, "UTF-8");
+			}
+			if(color!=null){
+				service+="&color="+URLEncoder.encode(color, "UTF-8");
+			}
+			if(msg!=null||!msg.trim().isEmpty()){
+				service+="&msg="+URLEncoder.encode(msg, "UTF-8");
+			}
 			if(desContent!=null){
 				service+="&desContent="+desContent;
 			}
-
 
 
 		} catch (UnsupportedEncodingException e) {
@@ -1585,6 +1609,41 @@ public class WSConnector {
 			}
 		}
 		return null;
+	}
+
+	public ExpressInfo getExpressById(int orderId) throws WSException {
+		String service = "";
+		service = WSConnector.wsUrl + "getExpressById?senderId="
+				+ this.userMap.get("userId") + "&secToken="
+				+ this.userMap.get("secToken")+"&orderId="+orderId;
+		Logger.getLogger(this.getClass()).info(
+				"[getExpressById]  ws query = " + service);
+		Element root = getXMLNode(service);
+		if (root == null) {
+			throw new WSException(ErrorCode.REJECT);
+		}
+		Element errCodeNode = root.getElementsByTagName("errorCode") != null ? (Element) root
+				.getElementsByTagName("errorCode").item(0) : null;
+		if (errCodeNode != null) {
+			int errorCode = Integer.parseInt(errCodeNode.getFirstChild()
+					.getNodeValue());
+			if (errorCode == ErrorCode.ACCEPT.getCode()) {
+				Element expressNameNode = root.getElementsByTagName("expressName") != null ? (Element) root
+						.getElementsByTagName("expressName").item(0) : null;
+				Element expressNumNode = root.getElementsByTagName("expressNum") != null ? (Element) root
+						.getElementsByTagName("expressNum").item(0) : null;
+
+				String expressName=parseElementValue(expressNameNode);
+				String expressNum=parseElementValue(expressNumNode);
+
+				ExpressInfo expressInfo=new ExpressInfo(expressName,expressNum);
+
+				return expressInfo;
+			}
+		}
+
+		return null;
+
 	}
 
 	public List<GoodsType> getGoodsType(boolean isAdmin) throws WSException {
@@ -2003,6 +2062,10 @@ public class WSConnector {
 				"href").item(0);
 		Element isTopNode = (Element) element.getElementsByTagName(
 				"isTop").item(0);
+		Element tagsNode = (Element) element.getElementsByTagName(
+				"tags").item(0);
+		Element colorsNode = (Element) element.getElementsByTagName(
+				"colors").item(0);
 
 
 		int  id=-1,isShow=-1,isChange=-1,shopId=-1,type=-1;
@@ -2044,8 +2107,13 @@ public class WSConnector {
 		if (hrefNode != null && hrefNode.getFirstChild() != null) {
 			href =hrefNode.getFirstChild().getNodeValue();
 		}
-		
+
+		String colors=parseElementValue(colorsNode);
+		String tags=parseElementValue(tagsNode);
+
 		GoodInfo goodInfo=new GoodInfo(id, name, desc, isShow, isChange, price, src, shopId,type,href,isTop);
+		goodInfo.setTags(tags);
+		goodInfo.setColors(colors);
 		return goodInfo;
 	}
 	public List<GoodInfo> getGoodsList(int shopId) throws WSException{
@@ -2533,7 +2601,7 @@ public class WSConnector {
 				+"&expressName=android&expressWaybill=android";
 
 		Logger.getLogger(this.getClass()).info(
-				"[delMetaOrder]  ws query = " + service);
+				"[updGoodsOrder]  ws query = " + service);
 
 		Element root = getXMLNode(service);
 		if (root == null) {

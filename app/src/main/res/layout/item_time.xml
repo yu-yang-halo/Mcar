@@ -9,14 +9,14 @@
     android:layout_centerVertical="true"
     android:gravity="center"
     android:layout_centerHorizontal="true">
+
     <Button
+        android:id="@+id/timeBtn"
         android:layout_width="56dp"
         android:layout_height="26dp"
-        android:text="12:00"
-        android:textSize="15sp"
-        android:id="@+id/timeBtn"
         android:background="@drawable/button_time_color"
-        />
+        android:text="12:00"
+        android:textSize="15sp" />
 </LinearLayout>
 
 </RelativeLayout>

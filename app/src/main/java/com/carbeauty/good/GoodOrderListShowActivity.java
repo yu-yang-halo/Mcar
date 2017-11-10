@@ -30,8 +30,9 @@ import cn.service.bean.GoodsOrderListType;
  * Created by Administrator on 2016/3/30.
  */
 public class GoodOrderListShowActivity extends HeaderActivity {
-    /** 未发货--0  已发货--1  未支付--2  已支付--3  取消--4**/
-    private static final String[] titles=new String[]{"未发货","已发货","未支付","已支付"};
+    /** 待发货--0  已发货--1  未支付--2  已支付--3(瞬间状态)  取消--4   确认收货--5    **/
+    private static final String[] titles=new String[]{"待发货","已发货","未支付","已收货"};
+    private static final int[]    indexs=new int[]{0,1,2,5};
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private WeakReference<GoodListShowFragment> weakReference;
     @Override
@@ -58,7 +59,7 @@ public class GoodOrderListShowActivity extends HeaderActivity {
         int currentLab=0;
 
         for (int i=0;i<titles.length;i++) {
-            mFragments.add(GoodListShowFragment.getInstance(i,goodsOrderListTypes,goodInfos));
+            mFragments.add(GoodListShowFragment.getInstance(indexs[i],goodsOrderListTypes,goodInfos));
         }
 
         View decorView = getWindow().getDecorView();
@@ -69,6 +70,9 @@ public class GoodOrderListShowActivity extends HeaderActivity {
         SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
         tabLayout_10.setViewPager(vp);
         tabLayout_10.setCurrentTab(currentLab);
+
+
+
 
 
     }

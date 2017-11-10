@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class GoodOrderActivity extends FragmentActivity {
     String phone;
 
     TextView addressDescription;
+    EditText leaveMessageEdit;
     List<CartManager.MyCartClass> myCartClassList;
     int shopId;
     private static final int SDK_PAY_FLAG = 1;
@@ -115,8 +117,8 @@ public class GoodOrderActivity extends FragmentActivity {
         shopId= ContentBox.getValueInt(this, ContentBox.KEY_SHOP_ID, 0);
 
 
-
         goodslistview= (ListView) findViewById(R.id.goodslistview);
+        leaveMessageEdit= (EditText) findViewById(R.id.editText4);
 
 
 
@@ -185,6 +187,8 @@ public class GoodOrderActivity extends FragmentActivity {
         });
 
 
+
+
     }
 
     @Override
@@ -197,6 +201,8 @@ public class GoodOrderActivity extends FragmentActivity {
             addressDescription.setText("地址:"+address+"\n收货人姓名:"+name+" 联系电话:"+phone);
         }
 
+        goodLookAdapter.initPriceLabel();
+
     }
 
     class CommitOrderTask extends AsyncTask<String,String,String>{
@@ -205,6 +211,7 @@ public class GoodOrderActivity extends FragmentActivity {
         AlibabaPay alibabaPay;
         AlipayInfo  alipayInfo;
         Activity ctx;
+        String leaveMessage;
 
         CommitOrderTask(Activity ctx,List<GoodLookAdapter.CommitDataBean> commitDataBeanList){
             this.commitDataBeanList=commitDataBeanList;
@@ -219,6 +226,8 @@ public class GoodOrderActivity extends FragmentActivity {
                     .setAnimationSpeed(1)
                     .setDimAmount(0.3f)
                     .show();
+            leaveMessage=leaveMessageEdit.getText().toString();
+
 
         }
 
@@ -239,25 +248,25 @@ public class GoodOrderActivity extends FragmentActivity {
                 e.printStackTrace();
             }
 
-
             for (GoodLookAdapter.CommitDataBean dataBean:commitDataBeanList){
                 try {
                   if(size==1){
                       Map<String,Object> retObject=WSConnector.getInstance().createGoodsOrder(dataBean.getData()
                               ,dataBean.getShopId()
-                              ,dataBean.getTotalPrice(),address,name,phone,"0",shopId);
+                              ,dataBean.getTotalPrice(),address,name,phone,"0",shopId,
+                              dataBean.getTag(),dataBean.getColor(),leaveMessage);
 
                       if(retObject.get("out_trade_no")!=null){
                           out_trade_no=(String)retObject.get("out_trade_no");
                       }
-
 
                   }else{
 
                       if(index<size-1){
                           Map<String,Object> retObject= WSConnector.getInstance().createGoodsOrder(dataBean.getData()
                                   ,dataBean.getShopId()
-                                  ,dataBean.getTotalPrice(),address,name,phone,null,shopId);
+                                  ,dataBean.getTotalPrice(),address,name,phone,null,shopId,
+                                  dataBean.getTag(),dataBean.getColor(),leaveMessage);
 
                           if(index==size-2){
                               descontent+=retObject.get("id");
@@ -268,7 +277,8 @@ public class GoodOrderActivity extends FragmentActivity {
                       }else{
                           Map<String,Object> retObject=WSConnector.getInstance().createGoodsOrder(dataBean.getData()
                                   ,dataBean.getShopId()
-                                  ,dataBean.getTotalPrice(),address,name,phone,descontent,shopId);
+                                  ,dataBean.getTotalPrice(),address,name,phone,descontent,shopId,
+                                  dataBean.getTag(),dataBean.getColor(),leaveMessage);
                           if(retObject.get("out_trade_no")!=null){
                               out_trade_no=(String)retObject.get("out_trade_no");
                           }

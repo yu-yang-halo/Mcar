@@ -17,6 +17,34 @@ public class GoodsOrderListType {
     private String processTime;
     private String tradeNo;
     private int realShopId;
+    private String color;
+    private String tag;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    private String msg;
 
     public String getTradeNo() {
         return tradeNo;

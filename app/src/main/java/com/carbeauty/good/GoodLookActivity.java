@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,6 +36,7 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.bumptech.glide.request.animation.ViewAnimation;
 import com.carbeauty.CommonUtils;
 import com.carbeauty.ImageUtils;
+import com.carbeauty.MyApplication;
 import com.carbeauty.R;
 import com.carbeauty.adapter.BitmapCache;
 import com.carbeauty.cache.CartManager;
@@ -51,6 +53,8 @@ import cn.service.WSConnector;
 import cn.service.WSException;
 import cn.service.bean.BannerInfoType;
 import cn.service.bean.GoodInfo;
+import view.extend.UIColorSelector;
+import view.extend.UILayoutSelector;
 
 /**
  * Created by Administrator on 2016/3/29.
@@ -78,12 +82,16 @@ public class GoodLookActivity extends CommonActivity {
     RelativeLayout relayout2;
     ScrollView scrollView;
     RequestQueue mQueue;
+    ImageLoader imageLoader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_goodslook);
-
         mQueue=Volley.newRequestQueue(this);
+        MyApplication myApplication= (MyApplication) getApplicationContext();
+        imageLoader=new ImageLoader(mQueue, myApplication.getBitmapCache());
+
+
 
         initCustomActionBar();
         titleTxt.setText(name);
@@ -179,6 +187,10 @@ public class GoodLookActivity extends CommonActivity {
         btnAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!check()){
+                    return;
+                }
+
                addToCart();
             }
         });
@@ -195,6 +207,9 @@ public class GoodLookActivity extends CommonActivity {
         btnBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!check()){
+                    return;
+                }
                 addToCart();
                 toCart();
             }
@@ -236,8 +251,75 @@ public class GoodLookActivity extends CommonActivity {
         });
 
 
+        RelativeLayout sizeLayoutContainer= (RelativeLayout) findViewById(R.id.sizeLayoutContainer);
+        RelativeLayout colorLayoutContainer= (RelativeLayout) findViewById(R.id.colorLayoutContainer);
+
+        UILayoutSelector sizeLayout= (UILayoutSelector) findViewById(R.id.sizeLayout);
+        UIColorSelector colorLayout= (UIColorSelector) findViewById(R.id.colorLayout);
+
+        if(tags==null){
+            sizeLayoutContainer.setVisibility(View.GONE);
+        }else{
+            sizeLayoutContainer.setVisibility(View.VISIBLE);
+            final String[] arrs=tags.split("\\|");
+            int len=0;
+            if(arrs!=null&&arrs.length>0){
+                len=arrs.length;
+            }
+            int rows=len%2==0?(len/2):(len/2+1);
+            sizeLayout.initSelector(arrs);
+            ViewGroup.LayoutParams params=sizeLayoutContainer.getLayoutParams();
+            params.height=sizeLayout.CELL_HEIGHT*rows;
+            sizeLayoutContainer.setLayoutParams(params);
+
+            sizeLayout.setOnSelectedListerser(new UILayoutSelector.OnSelectedListerser() {
+                @Override
+                public void onSelected(int pos) {
+                    goodInfo.setTags(arrs[pos]);
+                }
+            });
+        }
+        if(colors==null){
+            colorLayoutContainer.setVisibility(View.GONE);
+        }else{
+            colorLayoutContainer.setVisibility(View.VISIBLE);
+
+            final String[] arrs2=colors.split("\\|");
+            colorLayout.initSelector(arrs2);
+            colorLayout.setOnSelectedListerser(new UIColorSelector.OnSelectedListerser() {
+                @Override
+                public void onSelected(int pos) {
+                    goodInfo.setColors(arrs2[pos]);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
     }
 
+    private boolean check(){
+        if(tags!=null){
+            if(goodInfo.getTags()==null){
+                showMessage("请选择尺寸");
+                return false;
+            }
+        }
+
+        if(colors!=null){
+            if(goodInfo.getColors()==null){
+                showMessage("请选择颜色");
+                return false;
+            }
+        }
+
+        return true;
+    }
     protected void addToCart(){
         String loginName = WSConnector.getInstance().getUserMap().get("loginName");
 
@@ -282,6 +364,7 @@ public class GoodLookActivity extends CommonActivity {
 
     }
 
+
     public class LocalImageHolderView implements Holder<String> {
         private ImageView imageView;
         @Override
@@ -295,11 +378,11 @@ public class GoodLookActivity extends CommonActivity {
         }
         @Override
         public void UpdateUI(Context context, final int position, String imageURL) {
-            ImageLoader imageLoader=new ImageLoader(mQueue, new BitmapCache());
+
             ImageLoader.ImageListener listener=ImageLoader.getImageListener(imageView
                     , 0,0);
 
-            imageLoader.get(imageURL, listener);
+            imageLoader.get(imageURL, listener,300,300);
 
         }
     }

@@ -2,6 +2,7 @@ package com.carbeauty.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.carbeauty.R;
 import com.carbeauty.ShowUnitUtils;
 import com.carbeauty.cache.IDataHandler;
 import com.carbeauty.fragment.GoodListShowFragment;
+import com.carbeauty.order.ExpressActivity;
 import com.pay.AlibabaPay;
 import com.pay.AlipayInfo;
 import com.pay.PayResult;
@@ -108,16 +111,23 @@ public class GoodListShowAdapter extends BaseAdapter {
             viewHolder.itemHeader= (RelativeLayout) convertView.findViewById(R.id.itemHeader);
             viewHolder.itemFooter= (RelativeLayout) convertView.findViewById(R.id.itemFooter);
 
+            viewHolder.finishedImageView= (ImageView) convertView.findViewById(R.id.finishedImageView);
+
+
             viewHolder.shopNameTxt=(TextView)convertView.findViewById(R.id.textView59);
 
             convertView.setTag(viewHolder);
         }
 
+
+
+
         viewHolder= (ViewHolder) convertView.getTag();
 
         viewHolder.orderItemListView.setDividerHeight(1);
-        String ginfos=goodsOrderListTypes.get(position).getGoodsInfo();
-        List<GoodInfo> goodInfos=getGoodInfosEachItem(ginfos);
+
+
+        List<GoodInfo> goodInfos=getGoodInfosEachItem(goodsOrderListTypes.get(position));
 
         GoodListDetailShowAdapter goodListDetailShowAdapter=new GoodListDetailShowAdapter(goodInfos,ctx);
 
@@ -131,6 +141,39 @@ public class GoodListShowAdapter extends BaseAdapter {
         }
 
 
+        int footHeight=viewHolder.itemFooter.getLayoutParams().height;
+
+        switch (goodsOrderListTypes.get(position).getState()){
+            case Constants.GOOD_STATE_ORDER_DELIVE://1已发货
+            {
+                viewHolder.itemFooter.setVisibility(View.VISIBLE);
+                viewHolder.payButton.setVisibility(View.VISIBLE);
+                viewHolder.cancelButton.setVisibility(View.VISIBLE);
+                viewHolder.payButton.setText("确认收货");
+                viewHolder.cancelButton.setText("查看物流");
+            }
+            break;
+            case Constants.GOOD_STATE_ORDER_NO_PAY://未支付
+            {
+                viewHolder.itemFooter.setVisibility(View.VISIBLE);
+                viewHolder.payButton.setVisibility(View.VISIBLE);
+                viewHolder.cancelButton.setVisibility(View.VISIBLE);
+                viewHolder.payButton.setText("立即支付");
+                viewHolder.cancelButton.setText("取消订单");
+            }
+
+            break;
+            default: {
+                viewHolder.itemFooter.setVisibility(View.GONE);
+                footHeight=0;
+            }
+        }
+
+        if(goodsOrderListTypes.get(position).getState()==Constants.GOOD_STATE_ORDER_FINISHED){
+            viewHolder.finishedImageView.setVisibility(View.VISIBLE);
+        }else {
+            viewHolder.finishedImageView.setVisibility(View.GONE);
+        }
 
 
         int totalHeight = 0;
@@ -146,123 +189,143 @@ public class GoodListShowAdapter extends BaseAdapter {
             totalHeight = viewItem.getMeasuredHeight()*row+(row-1)*viewHolder.orderItemListView.getDividerHeight();
             params.height = totalHeight
                             +viewHolder.itemHeader.getLayoutParams().height
-                            +viewHolder.itemFooter.getLayoutParams().height;
+                            +footHeight;
         }else{
             params.height =0;
         }
 
         convertView.setLayoutParams(params);
 
-        if(goodsOrderListTypes.get(position).getState()== Constants.GOOD_STATE_ORDER_NO_PAY){
-            viewHolder.payButton.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.payButton.setVisibility(View.GONE);
-        }
+
 
         viewHolder.payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 * 支付宝支付
-                 * 1.获取店铺alipay pid email
-                 * 2.签名
-                 * 3.支付
-                 */
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg=new Message();
-                        try {
-                            AlipayInfoType alipayInfoType=WSConnector.getInstance().getAlipayByShopId(-1);
-                            AlibabaPay alibabaPay = null;
-                            if(alipayInfoType!=null&&alipayInfoType.getAliPid()!=null&&alipayInfoType.getSellerEmail()!=null){
-                                alibabaPay=new AlibabaPay(alipayInfoType.getAliPid(),alipayInfoType.getSellerEmail());
-                            }
-                            AlipayInfo alipayInfo=new AlipayInfo("客乐养车坊商品","商品订单",
-                                    goodsOrderListTypes.get(position).getPrice()+"",goodsOrderListTypes.get(position).getTradeNo());
-
-                            if(alibabaPay!=null){
-                                String sign= WSConnector.getInstance().signContent(-1,alibabaPay.getOrderInfo(alipayInfo));
-                                alipayInfo.setSign(sign);
-                            }
-
-
-                            if(alipayInfo!=null&&alibabaPay!=null&&alipayInfo.getSign()!=null){
-                                final String payinfo=alibabaPay.getPayInfoData(alipayInfo);
-
-                                Runnable payRunnable = new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        // 构造PayTask 对象
-                                        PayTask alipay = new PayTask((Activity) ctx);
-                                        // 调用支付接口，获取支付结果
-                                        Map<String, String>  result = alipay.payV2(payinfo, true);
-
-                                        Message msg = new Message();
-                                        msg.what = SDK_PAY_FLAG;
-                                        msg.obj = result;
-                                        mHandler.sendMessage(msg);
-                                    }
-                                };
-
-                                // 必须异步调用
-                                Thread payThread = new Thread(payRunnable);
-                                payThread.start();
-                            }else{
-                                msg.what=1000;
-
-                            }
-
-
-                        } catch (WSException e) {
-                            msg.what=1001;
-
-                        }
-
-
-                    }
-                }).start();
-
-
+                if(goodsOrderListTypes.get(position).getState()==Constants.GOOD_STATE_ORDER_DELIVE){
+                    //已发货 确认收货
+                    setOrderStatus(position,false);
+                }else {
+                    //未支付
+                    payOrder(position);
+                }
 
             }
         });
         viewHolder.cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                /**
-                 * 取消订单 可退款...
-                 */
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean sucYN=false;
-                        try {
-                            sucYN=WSConnector.getInstance().updGoodsOrder(goodsOrderListTypes.get(position).getId(),Constants.GOOD_STATE_ORDER_CANCEL);
-                        } catch (WSException e) {
-                            e.printStackTrace();
-                        }
-
-                        Message msg=new Message();
-                        msg.what=sucYN?1002:0;
-                        Bundle data=new Bundle();
-                        data.putInt("position",position);
-                        msg.setData(data);
-                        mHandler.sendMessage(msg);
-                    }
-                }).start();
-
-
+                if(goodsOrderListTypes.get(position).getState()==Constants.GOOD_STATE_ORDER_DELIVE){
+                    //已发货 查看物流
+                    Intent intent=new Intent(ctx,ExpressActivity.class);
+                    intent.putExtra("orderId",goodsOrderListTypes.get(position).getId());
+                    ctx.startActivity(intent);
+                }else {
+                    //未支付 取消订单
+                    setOrderStatus(position,true);
+                }
 
             }
         });
 
 
         return convertView;
+    }
+
+    private void setOrderStatus(final int position, final boolean cancel){
+        /**
+         * 取消订单 可退款...
+         */
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean sucYN=false;
+                try {
+                    int status=Constants.GOOD_STATE_ORDER_CANCEL;
+                    if(!cancel){
+                        status=Constants.GOOD_STATE_ORDER_FINISHED;
+                    }
+                    sucYN=WSConnector.getInstance().updGoodsOrder(goodsOrderListTypes.get(position).getId(),status);
+                } catch (WSException e) {
+                    e.printStackTrace();
+                }
+
+                Message msg=new Message();
+                msg.what=sucYN?1002:0;
+                Bundle data=new Bundle();
+                data.putInt("position",position);
+                data.putBoolean("b_cancel",cancel);
+                msg.setData(data);
+                mHandler.sendMessage(msg);
+            }
+        }).start();
+
+    }
+
+    private void payOrder(final int position){
+        /**
+         * 支付宝支付
+         * 1.获取店铺alipay pid email
+         * 2.签名
+         * 3.支付
+         */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message msg=new Message();
+                try {
+                    AlipayInfoType alipayInfoType=WSConnector.getInstance().getAlipayByShopId(-1);
+                    AlibabaPay alibabaPay = null;
+                    if(alipayInfoType!=null&&alipayInfoType.getAliPid()!=null&&alipayInfoType.getSellerEmail()!=null){
+                        alibabaPay=new AlibabaPay(alipayInfoType.getAliPid(),alipayInfoType.getSellerEmail());
+                    }
+                    AlipayInfo alipayInfo=new AlipayInfo("客乐养车坊商品","商品订单",
+                            goodsOrderListTypes.get(position).getPrice()+"",goodsOrderListTypes.get(position).getTradeNo());
+
+                    if(alibabaPay!=null){
+                        String sign= WSConnector.getInstance().signContent(-1,alibabaPay.getOrderInfo(alipayInfo));
+                        alipayInfo.setSign(sign);
+                    }
+
+
+                    if(alipayInfo!=null&&alibabaPay!=null&&alipayInfo.getSign()!=null){
+                        final String payinfo=alibabaPay.getPayInfoData(alipayInfo);
+
+                        Runnable payRunnable = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // 构造PayTask 对象
+                                PayTask alipay = new PayTask((Activity) ctx);
+                                // 调用支付接口，获取支付结果
+                                Map<String, String>  result = alipay.payV2(payinfo, true);
+
+                                Message msg = new Message();
+                                msg.what = SDK_PAY_FLAG;
+                                msg.obj = result;
+                                mHandler.sendMessage(msg);
+                            }
+                        };
+
+                        // 必须异步调用
+                        Thread payThread = new Thread(payRunnable);
+                        payThread.start();
+                    }else{
+                        msg.what=1000;
+
+                    }
+
+
+                } catch (WSException e) {
+                    msg.what=1001;
+
+                }
+
+
+            }
+        }).start();
+
+
     }
 
     private Handler mHandler = new Handler() {
@@ -306,26 +369,49 @@ public class GoodListShowAdapter extends BaseAdapter {
                     break;
                 case 1002:
                     int pos=msg.getData().getInt("position");
-
+                    boolean b_cancel=msg.getData().getBoolean("b_cancel");
                     if(pos>=0){
                         goodsOrderListTypes.remove(pos);
                         notifyDataSetChanged();
                     }else{
-                        Toast.makeText(ctx, "暂时无法取消", Toast.LENGTH_SHORT).show();
+                        if(b_cancel){
+                            Toast.makeText(ctx, "暂时无法取消", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(ctx, "暂时无法确认收货", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                     break;
                 case 0:
-                    Toast.makeText(ctx, "暂时无法取消", Toast.LENGTH_SHORT).show();
+                    boolean b_cancel2=msg.getData().getBoolean("b_cancel");
+                    if(b_cancel2){
+                        Toast.makeText(ctx, "暂时无法取消", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(ctx, "暂时无法确认收货", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
             }
-        };
+        }
     };
 
 
 
 
 
-    private List<GoodInfo> getGoodInfosEachItem(String ginfos){
+    private List<GoodInfo> getGoodInfosEachItem(GoodsOrderListType goodsOrderListType){
+        String ginfos=goodsOrderListType.getGoodsInfo();
+        String colors=goodsOrderListType.getColor();
+        String tags=goodsOrderListType.getTag();
+        String[] colorArrs=new String[0];
+        String[] tagArrs = new String[0];
+        if(colors!=null){
+            colorArrs=colors.split("\\|");
+        }
+        if(tags!=null){
+            tagArrs=tags.split("\\|");
+        }
+
         List<GoodInfo> goodInfos=new ArrayList<GoodInfo>();
         String[]  items=ginfos.split(",");
         for (int i=0;i<items.length;i++){
@@ -335,6 +421,13 @@ public class GoodListShowAdapter extends BaseAdapter {
                 GoodInfo goodInfo=findGoodInfo(Integer.parseInt(idCounts[0]));
                 if(goodInfo!=null){
                     goodInfo.setBuyNumber(Integer.parseInt(idCounts[1]));
+
+                    if(tagArrs.length==items.length){
+                        goodInfo.setTags(tagArrs[i]);
+                    }
+                    if(colorArrs.length==items.length){
+                        goodInfo.setColors(colorArrs[i]);
+                    }
                     goodInfos.add(goodInfo);
                 }
 
@@ -364,5 +457,6 @@ public class GoodListShowAdapter extends BaseAdapter {
         RelativeLayout itemHeader;
         RelativeLayout itemFooter;
         TextView shopNameTxt;
+        ImageView finishedImageView;
     }
 }
